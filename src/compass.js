@@ -86,8 +86,9 @@ const WID_DEG = 40;
 const WID_RAD = (WID_DEG * Math.PI) / 180;
 const RMAX = Math.sqrt((2 * AREA) / WID_RAD) * 1.04;
 const GLYPH_PX = 90;                 // screen radius of the longest arm (fit) or of RMAX (fixed)
-const FONT = 12, LH = 13;            // label font size / line height in viewBox units
-const CHAR_W = FONT * 0.58;          // rough average glyph width, for the label bounding boxes
+const BASE_FONT = 12;                // label font size in viewBox units when the size is unknown
+const TARGET_PX = 12.5;              // wanted on-screen label size when the card knows its size
+const CHAR_W = 0.58;                 // rough average glyph width per font size unit
 
 const rad = (deg) => (deg * Math.PI) / 180;
 const f2 = (v) => v.toFixed(2);
@@ -194,29 +195,49 @@ export function renderCompass(dist, t, opts = {}) {
     };
 
     // Each label sits just beyond its own arm, anchored outward so it never
-    // reaches back into the glyph. Track a bounding box for the viewBox.
-    const box = { x0: -rMax * K, x1: rMax * K, y0: -rMax * K, y1: rMax * K };
-    if (opts.fixedScale) Object.assign(box, { x0: -RMAX * K, x1: RMAX * K, y0: -RMAX * K, y1: RMAX * K });
-    const labels = !showLabels ? [] : THETA.map((deg, i) => {
-        const [x, y] = pt(armR[i], deg);
-        const [ux, uy] = [Math.cos(rad(deg)), -Math.sin(rad(deg))];
-        const gap = 7;
-        const ax = x + ux * gap, ay = y + uy * gap;
-        const lines = t(`compass.labels.${DIRS[i]}`).split('\n');
-        const pos = LABEL_POS[i];
-        const w = Math.max(...lines.map((l) => l.length)) * CHAR_W;
-        const h = lines.length * LH;
-        // top edge of the text block
-        const top = pos.v === 'top' ? ay - h : pos.v === 'bottom' ? ay : ay - h / 2;
-        const left = pos.anchor === 'start' ? ax : pos.anchor === 'end' ? ax - w : ax - w / 2;
-        box.x0 = Math.min(box.x0, left); box.x1 = Math.max(box.x1, left + w);
-        box.y0 = Math.min(box.y0, top); box.y1 = Math.max(box.y1, top + h);
-        const baseline = top + FONT - 1.5;
-        return svg`<text x=${f2(ax)} y=${f2(baseline)} text-anchor=${pos.anchor} fill=${STAGE_COLORS[DIRS[i]][labelShade]} font-size=${FONT} font-weight="500">
-            ${lines.map((l, j) => svg`<tspan x=${f2(ax)} dy=${j === 0 ? 0 : LH}>${l}</tspan>`)}</text>`;
-    });
-    const pad = 4;
-    const vb = [box.x0 - pad, box.y0 - pad, box.x1 - box.x0 + 2 * pad, box.y1 - box.y0 + 2 * pad].map(f2).join(' ');
+    // reaches back into the glyph. Returns the label specs and the bounding
+    // box of glyph + labels (→ viewBox) for a given font size.
+    const layout = (font) => {
+        const lh = font * 1.08;
+        const box = opts.fixedScale
+            ? { x0: -RMAX * K, x1: RMAX * K, y0: -RMAX * K, y1: RMAX * K }
+            : { x0: -rMax * K, x1: rMax * K, y0: -rMax * K, y1: rMax * K };
+        const specs = !showLabels ? [] : THETA.map((deg, i) => {
+            const [x, y] = pt(armR[i], deg);
+            const [ux, uy] = [Math.cos(rad(deg)), -Math.sin(rad(deg))];
+            const gap = font * 0.58;
+            const ax = x + ux * gap, ay = y + uy * gap;
+            const lines = t(`compass.labels.${DIRS[i]}`).split('\n');
+            const pos = LABEL_POS[i];
+            const w = Math.max(...lines.map((l) => l.length)) * CHAR_W * font;
+            const h = lines.length * lh;
+            const top = pos.v === 'top' ? ay - h : pos.v === 'bottom' ? ay : ay - h / 2;
+            const left = pos.anchor === 'start' ? ax : pos.anchor === 'end' ? ax - w : ax - w / 2;
+            box.x0 = Math.min(box.x0, left); box.x1 = Math.max(box.x1, left + w);
+            box.y0 = Math.min(box.y0, top); box.y1 = Math.max(box.y1, top + h);
+            return { ax, baseline: top + font * 0.875, anchor: pos.anchor, lines, color: STAGE_COLORS[DIRS[i]][labelShade] };
+        });
+        const pad = font / 3;
+        return { font, lh, specs, vb: [box.x0 - pad, box.y0 - pad, box.x1 - box.x0 + 2 * pad, box.y1 - box.y0 + 2 * pad] };
+    };
+
+    // When the card knows how large the glyph box is on screen (opts.boxW /
+    // opts.boxH in px; boxH only when the height is fixed), pick the font so the
+    // labels render at about TARGET_PX. A few rounds, since the labels change
+    // the viewBox and with it the scale.
+    let L = layout(BASE_FONT);
+    if (showLabels && opts.boxW > 0) {
+        for (let round = 0; round < 3; round++) {
+            const [, , vw, vh] = L.vb;
+            const scale = opts.boxH > 0 ? Math.min(opts.boxW / vw, opts.boxH / vh) : opts.boxW / vw;
+            const font = Math.max(6, Math.min(40, TARGET_PX / scale));
+            if (Math.abs(font - L.font) < 0.2) break;
+            L = layout(font);
+        }
+    }
+    const labels = L.specs.map((p) => svg`<text x=${f2(p.ax)} y=${f2(p.baseline)} text-anchor=${p.anchor} fill=${p.color} font-size=${f2(L.font)} font-weight="500">
+        ${p.lines.map((l, j) => svg`<tspan x=${f2(p.ax)} dy=${j === 0 ? 0 : f2(L.lh)}>${l}</tspan>`)}</text>`);
+    const vb = L.vb.map(f2).join(' ');
 
     // Legend rows: in range first, then deviations by count (largest first).
     // The severity split lives in the hover tooltip.

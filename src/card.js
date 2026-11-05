@@ -43,6 +43,7 @@ export class ComfortCompassCard extends LitElement {
             _days: { state: true },
             _error: { state: true },
             _compact: { state: true },
+            _box: { state: true },
         };
     }
 
@@ -54,6 +55,7 @@ export class ComfortCompassCard extends LitElement {
         this._fetchKey = null;
         this._days = [];
         this._compact = false;
+        this._box = null;
         this._resizeObserver = undefined;
     }
 
@@ -102,6 +104,14 @@ export class ComfortCompassCard extends LitElement {
         const room = this._fixedHeight ? Math.min(w, h) : w;
         const compact = room < 200;
         if (compact !== this._compact) this._compact = compact;
+        // On-screen size of the glyph box, so the compass can size its labels
+        // to a readable pixel size. Only update on real changes (no loops).
+        if (glyph) {
+            const g = glyph.getBoundingClientRect();
+            const box = { w: Math.round(g.width), h: this._fixedHeight ? Math.round(g.height) : 0 };
+            const old = this._box;
+            if (!old || Math.abs(old.w - box.w) > 2 || Math.abs(old.h - box.h) > 2) this._box = box;
+        }
     }
 
     setConfig(config) {
@@ -186,6 +196,8 @@ export class ComfortCompassCard extends LitElement {
                 showLegend: c.show_legend === true,
                 showLabels: c.show_labels !== false && !this._compact,
                 dark: !!this._hass?.themes?.darkMode,
+                boxW: this._box?.w,
+                boxH: this._box?.h,
             });
         }
         return html`

@@ -6,6 +6,8 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ### Changed
 
+- Direction labels are sized from the compass's size on screen, so they read at about 12.5 px in every tile, at full width and with `scale: fixed`.
+- Legend counts show their unit ("62 days").
 - README: why temperature and humidity belong together, how to read the compass, comparing rooms; installation via Marketplace / HACS only.
 
 ## [1.0.0-beta.1] - 2026-11-05
