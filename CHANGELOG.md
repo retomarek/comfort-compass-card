@@ -4,6 +4,8 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.0.0-beta.2] - 2026-11-05
+
 ### Changed
 
 - Direction labels are sized from the compass's size on screen, so they read at about 12.5 px in every tile, at full width and with `scale: fixed`.
@@ -26,5 +28,6 @@ First test version. The comfort compass was part of the [Mollier hx Card](https:
 - Fahrenheit sensors supported (statistics requested in °C); hourly refresh, retry after a failed load; only completed days are counted.
 - Claude Code setup for contributors: `card-reviewer` agent, `visual-check` and `release` skills (`npm run visual-check`).
 
-[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.1...HEAD
+[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.2...HEAD
+[1.0.0-beta.2]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.1
