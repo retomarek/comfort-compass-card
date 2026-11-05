@@ -11,7 +11,7 @@ A Home Assistant custom dashboard card (Lit + Parcel, no D3) distributed through
 - `npm run build`: Parcel production build (no cache), `src/comfort-compass-card.js` → `dist/comfort-compass-card.js`. Commit `dist/` too.
 - `npm run watch`: development build.
 - `npm run screenshots`: renders the built bundle with deterministic sample data in headless Chrome (`puppeteer-core`, browser from `$CHROME_PATH` or PATH) into `docs/screenshot*.png`. CI does the same on every push to `main` (`.github/workflows/screenshots.yaml`).
-- `npm run social-preview`: re-renders `docs/social-preview.png` from `scripts/social-preview.html` (upload manually: repo Settings → General → Social preview).
+- `npm run social-preview`: re-renders `docs/banner.png` (README header) and `docs/social-preview.png` from `scripts/banner.html` / `scripts/social-preview.html` (upload manually: repo Settings → General → Social preview).
 
 No tests, linter or typechecker.
 

@@ -4,6 +4,12 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.0.0-beta.3] - 2026-11-06
+
+### Changed
+
+- README starts with a banner (logo, name, claim); `npm run social-preview` renders it together with the social preview.
+
 ### Added
 
 - Translations for French, Italian, Spanish, Portuguese, Dutch, Polish, Swedish, Danish, Norwegian, Czech, Russian and Chinese (Simplified). They are machine-translated; corrections from native speakers are welcome as pull requests.
@@ -36,6 +42,7 @@ First test version. The comfort compass was part of the [Mollier hx Card](https:
 - Fahrenheit sensors supported (statistics requested in °C); hourly refresh, retry after a failed load; only completed days are counted.
 - Claude Code setup for contributors: `card-reviewer` agent, `visual-check` and `release` skills (`npm run visual-check`).
 
-[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.2...HEAD
+[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.3...HEAD
+[1.0.0-beta.3]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.3
 [1.0.0-beta.2]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.1

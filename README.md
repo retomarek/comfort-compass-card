@@ -1,12 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/logo.svg" alt="Comfort Compass Card logo" width="112" height="112">
-</p>
-
-<h1 align="center">Comfort Compass Card</h1>
-
-<p align="center">
-  How many days were too warm, too humid, too dry or too cold?<br>
-  One glance, for any room in Home Assistant.
+  <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/banner.png" alt="Comfort Compass Card: how many days were too warm, too humid, too dry or too cold? One glance, for any room in Home Assistant" width="100%">
 </p>
 
 <p align="center">
