@@ -4,6 +4,10 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+### Changed
+
+- Build tools updated (Puppeteer 25, GitHub actions checkout/setup-node v7).
+
 ## [1.0.0-beta.2] - 2026-11-05
 
 ### Changed

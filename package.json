@@ -21,7 +21,7 @@
   "license": "MIT",
   "devDependencies": {
     "parcel": "^2.8.3",
-    "puppeteer-core": "^23.11.1"
+    "puppeteer-core": "^25.16.0"
   },
   "dependencies": {
     "lit": "^3.3.0"
