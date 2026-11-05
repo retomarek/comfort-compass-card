@@ -15,6 +15,8 @@
   <a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=retomarek&repository=comfort-compass-card&category=plugin"><img alt="Open in your Home Assistant" src="https://my.home-assistant.io/badges/hacs_repository.svg"></a>
 </p>
 
+> **Sister card: [Mollier hx Card](https://github.com/retomarek/mollier-hx-card).** Draws the same days on a psychrometric h,x diagram, with the same comfort zone and warning bands, plus outside air and ventilation. The compass shows *how often*, the diagram *where* and *why*.
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/screenshot.png" alt="Comfort compass in a dark dashboard with legend: 52 % of 120 days in range, 31 % warm and humid, 8 % too humid, 8 % too warm" width="62%">
   <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/screenshot-light-de.png" alt="The same compass in the light theme with German labels, without legend" width="34%">
