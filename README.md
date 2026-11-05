@@ -31,6 +31,15 @@ The card takes the daily means of a temperature and a humidity sensor and compar
 
 > **Built on [pyedautils](https://github.com/retomarek/pyedautils)**, the *Python Energy Data Analysis Utilities*: a pip-installable library (`pip install pyedautils`) for analysing and visualising energy and comfort time series. The compass is a port of its `comfort_compass_distribution()` and `plot_comfort_compass()`, so you can take the same sensor data into Python or Jupyter for deeper analysis.
 
+## Why temperature and humidity belong together
+
+Comfort, health and the risk of mould always depend on temperature **and** humidity at the same time. Looking at one of them alone, or at two separate graphs, can easily mislead:
+
+- **Relative humidity changes with temperature.** Air at 21 °C and 60 % holds about 9.3 g of water per kg. Warm the same air to 26 °C and it reads only 44 %; cool it at a 15 °C outer wall and it reaches about 87 %, enough for mould. The amount of water did not change at all.
+- **The same reading means different things.** 23 °C feels pleasant at 45 %, but sticky at 70 %.
+
+That is why the compass judges every day on both together: a day only counts as *in range* when temperature and humidity are both in the comfort zone, and the direction of an arm tells you which combination was off. *Warm + humid* calls for cooling or ventilation, *cold + humid* points to condensation and mould risk, *warm + dry* to overheated, dry winter air.
+
 ## Features
 
 - **Area-true**: the disc and the arms together always cover exactly the area of the dashed circle, which stands for 100 % of the days. Every area is proportional to its number of days, so the picture does not exaggerate.
@@ -48,19 +57,11 @@ Both sensors need long-term statistics, which means `state_class: measurement`. 
 
 ## Installation
 
-### Marketplace or HACS (recommended)
-
 From Home Assistant 2026.11 on, community cards come from the built-in **Marketplace** (*Settings → Marketplace*). On older versions use **HACS**. Both use the same catalog.
 
 1. Open the link above, or search for **Comfort Compass Card**.
    - Not listed yet? Marketplace: *Add from link* with `https://github.com/retomarek/comfort-compass-card`. HACS: three-dot menu → *Custom repositories*, type *Dashboard*.
 2. Install it. The dashboard resource is added for you.
-3. Reload the browser.
-
-### Manual
-
-1. Download `comfort-compass-card.js` from the [latest release](https://github.com/retomarek/comfort-compass-card/releases) into `<config>/www/`.
-2. Add it under *Settings → Dashboards → three-dot menu → Resources*: URL `/local/comfort-compass-card.js`, type **JavaScript module**.
 3. Reload the browser.
 
 ## Configuration

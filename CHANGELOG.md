@@ -4,6 +4,10 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+### Changed
+
+- README: why temperature and humidity belong together, how to read the compass, comparing rooms; installation via Marketplace / HACS only.
+
 ## [1.0.0-beta.1] - 2026-11-05
 
 First test version. The comfort compass was part of the [Mollier hx Card](https://github.com/retomarek/mollier-hx-card) betas and is now its own card.
