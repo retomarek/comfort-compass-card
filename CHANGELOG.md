@@ -4,6 +4,16 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.0.0-beta.4] - 2026-11-06
+
+### Added
+
+- README: good for people and the environment: what the compass tells you and what helps (ventilating, heating less), with a link to the h,x basics.
+
+### Fixed
+
+- Label size and compact mode also work when the card is attached before it receives its configuration.
+
 ## [1.0.0-beta.3] - 2026-11-06
 
 ### Changed
@@ -42,7 +52,8 @@ First test version. The comfort compass was part of the [Mollier hx Card](https:
 - Fahrenheit sensors supported (statistics requested in °C); hourly refresh, retry after a failed load; only completed days are counted.
 - Claude Code setup for contributors: `card-reviewer` agent, `visual-check` and `release` skills (`npm run visual-check`).
 
-[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.3...HEAD
+[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.4...HEAD
+[1.0.0-beta.4]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.4
 [1.0.0-beta.3]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.3
 [1.0.0-beta.2]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.1

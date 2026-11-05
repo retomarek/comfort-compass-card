@@ -33,6 +33,16 @@ Comfort, health and the risk of mould always depend on temperature **and** humid
 
 That is why the compass judges every day on both together: a day only counts as *in range* when temperature and humidity are both in the comfort zone, and the direction of an arm tells you which combination was off. *Warm + humid* calls for cooling or ventilation, *cold + humid* points to condensation and mould risk, *warm + dry* to overheated, dry winter air.
 
+## Good for people and the environment
+
+The h,x diagram behind this card explains why the compass looks the way it does, and what you can do about it:
+
+- **Too dry in winter** (left arms) usually comes from ventilating with cold outside air: at 0 °C and 80 % it carries only about 3.2 g/kg of water, which is just **20 %** relative humidity once heated to 21 °C.
+- **Heating less** moves days towards *in range*: the water content stays, the relative humidity rises. Air with 6.4 g/kg reads about 35 % at 23 °C, but 40 % at 21 °C. As a rule of thumb, every degree less saves around **6 % of heating energy**, good for comfort, the bill and the climate.
+- **Too humid or cold + humid** (right and lower right arms) means a risk of condensation and mould at cold surfaces: at 21 °C and 60 %, the dew point is 12.9 °C, and mould can grow on surfaces below about 16 °C, such as outside wall corners in winter. Short, wide-open airing helps, as long as the outside air is drier than the room air.
+
+The [Mollier hx Card README](https://github.com/retomarek/mollier-hx-card#the-hx-diagram-in-five-minutes) explains the h,x diagram step by step, with these examples. The two cards work well side by side: the diagram shows *where* each day was, the compass *how often*.
+
 ## Features
 
 - **Area-true**: the disc and the arms together always cover exactly the area of the dashed circle, which stands for 100 % of the days. Every area is proportional to its number of days, so the picture does not exaggerate.

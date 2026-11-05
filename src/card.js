@@ -71,10 +71,21 @@ export class ComfortCompassCard extends LitElement {
         if (!this._resizeObserver && typeof ResizeObserver !== 'undefined') {
             this._resizeObserver = new ResizeObserver(() => this._measure());
         }
-        this.updateComplete.then(() => {
-            const el = this.renderRoot?.querySelector('.card-content');
-            if (el && this._resizeObserver) this._resizeObserver.observe(el);
-        });
+        this.updateComplete.then(() => this._observeSize());
+    }
+
+    // Watch the content box for size changes. Called after every render, because
+    // the box only exists once the card has a config (it may be attached first).
+    _observeSize() {
+        const el = this.renderRoot?.querySelector('.card-content');
+        if (!el || !this._resizeObserver || el === this._observed) return;
+        if (this._observed) this._resizeObserver.unobserve(this._observed);
+        this._resizeObserver.observe(el);
+        this._observed = el;
+    }
+
+    updated() {
+        this._observeSize();
     }
 
     disconnectedCallback() {
@@ -82,6 +93,7 @@ export class ComfortCompassCard extends LitElement {
         clearInterval(this._refreshTimer);
         this._refreshTimer = undefined;
         this._resizeObserver?.disconnect();
+        this._observed = undefined;
     }
 
     _measure() {
