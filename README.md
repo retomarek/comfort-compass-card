@@ -165,6 +165,12 @@ To add a new language, copy [`en.json`](src/localize/languages/en.json) to `<lan
 
 Daily means come from Home Assistant's `recorder/statistics_during_period` WebSocket API. The classification is a port of `pyedautils.comfort.comfort_compass_distribution` and the glyph of `pyedautils.plots.comfort.plot_comfort_compass` from [pyedautils](https://github.com/retomarek/pyedautils). Absolute humidity uses the pyedautils psychrometric functions (`data/d3_mollierhx/mollierFunctions.js`), the same as the Mollier hx Card.
 
+## Questions and feedback
+
+- **Questions or ideas?** Ask in [Q&A](https://github.com/retomarek/comfort-compass-card/discussions/categories/q-a).
+- **Found a bug or want a feature?** Open an [issue](https://github.com/retomarek/comfort-compass-card/issues/new/choose).
+- **Translation wrong?** See [Translations](#translations): a small pull request is the quickest fix.
+
 ## Credits
 
 - [pyedautils](https://github.com/retomarek/pyedautils), Python Energy Data Analysis Utilities: classification, glyph design and psychrometric functions.

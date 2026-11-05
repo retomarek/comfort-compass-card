@@ -1,1 +1,5 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/retomarek/comfort-compass-card/discussions/categories/q-a
+    about: Ask about setup, reading the diagram or share an idea in Q&A. Issues are for bugs and feature requests.
