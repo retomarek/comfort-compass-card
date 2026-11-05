@@ -41,7 +41,7 @@ The h,x diagram behind this card explains why the compass looks the way it does,
 - **Heating less** moves days towards *in range*: the water content stays, the relative humidity rises. Air with 6.4 g/kg reads about 35 % at 23 °C, but 40 % at 21 °C. As a rule of thumb, every degree less saves around **6 % of heating energy**, good for comfort, the bill and the climate.
 - **Too humid or cold + humid** (right and lower right arms) means a risk of condensation and mould at cold surfaces: at 21 °C and 60 %, the dew point is 12.9 °C, and mould can grow on surfaces below about 16 °C, such as outside wall corners in winter. Short, wide-open airing helps, as long as the outside air is drier than the room air.
 
-The [Mollier hx Card README](https://github.com/retomarek/mollier-hx-card#the-hx-diagram-in-five-minutes) explains the h,x diagram step by step, with these examples. The two cards work well side by side: the diagram shows *where* each day was, the compass *how often*.
+The [Mollier hx Card README](https://github.com/retomarek/mollier-hx-card#the-hx-diagram-in-five-minutes) explains the h,x diagram step by step, with these examples; more background on [Wikipedia](https://de.wikipedia.org/wiki/Mollier-h-x-Diagramm) (German). The two cards work well side by side: the diagram shows *where* each day was, the compass *how often*.
 
 ## Features
 
