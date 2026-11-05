@@ -1,0 +1,29 @@
+{
+  "name": "comfort-compass-card",
+  "version": "1.0.0-beta.1",
+  "description": "A Home Assistant dashboard card that shows how the days split into in range, too warm, too humid, too dry or too cold.",
+  "type": "module",
+  "source": "src/comfort-compass-card.js",
+  "scripts": {
+    "build": "parcel build --no-source-maps --no-cache",
+    "watch": "parcel watch",
+    "screenshots": "node scripts/screenshots.mjs",
+    "social-preview": "node scripts/social-preview.mjs",
+    "visual-check": "node scripts/visual-check.mjs"
+  },
+  "targets": {
+    "default": {
+      "distDir": "dist",
+      "publicUrl": "./",
+      "includeNodeModules": true
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "^2.8.3",
+    "puppeteer-core": "^23.11.1"
+  },
+  "dependencies": {
+    "lit": "^3.3.0"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Comfort Compass Card",
+  "render_readme": true,
+  "filename": "comfort-compass-card.js",
+  "content_in_root": false,
+  "homeassistant": "2024.11.0"
+}

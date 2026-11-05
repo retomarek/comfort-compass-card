@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Comfort Compass Card</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1d3350"/>
+      <stop offset="1" stop-color="#0c1520"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <g transform="translate(-20,22)"><circle cx="256" cy="262" r="128" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="4" stroke-dasharray="9 9"/>
+  <path d="M391.9,198.6A150,150 0 0 0 319.4,126.1L294.9,178.6A92,92 0 0 1 339.4,223.1Z" fill="#dc9dbb" stroke="#101b29" stroke-width="5"/><path d="M420.9,185.1A182,182 0 0 0 332.9,97.1L319.4,126.1A150,150 0 0 1 391.9,198.6Z" fill="#c66d9a" stroke="#101b29" stroke-width="5"/><path d="M449.9,171.6A214,214 0 0 0 346.4,68.1L332.9,97.1A182,182 0 0 1 420.9,185.1Z" fill="#a64278" stroke="#101b29" stroke-width="5"/><path d="M299.8,141.7A128,128 0 0 0 212.2,141.7L224.5,175.5A92,92 0 0 1 287.5,175.5Z" fill="#e49e93" stroke="#101b29" stroke-width="5"/><path d="M308.0,119.2A152,152 0 0 0 204.0,119.2L212.2,141.7A128,128 0 0 1 299.8,141.7Z" fill="#cf6e60" stroke="#101b29" stroke-width="5"/><path d="M370.6,303.7A122,122 0 0 0 370.6,220.3L342.5,230.5A92,92 0 0 1 342.5,293.5Z" fill="#baa7e2" stroke="#101b29" stroke-width="5"/><path d="M387.6,309.9A140,140 0 0 0 387.6,214.1L370.6,220.3A122,122 0 0 1 370.6,303.7Z" fill="#9a7ccf" stroke="#101b29" stroke-width="5"/><path d="M150.8,223.7A112,112 0 0 0 150.8,300.3L169.5,293.5A92,92 0 0 1 169.5,230.5Z" fill="#d6a977" stroke="#101b29" stroke-width="5"/><path d="M220.4,359.7A104,104 0 0 0 291.6,359.7L287.5,348.5A92,92 0 0 1 224.5,348.5Z" fill="#82b9e5" stroke="#101b29" stroke-width="5"/><path d="M209.5,162.3A110,110 0 0 0 156.3,215.5L172.6,223.1A92,92 0 0 1 217.1,178.6Z" fill="#e0a383" stroke="#101b29" stroke-width="5"/><path d="M300.8,358.1A106,106 0 0 0 352.1,306.8L339.4,300.9A92,92 0 0 1 294.9,345.4Z" fill="#9eb0ea" stroke="#101b29" stroke-width="5"/><path d="M165.4,304.3A100,100 0 0 0 213.7,352.6L217.1,345.4A92,92 0 0 1 172.6,300.9Z" fill="#afb982" stroke="#101b29" stroke-width="5"/>
+  <circle cx="256" cy="262" r="92" fill="#22c55e" stroke="#101b29" stroke-width="6"/></g>
+</svg>

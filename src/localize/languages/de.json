@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Keine Tagesstatistiken vorhanden. Prüfe, ob beide Sensoren state_class: measurement haben.",
+    "fetch_failed": "Verlauf konnte nicht geladen werden: {error}",
+    "no_data": "In diesem Zeitraum gibt es noch keine Tage mit Daten.",
+    "period": "{count} Tage"
+  },
+  "compass": {
+    "title": "Komfort-Kompass",
+    "day": "Tag",
+    "days": "Tage",
+    "names": {
+      "ok": "im Zielband",
+      "w": "zu warm",
+      "wf": "warm + feucht",
+      "f": "zu feucht",
+      "kf": "kalt + feucht",
+      "c": "zu kalt",
+      "ct": "kalt + trocken",
+      "t": "zu trocken",
+      "wt": "warm + trocken"
+    },
+    "labels": {
+      "f": "zu feucht",
+      "wf": "warm +\nfeucht",
+      "w": "zu warm",
+      "wt": "warm +\ntrocken",
+      "t": "zu trocken",
+      "ct": "kalt +\ntrocken",
+      "c": "zu kalt",
+      "kf": "kalt +\nfeucht"
+    },
+    "stages": {
+      "l": "leicht",
+      "d": "mittel",
+      "s": "stark"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Titel",
+      "temperature_entity": "Temperatursensor",
+      "humidity_entity": "Feuchtesensor",
+      "days": "Tage Verlauf",
+      "air_mode": "Luftdruck aus",
+      "pressure": "Luftdruck",
+      "altitude": "Höhe",
+      "comfort_t_min": "Temperatur min",
+      "comfort_t_max": "Temperatur max",
+      "comfort_phi_min": "Feuchte min",
+      "comfort_phi_max": "Feuchte max",
+      "comfort_x_min": "Absolute Feuchte min",
+      "comfort_x_max": "Absolute Feuchte max",
+      "orange_dt": "Leicht bis ± Temperatur",
+      "orange_dphi": "Leicht bis ± Feuchte",
+      "orange_dx": "Leicht bis ± abs. Feuchte",
+      "red_dt": "Mittel bis ± Temperatur",
+      "red_dphi": "Mittel bis ± Feuchte",
+      "red_dx": "Mittel bis ± abs. Feuchte",
+      "show_legend": "Legende anzeigen",
+      "show_labels": "Richtungen beschriften",
+      "fixed_scale": "Feste Skala (Räume vergleichen)"
+    },
+    "options": {
+      "pressure": "Druck (Pa)",
+      "altitude": "Höhe (m)"
+    },
+    "sections": {
+      "comfort": "Komfortzone",
+      "bands": "Abstufung (Warnbänder)",
+      "display": "Darstellung"
+    }
+  }
+}
