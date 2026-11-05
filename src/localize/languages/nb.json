@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Ingen daglig statistikk tilgjengelig. Kontroller at begge sensorene har state_class: measurement.",
+    "fetch_failed": "Kunne ikke laste inn historikken: {error}",
+    "no_data": "Ingen dager med data i denne perioden ennå.",
+    "period": "{count} dager"
+  },
+  "compass": {
+    "title": "Komfortkompass",
+    "day": "dag",
+    "days": "dager",
+    "names": {
+      "ok": "innenfor målområdet",
+      "w": "for varmt",
+      "wf": "varmt + fuktig",
+      "f": "for fuktig",
+      "kf": "kaldt + fuktig",
+      "c": "for kaldt",
+      "ct": "kaldt + tørt",
+      "t": "for tørt",
+      "wt": "varmt + tørt"
+    },
+    "labels": {
+      "f": "for fuktig",
+      "wf": "varmt +\nfuktig",
+      "w": "for varmt",
+      "wt": "varmt +\ntørt",
+      "t": "for tørt",
+      "ct": "kaldt +\ntørt",
+      "c": "for kaldt",
+      "kf": "kaldt +\nfuktig"
+    },
+    "stages": {
+      "l": "lett",
+      "d": "moderat",
+      "s": "kraftig"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Tittel",
+      "temperature_entity": "Temperatursensor",
+      "humidity_entity": "Luftfuktighetssensor",
+      "days": "Dager historikk",
+      "air_mode": "Lufttrykk fra",
+      "pressure": "Lufttrykk",
+      "altitude": "Høyde",
+      "comfort_t_min": "Temperatur min",
+      "comfort_t_max": "Temperatur maks",
+      "comfort_phi_min": "Luftfuktighet min",
+      "comfort_phi_max": "Luftfuktighet maks",
+      "comfort_x_min": "Absolutt luftfuktighet min",
+      "comfort_x_max": "Absolutt luftfuktighet maks",
+      "orange_dt": "Lett opptil ± temperatur",
+      "orange_dphi": "Lett opptil ± luftfuktighet",
+      "orange_dx": "Lett opptil ± abs. luftfuktighet",
+      "red_dt": "Moderat opptil ± temperatur",
+      "red_dphi": "Moderat opptil ± luftfuktighet",
+      "red_dx": "Moderat opptil ± abs. luftfuktighet",
+      "show_legend": "Vis forklaring",
+      "show_labels": "Vis retningsetiketter",
+      "fixed_scale": "Fast skala (sammenlign rom)"
+    },
+    "options": {
+      "pressure": "Trykk (Pa)",
+      "altitude": "Høyde (m)"
+    },
+    "sections": {
+      "comfort": "Komfortsone",
+      "bands": "Alvorlighetsgrad (varselbånd)",
+      "display": "Visning"
+    }
+  }
+}

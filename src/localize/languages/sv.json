@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Ingen daglig statistik tillgänglig. Kontrollera att båda sensorerna har state_class: measurement.",
+    "fetch_failed": "Kunde inte läsa in historiken: {error}",
+    "no_data": "Inga dagar med data under den här perioden ännu.",
+    "period": "{count} dagar"
+  },
+  "compass": {
+    "title": "Komfortkompass",
+    "day": "dag",
+    "days": "dagar",
+    "names": {
+      "ok": "inom målområdet",
+      "w": "för varmt",
+      "wf": "varmt + fuktigt",
+      "f": "för fuktigt",
+      "kf": "kallt + fuktigt",
+      "c": "för kallt",
+      "ct": "kallt + torrt",
+      "t": "för torrt",
+      "wt": "varmt + torrt"
+    },
+    "labels": {
+      "f": "för fuktigt",
+      "wf": "varmt +\nfuktigt",
+      "w": "för varmt",
+      "wt": "varmt +\ntorrt",
+      "t": "för torrt",
+      "ct": "kallt +\ntorrt",
+      "c": "för kallt",
+      "kf": "kallt +\nfuktigt"
+    },
+    "stages": {
+      "l": "lätt",
+      "d": "måttlig",
+      "s": "kraftig"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Titel",
+      "temperature_entity": "Temperatursensor",
+      "humidity_entity": "Luftfuktighetssensor",
+      "days": "Dagar historik",
+      "air_mode": "Lufttryck från",
+      "pressure": "Lufttryck",
+      "altitude": "Höjd",
+      "comfort_t_min": "Temperatur min",
+      "comfort_t_max": "Temperatur max",
+      "comfort_phi_min": "Luftfuktighet min",
+      "comfort_phi_max": "Luftfuktighet max",
+      "comfort_x_min": "Absolut luftfuktighet min",
+      "comfort_x_max": "Absolut luftfuktighet max",
+      "orange_dt": "Lätt upp till ± temperatur",
+      "orange_dphi": "Lätt upp till ± luftfuktighet",
+      "orange_dx": "Lätt upp till ± abs. luftfuktighet",
+      "red_dt": "Måttlig upp till ± temperatur",
+      "red_dphi": "Måttlig upp till ± luftfuktighet",
+      "red_dx": "Måttlig upp till ± abs. luftfuktighet",
+      "show_legend": "Visa teckenförklaring",
+      "show_labels": "Visa riktningsetiketter",
+      "fixed_scale": "Fast skala (jämför rum)"
+    },
+    "options": {
+      "pressure": "Tryck (Pa)",
+      "altitude": "Höjd (m)"
+    },
+    "sections": {
+      "comfort": "Komfortzon",
+      "bands": "Allvarlighetsgrad (varningsband)",
+      "display": "Visning"
+    }
+  }
+}

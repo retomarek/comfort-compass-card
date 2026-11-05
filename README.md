@@ -47,7 +47,7 @@ That is why the compass judges every day on both together: a day only counts as 
 - **Severity from warning bands**: mild means inside the orange band, moderate inside the red band, severe beyond it. Relative **and** absolute humidity count.
 - **Hover or tap** a segment for its days, share and severity split. A legend is optional.
 - **Fits any dashboard**: the glyph is capped in size and centred, so it stays tidy at full width and fills a tile with a fixed height.
-- **Follows your theme**, light or dark, and your Home Assistant language (English, German).
+- **Follows your theme**, light or dark, and your Home Assistant language (14 languages, see [Translations](#translations)).
 - **Visual editor** with entity pickers limited to sensors that have long-term statistics.
 - Pairs with the [Mollier hx Card](https://github.com/retomarek/mollier-hx-card), which uses the same comfort zone and warning bands.
 
@@ -145,9 +145,16 @@ In a sections dashboard the card takes half the width and sets its own height. T
 
 ## Translations
 
-The card uses the language of your Home Assistant profile and falls back to English for anything not translated. Available: English, German.
+The card follows the language of your Home Assistant profile. Anything not translated falls back to English.
 
-To add a language, copy [`src/localize/languages/en.json`](src/localize/languages/en.json) to `<language code>.json`, translate the values, register it in [`src/localize/localize.js`](src/localize/localize.js) and open a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md).
+| Language | Status |
+| --- | --- |
+| English, German | written by the author |
+| French, Italian, Spanish, Portuguese, Dutch, Polish, Swedish, Danish, Norwegian, Czech, Russian, Chinese (Simplified) | machine-translated, not yet checked by a native speaker |
+
+**Something reads wrong in your language? Please open a pull request.** Edit the file for your language in [`src/localize/languages/`](src/localize/languages/) directly on GitHub (pencil icon → *Propose changes*); a short note on what you changed is enough. If you'd rather not touch the file, open a [translation issue](https://github.com/retomarek/comfort-compass-card/issues/new?template=translation.yml) instead.
+
+To add a new language, copy [`en.json`](src/localize/languages/en.json) to `<language code>.json`, translate the values and register the file in [`src/localize/localize.js`](src/localize/localize.js). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## How it works
 

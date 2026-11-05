@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Aucune statistique journalière disponible. Vérifiez que les deux capteurs ont state_class: measurement.",
+    "fetch_failed": "Impossible de charger l'historique : {error}",
+    "no_data": "Aucun jour avec des données sur cette période pour l'instant.",
+    "period": "{count} jours"
+  },
+  "compass": {
+    "title": "Boussole de confort",
+    "day": "jour",
+    "days": "jours",
+    "names": {
+      "ok": "dans la plage",
+      "w": "trop chaud",
+      "wf": "chaud + humide",
+      "f": "trop humide",
+      "kf": "froid + humide",
+      "c": "trop froid",
+      "ct": "froid + sec",
+      "t": "trop sec",
+      "wt": "chaud + sec"
+    },
+    "labels": {
+      "f": "trop humide",
+      "wf": "chaud +\nhumide",
+      "w": "trop chaud",
+      "wt": "chaud +\nsec",
+      "t": "trop sec",
+      "ct": "froid +\nsec",
+      "c": "trop froid",
+      "kf": "froid +\nhumide"
+    },
+    "stages": {
+      "l": "léger",
+      "d": "modéré",
+      "s": "sévère"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Titre",
+      "temperature_entity": "Capteur de température",
+      "humidity_entity": "Capteur d'humidité",
+      "days": "Jours d'historique",
+      "air_mode": "Pression atmosphérique selon",
+      "pressure": "Pression atmosphérique",
+      "altitude": "Altitude",
+      "comfort_t_min": "Température min",
+      "comfort_t_max": "Température max",
+      "comfort_phi_min": "Humidité min",
+      "comfort_phi_max": "Humidité max",
+      "comfort_x_min": "Humidité absolue min",
+      "comfort_x_max": "Humidité absolue max",
+      "orange_dt": "Léger jusqu'à ± température",
+      "orange_dphi": "Léger jusqu'à ± humidité",
+      "orange_dx": "Léger jusqu'à ± humidité abs.",
+      "red_dt": "Modéré jusqu'à ± température",
+      "red_dphi": "Modéré jusqu'à ± humidité",
+      "red_dx": "Modéré jusqu'à ± humidité abs.",
+      "show_legend": "Afficher la légende",
+      "show_labels": "Afficher les directions",
+      "fixed_scale": "Échelle fixe (comparer les pièces)"
+    },
+    "options": {
+      "pressure": "Pression (Pa)",
+      "altitude": "Altitude (m)"
+    },
+    "sections": {
+      "comfort": "Zone de confort",
+      "bands": "Gravité (bandes d'avertissement)",
+      "display": "Affichage"
+    }
+  }
+}

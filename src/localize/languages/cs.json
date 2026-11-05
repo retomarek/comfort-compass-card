@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Nejsou k dispozici žádné denní statistiky. Zkontrolujte, zda oba senzory mají state_class: measurement.",
+    "fetch_failed": "Historii se nepodařilo načíst: {error}",
+    "no_data": "V tomto období zatím nejsou žádné dny s daty.",
+    "period": "{count} dní"
+  },
+  "compass": {
+    "title": "Kompas komfortu",
+    "day": "den",
+    "days": "dní",
+    "names": {
+      "ok": "v rozsahu",
+      "w": "příliš teplo",
+      "wf": "teplo + vlhko",
+      "f": "příliš vlhko",
+      "kf": "chladno + vlhko",
+      "c": "příliš chladno",
+      "ct": "chladno + sucho",
+      "t": "příliš sucho",
+      "wt": "teplo + sucho"
+    },
+    "labels": {
+      "f": "příliš vlhko",
+      "wf": "teplo +\nvlhko",
+      "w": "příliš teplo",
+      "wt": "teplo +\nsucho",
+      "t": "příliš sucho",
+      "ct": "chladno +\nsucho",
+      "c": "příliš chladno",
+      "kf": "chladno +\nvlhko"
+    },
+    "stages": {
+      "l": "mírné",
+      "d": "střední",
+      "s": "silné"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Název",
+      "temperature_entity": "Senzor teploty",
+      "humidity_entity": "Senzor vlhkosti",
+      "days": "Dny historie",
+      "air_mode": "Zdroj tlaku vzduchu",
+      "pressure": "Tlak vzduchu",
+      "altitude": "Nadmořská výška",
+      "comfort_t_min": "Teplota min",
+      "comfort_t_max": "Teplota max",
+      "comfort_phi_min": "Vlhkost min",
+      "comfort_phi_max": "Vlhkost max",
+      "comfort_x_min": "Absolutní vlhkost min",
+      "comfort_x_max": "Absolutní vlhkost max",
+      "orange_dt": "Mírné do ± teploty",
+      "orange_dphi": "Mírné do ± vlhkosti",
+      "orange_dx": "Mírné do ± abs. vlhkosti",
+      "red_dt": "Střední do ± teploty",
+      "red_dphi": "Střední do ± vlhkosti",
+      "red_dx": "Střední do ± abs. vlhkosti",
+      "show_legend": "Zobrazit legendu",
+      "show_labels": "Zobrazit popisky směrů",
+      "fixed_scale": "Pevné měřítko (porovnání místností)"
+    },
+    "options": {
+      "pressure": "Tlak (Pa)",
+      "altitude": "Nadmořská výška (m)"
+    },
+    "sections": {
+      "comfort": "Komfortní zóna",
+      "bands": "Závažnost (varovná pásma)",
+      "display": "Zobrazení"
+    }
+  }
+}

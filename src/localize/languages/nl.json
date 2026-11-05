@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Geen dagelijkse statistieken beschikbaar. Controleer of beide sensoren state_class: measurement hebben.",
+    "fetch_failed": "Kan de geschiedenis niet laden: {error}",
+    "no_data": "Nog geen dagen met gegevens in deze periode.",
+    "period": "{count} dagen"
+  },
+  "compass": {
+    "title": "Comfortkompas",
+    "day": "dag",
+    "days": "dagen",
+    "names": {
+      "ok": "binnen bereik",
+      "w": "te warm",
+      "wf": "warm + vochtig",
+      "f": "te vochtig",
+      "kf": "koud + vochtig",
+      "c": "te koud",
+      "ct": "koud + droog",
+      "t": "te droog",
+      "wt": "warm + droog"
+    },
+    "labels": {
+      "f": "te vochtig",
+      "wf": "warm +\nvochtig",
+      "w": "te warm",
+      "wt": "warm +\ndroog",
+      "t": "te droog",
+      "ct": "koud +\ndroog",
+      "c": "te koud",
+      "kf": "koud +\nvochtig"
+    },
+    "stages": {
+      "l": "licht",
+      "d": "matig",
+      "s": "ernstig"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Titel",
+      "temperature_entity": "Temperatuursensor",
+      "humidity_entity": "Luchtvochtigheidssensor",
+      "days": "Dagen geschiedenis",
+      "air_mode": "Luchtdruk uit",
+      "pressure": "Luchtdruk",
+      "altitude": "Hoogte",
+      "comfort_t_min": "Temperatuur min",
+      "comfort_t_max": "Temperatuur max",
+      "comfort_phi_min": "Luchtvochtigheid min",
+      "comfort_phi_max": "Luchtvochtigheid max",
+      "comfort_x_min": "Absolute vochtigheid min",
+      "comfort_x_max": "Absolute vochtigheid max",
+      "orange_dt": "Licht tot ± temperatuur",
+      "orange_dphi": "Licht tot ± luchtvochtigheid",
+      "orange_dx": "Licht tot ± abs. vochtigheid",
+      "red_dt": "Matig tot ± temperatuur",
+      "red_dphi": "Matig tot ± luchtvochtigheid",
+      "red_dx": "Matig tot ± abs. vochtigheid",
+      "show_legend": "Legenda tonen",
+      "show_labels": "Richtingslabels tonen",
+      "fixed_scale": "Vaste schaal (ruimtes vergelijken)"
+    },
+    "options": {
+      "pressure": "Druk (Pa)",
+      "altitude": "Hoogte (m)"
+    },
+    "sections": {
+      "comfort": "Comfortzone",
+      "bands": "Ernst (waarschuwingsbanden)",
+      "display": "Weergave"
+    }
+  }
+}

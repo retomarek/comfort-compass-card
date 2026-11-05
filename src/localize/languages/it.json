@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Nessuna statistica giornaliera disponibile. Verifica che entrambi i sensori abbiano state_class: measurement.",
+    "fetch_failed": "Impossibile caricare la cronologia: {error}",
+    "no_data": "Ancora nessun giorno con dati in questo periodo.",
+    "period": "{count} giorni"
+  },
+  "compass": {
+    "title": "Bussola del comfort",
+    "day": "giorno",
+    "days": "giorni",
+    "names": {
+      "ok": "nell'intervallo",
+      "w": "troppo caldo",
+      "wf": "caldo + umido",
+      "f": "troppo umido",
+      "kf": "freddo + umido",
+      "c": "troppo freddo",
+      "ct": "freddo + secco",
+      "t": "troppo secco",
+      "wt": "caldo + secco"
+    },
+    "labels": {
+      "f": "troppo umido",
+      "wf": "caldo +\numido",
+      "w": "troppo caldo",
+      "wt": "caldo +\nsecco",
+      "t": "troppo secco",
+      "ct": "freddo +\nsecco",
+      "c": "troppo freddo",
+      "kf": "freddo +\numido"
+    },
+    "stages": {
+      "l": "lieve",
+      "d": "moderato",
+      "s": "grave"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Titolo",
+      "temperature_entity": "Sensore di temperatura",
+      "humidity_entity": "Sensore di umidità",
+      "days": "Giorni di cronologia",
+      "air_mode": "Pressione atmosferica da",
+      "pressure": "Pressione atmosferica",
+      "altitude": "Altitudine",
+      "comfort_t_min": "Temperatura min",
+      "comfort_t_max": "Temperatura max",
+      "comfort_phi_min": "Umidità min",
+      "comfort_phi_max": "Umidità max",
+      "comfort_x_min": "Umidità assoluta min",
+      "comfort_x_max": "Umidità assoluta max",
+      "orange_dt": "Lieve fino a ± temperatura",
+      "orange_dphi": "Lieve fino a ± umidità",
+      "orange_dx": "Lieve fino a ± umidità ass.",
+      "red_dt": "Moderato fino a ± temperatura",
+      "red_dphi": "Moderato fino a ± umidità",
+      "red_dx": "Moderato fino a ± umidità ass.",
+      "show_legend": "Mostra legenda",
+      "show_labels": "Mostra etichette direzioni",
+      "fixed_scale": "Scala fissa (confronta stanze)"
+    },
+    "options": {
+      "pressure": "Pressione (Pa)",
+      "altitude": "Altitudine (m)"
+    },
+    "sections": {
+      "comfort": "Zona di comfort",
+      "bands": "Gravità (bande di avviso)",
+      "display": "Visualizzazione"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "没有可用的每日统计数据。请检查两个传感器是否都设置了 state_class: measurement。",
+    "fetch_failed": "无法加载历史记录：{error}",
+    "no_data": "此期间内尚无有数据的天数。",
+    "period": "{count} 天"
+  },
+  "compass": {
+    "title": "舒适度罗盘",
+    "day": "天",
+    "days": "天",
+    "names": {
+      "ok": "在范围内",
+      "w": "过热",
+      "wf": "热 + 潮湿",
+      "f": "过湿",
+      "kf": "冷 + 潮湿",
+      "c": "过冷",
+      "ct": "冷 + 干燥",
+      "t": "过干",
+      "wt": "热 + 干燥"
+    },
+    "labels": {
+      "f": "过湿",
+      "wf": "热 +\n潮湿",
+      "w": "过热",
+      "wt": "热 +\n干燥",
+      "t": "过干",
+      "ct": "冷 +\n干燥",
+      "c": "过冷",
+      "kf": "冷 +\n潮湿"
+    },
+    "stages": {
+      "l": "轻度",
+      "d": "中度",
+      "s": "重度"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "标题",
+      "temperature_entity": "温度传感器",
+      "humidity_entity": "湿度传感器",
+      "days": "历史天数",
+      "air_mode": "气压来源",
+      "pressure": "气压",
+      "altitude": "海拔",
+      "comfort_t_min": "温度最小值",
+      "comfort_t_max": "温度最大值",
+      "comfort_phi_min": "湿度最小值",
+      "comfort_phi_max": "湿度最大值",
+      "comfort_x_min": "绝对湿度最小值",
+      "comfort_x_max": "绝对湿度最大值",
+      "orange_dt": "轻度上限 ± 温度",
+      "orange_dphi": "轻度上限 ± 湿度",
+      "orange_dx": "轻度上限 ± 绝对湿度",
+      "red_dt": "中度上限 ± 温度",
+      "red_dphi": "中度上限 ± 湿度",
+      "red_dx": "中度上限 ± 绝对湿度",
+      "show_legend": "显示图例",
+      "show_labels": "显示方向标签",
+      "fixed_scale": "固定刻度（比较房间）"
+    },
+    "options": {
+      "pressure": "气压 (Pa)",
+      "altitude": "海拔 (m)"
+    },
+    "sections": {
+      "comfort": "舒适区",
+      "bands": "严重程度（警告带）",
+      "display": "显示"
+    }
+  }
+}

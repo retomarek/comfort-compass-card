@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "No hay estadísticas diarias disponibles. Comprueba que ambos sensores tengan state_class: measurement.",
+    "fetch_failed": "No se pudo cargar el historial: {error}",
+    "no_data": "Todavía no hay días con datos en este periodo.",
+    "period": "{count} días"
+  },
+  "compass": {
+    "title": "Brújula de confort",
+    "day": "día",
+    "days": "días",
+    "names": {
+      "ok": "en rango",
+      "w": "demasiado cálido",
+      "wf": "cálido + húmedo",
+      "f": "demasiado húmedo",
+      "kf": "frío + húmedo",
+      "c": "demasiado frío",
+      "ct": "frío + seco",
+      "t": "demasiado seco",
+      "wt": "cálido + seco"
+    },
+    "labels": {
+      "f": "demasiado\nhúmedo",
+      "wf": "cálido +\nhúmedo",
+      "w": "demasiado\ncálido",
+      "wt": "cálido +\nseco",
+      "t": "demasiado\nseco",
+      "ct": "frío +\nseco",
+      "c": "demasiado\nfrío",
+      "kf": "frío +\nhúmedo"
+    },
+    "stages": {
+      "l": "leve",
+      "d": "moderado",
+      "s": "grave"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Título",
+      "temperature_entity": "Sensor de temperatura",
+      "humidity_entity": "Sensor de humedad",
+      "days": "Días de historial",
+      "air_mode": "Presión atmosférica según",
+      "pressure": "Presión atmosférica",
+      "altitude": "Altitud",
+      "comfort_t_min": "Temperatura mín.",
+      "comfort_t_max": "Temperatura máx.",
+      "comfort_phi_min": "Humedad mín.",
+      "comfort_phi_max": "Humedad máx.",
+      "comfort_x_min": "Humedad absoluta mín.",
+      "comfort_x_max": "Humedad absoluta máx.",
+      "orange_dt": "Leve hasta ± temperatura",
+      "orange_dphi": "Leve hasta ± humedad",
+      "orange_dx": "Leve hasta ± humedad abs.",
+      "red_dt": "Moderado hasta ± temperatura",
+      "red_dphi": "Moderado hasta ± humedad",
+      "red_dx": "Moderado hasta ± humedad abs.",
+      "show_legend": "Mostrar leyenda",
+      "show_labels": "Mostrar direcciones",
+      "fixed_scale": "Escala fija (comparar habitaciones)"
+    },
+    "options": {
+      "pressure": "Presión (Pa)",
+      "altitude": "Altitud (m)"
+    },
+    "sections": {
+      "comfort": "Zona de confort",
+      "bands": "Gravedad (bandas de advertencia)",
+      "display": "Visualización"
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Ingen daglige statistikker tilgængelige. Kontrollér, at begge sensorer har state_class: measurement.",
+    "fetch_failed": "Historikken kunne ikke indlæses: {error}",
+    "no_data": "Endnu ingen dage med data i denne periode.",
+    "period": "{count} dage"
+  },
+  "compass": {
+    "title": "Komfortkompas",
+    "day": "dag",
+    "days": "dage",
+    "names": {
+      "ok": "inden for målområdet",
+      "w": "for varmt",
+      "wf": "varmt + fugtigt",
+      "f": "for fugtigt",
+      "kf": "koldt + fugtigt",
+      "c": "for koldt",
+      "ct": "koldt + tørt",
+      "t": "for tørt",
+      "wt": "varmt + tørt"
+    },
+    "labels": {
+      "f": "for fugtigt",
+      "wf": "varmt +\nfugtigt",
+      "w": "for varmt",
+      "wt": "varmt +\ntørt",
+      "t": "for tørt",
+      "ct": "koldt +\ntørt",
+      "c": "for koldt",
+      "kf": "koldt +\nfugtigt"
+    },
+    "stages": {
+      "l": "let",
+      "d": "moderat",
+      "s": "kraftig"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Titel",
+      "temperature_entity": "Temperatursensor",
+      "humidity_entity": "Luftfugtighedssensor",
+      "days": "Dages historik",
+      "air_mode": "Lufttryk fra",
+      "pressure": "Lufttryk",
+      "altitude": "Højde",
+      "comfort_t_min": "Temperatur min",
+      "comfort_t_max": "Temperatur maks",
+      "comfort_phi_min": "Luftfugtighed min",
+      "comfort_phi_max": "Luftfugtighed maks",
+      "comfort_x_min": "Absolut luftfugtighed min",
+      "comfort_x_max": "Absolut luftfugtighed maks",
+      "orange_dt": "Let op til ± temperatur",
+      "orange_dphi": "Let op til ± luftfugtighed",
+      "orange_dx": "Let op til ± abs. luftfugtighed",
+      "red_dt": "Moderat op til ± temperatur",
+      "red_dphi": "Moderat op til ± luftfugtighed",
+      "red_dx": "Moderat op til ± abs. luftfugtighed",
+      "show_legend": "Vis signaturforklaring",
+      "show_labels": "Vis retningsetiketter",
+      "fixed_scale": "Fast skala (sammenlign rum)"
+    },
+    "options": {
+      "pressure": "Tryk (Pa)",
+      "altitude": "Højde (m)"
+    },
+    "sections": {
+      "comfort": "Komfortzone",
+      "bands": "Sværhedsgrad (advarselsbånd)",
+      "display": "Visning"
+    }
+  }
+}

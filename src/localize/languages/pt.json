@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Nenhuma estatística diária disponível. Verifique se ambos os sensores têm state_class: measurement.",
+    "fetch_failed": "Não foi possível carregar o histórico: {error}",
+    "no_data": "Ainda não há dias com dados neste período.",
+    "period": "{count} dias"
+  },
+  "compass": {
+    "title": "Bússola de conforto",
+    "day": "dia",
+    "days": "dias",
+    "names": {
+      "ok": "dentro da faixa",
+      "w": "quente demais",
+      "wf": "quente + úmido",
+      "f": "úmido demais",
+      "kf": "frio + úmido",
+      "c": "frio demais",
+      "ct": "frio + seco",
+      "t": "seco demais",
+      "wt": "quente + seco"
+    },
+    "labels": {
+      "f": "úmido demais",
+      "wf": "quente +\númido",
+      "w": "quente demais",
+      "wt": "quente +\nseco",
+      "t": "seco demais",
+      "ct": "frio +\nseco",
+      "c": "frio demais",
+      "kf": "frio +\númido"
+    },
+    "stages": {
+      "l": "leve",
+      "d": "moderado",
+      "s": "grave"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Título",
+      "temperature_entity": "Sensor de temperatura",
+      "humidity_entity": "Sensor de umidade",
+      "days": "Dias de histórico",
+      "air_mode": "Pressão atmosférica a partir de",
+      "pressure": "Pressão atmosférica",
+      "altitude": "Altitude",
+      "comfort_t_min": "Temperatura mín.",
+      "comfort_t_max": "Temperatura máx.",
+      "comfort_phi_min": "Umidade mín.",
+      "comfort_phi_max": "Umidade máx.",
+      "comfort_x_min": "Umidade absoluta mín.",
+      "comfort_x_max": "Umidade absoluta máx.",
+      "orange_dt": "Leve até ± temperatura",
+      "orange_dphi": "Leve até ± umidade",
+      "orange_dx": "Leve até ± umidade abs.",
+      "red_dt": "Moderado até ± temperatura",
+      "red_dphi": "Moderado até ± umidade",
+      "red_dx": "Moderado até ± umidade abs.",
+      "show_legend": "Mostrar legenda",
+      "show_labels": "Mostrar direções",
+      "fixed_scale": "Escala fixa (comparar cômodos)"
+    },
+    "options": {
+      "pressure": "Pressão (Pa)",
+      "altitude": "Altitude (m)"
+    },
+    "sections": {
+      "comfort": "Zona de conforto",
+      "bands": "Gravidade (faixas de aviso)",
+      "display": "Exibição"
+    }
+  }
+}

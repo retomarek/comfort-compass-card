@@ -1,0 +1,74 @@
+{
+  "card": {
+    "no_statistics": "Brak dziennych statystyk. Sprawdź, czy oba czujniki mają state_class: measurement.",
+    "fetch_failed": "Nie udało się wczytać historii: {error}",
+    "no_data": "Brak jeszcze dni z danymi w tym okresie.",
+    "period": "{count} dni"
+  },
+  "compass": {
+    "title": "Kompas komfortu",
+    "day": "dzień",
+    "days": "dni",
+    "names": {
+      "ok": "w zakresie",
+      "w": "za ciepło",
+      "wf": "ciepło + wilgotno",
+      "f": "za wilgotno",
+      "kf": "zimno + wilgotno",
+      "c": "za zimno",
+      "ct": "zimno + sucho",
+      "t": "za sucho",
+      "wt": "ciepło + sucho"
+    },
+    "labels": {
+      "f": "za wilgotno",
+      "wf": "ciepło +\nwilgotno",
+      "w": "za ciepło",
+      "wt": "ciepło +\nsucho",
+      "t": "za sucho",
+      "ct": "zimno +\nsucho",
+      "c": "za zimno",
+      "kf": "zimno +\nwilgotno"
+    },
+    "stages": {
+      "l": "łagodne",
+      "d": "umiarkowane",
+      "s": "silne"
+    }
+  },
+  "editor": {
+    "fields": {
+      "header": "Tytuł",
+      "temperature_entity": "Czujnik temperatury",
+      "humidity_entity": "Czujnik wilgotności",
+      "days": "Dni historii",
+      "air_mode": "Ciśnienie atmosferyczne z",
+      "pressure": "Ciśnienie atmosferyczne",
+      "altitude": "Wysokość",
+      "comfort_t_min": "Temperatura min",
+      "comfort_t_max": "Temperatura maks",
+      "comfort_phi_min": "Wilgotność min",
+      "comfort_phi_max": "Wilgotność maks",
+      "comfort_x_min": "Wilgotność bezwzględna min",
+      "comfort_x_max": "Wilgotność bezwzględna maks",
+      "orange_dt": "Łagodne do ± temperatury",
+      "orange_dphi": "Łagodne do ± wilgotności",
+      "orange_dx": "Łagodne do ± wilg. bezwzględnej",
+      "red_dt": "Umiarkowane do ± temperatury",
+      "red_dphi": "Umiarkowane do ± wilgotności",
+      "red_dx": "Umiarkowane do ± wilg. bezwzględnej",
+      "show_legend": "Pokaż legendę",
+      "show_labels": "Pokaż etykiety kierunków",
+      "fixed_scale": "Stała skala (porównanie pomieszczeń)"
+    },
+    "options": {
+      "pressure": "Ciśnienie (Pa)",
+      "altitude": "Wysokość (m)"
+    },
+    "sections": {
+      "comfort": "Strefa komfortu",
+      "bands": "Stopień (pasma ostrzegawcze)",
+      "display": "Wyświetlanie"
+    }
+  }
+}
