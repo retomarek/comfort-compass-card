@@ -128,6 +128,20 @@ export default css`
         font-weight: 600;
         pointer-events: none;
     }
+    .glyph .ok-word {
+        fill: #ffffff;
+        font-weight: 500;
+        pointer-events: none;
+    }
+    .ok-caption {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--primary-text-color);
+        font-variant-numeric: tabular-nums;
+    }
     .glyph text {
         font-family: inherit;
     }

@@ -278,7 +278,8 @@ export function renderCompass(dist, t, opts = {}) {
     // labels render at about TARGET_PX. A few rounds, since the labels change
     // the viewBox and with it the scale.
     let L = layout(BASE_FONT);
-    if (showLabels && opts.boxW > 0) {
+    // Also without direction labels: the text in the green disc uses the same size.
+    if (opts.boxW > 0) {
         for (let round = 0; round < 3; round++) {
             const [, , vw, vh] = L.vb;
             const scale = opts.boxH > 0 ? Math.min(opts.boxW / vw, opts.boxH / vh) : opts.boxW / vw;
@@ -302,8 +303,18 @@ export function renderCompass(dist, t, opts = {}) {
     devs.sort((a, b) => b.cnt - a.cnt);
     rows.push(...devs);
 
-    const okPct = (ok * 100).toFixed(0);
-    const okFont = Math.max(12, Math.min(22, rGreen * K * 0.45));
+    const okPct = `${(ok * 100).toFixed(0)}%`;
+    // Green disc: the share plus the words "in range" when they fit inside;
+    // otherwise (small disc) a caption line below the compass says it. Sizes
+    // follow the label font, which the card keeps at a readable pixel size.
+    const R = rGreen * K;
+    const okFont = Math.min(L.font * 2, Math.max(L.font * 1.3, R * 0.42));
+    const okWord = name('ok');
+    const wordFont = L.font * 0.92;
+    const blockH = okFont + wordFont * 1.25;
+    const blockW = Math.max(okPct.length * 0.62 * okFont, okWord.length * CHAR_W * wordFont);
+    const wordInside = R > 0 && blockH <= R * 1.45 && blockW <= R * 1.8;
+    const pctInside = R > 0 && okFont * 1.1 <= R * 1.5 && okPct.length * 0.62 * okFont <= R * 1.45;
     const okTip = { bg: OK_COLOR, fg: '#ffffff', lines: [name('ok'), days(g('ok'))] };
 
     const legend = !opts.showLegend ? nothing : html`
@@ -330,11 +341,15 @@ export function renderCompass(dist, t, opts = {}) {
                     ${rings.map((w) => svg`<path class="seg" d=${sectorPath(w.r1, w.r2, w.deg)} fill=${w.color}
                         @pointerenter=${(ev) => onEnter(ev, w.tip)} @pointerleave=${onLeave}
                         @pointerdown=${onDown} @click=${(ev) => onTap(ev, w.tip)}></path>`)}
-                    ${ok * 100 >= 15 ? svg`<text class="ok-pct" y=${f2(okFont * 0.36)} text-anchor="middle" font-size=${f2(okFont)}>${okPct}%</text>` : nothing}
+                    ${wordInside ? svg`<text class="ok-pct" y=${f2(-blockH / 2 + okFont * 0.82)} text-anchor="middle" font-size=${f2(okFont)}>${okPct}</text>
+                        <text class="ok-word" y=${f2(blockH / 2 - wordFont * 0.18)} text-anchor="middle" font-size=${f2(wordFont)}>${okWord}</text>`
+                    : pctInside ? svg`<text class="ok-pct" y=${f2(okFont * 0.36)} text-anchor="middle" font-size=${f2(okFont)}>${okPct}</text>` : nothing}
                     ${labels}
                 </svg>
             </div>
             ${legend}
+            ${!wordInside && !opts.showLegend && total > 0 ? html`
+                <div class="ok-caption"><span class="dot" style="background:${OK_COLOR}"></span><b>${okPct}</b> ${okWord}</div>` : nothing}
             <div class="tip" role="tooltip"></div>
         </div>
     `;
