@@ -49,9 +49,9 @@ const CASES = [
     { name: 'fetch-error-de', theme: 'dark', lang: 'de', width: 330, layout: 'grid', data: 'error' },
     { name: 'entity-missing', theme: 'light', lang: 'en', width: 330, layout: 'grid', config: { humidity_entity: 'sensor.h_old' } },
     { name: 'zone-without-abs', theme: 'dark', lang: 'en', width: 560, layout: 'grid',
-        config: { show_legend: true, comfort_zone: { temperature: [20, 26], humidity: [30, 60] } } },
+        config: { show_legend: true, comfort_zone: { temperature: [20, 26], humidity: [30, 65] } } },
     { name: 'fahrenheit-hint-de', theme: 'light', lang: 'de', width: 330, layout: 'grid',
-        config: { comfort_zone: { temperature: [68, 79], humidity: [30, 60] } } },
+        config: { comfort_zone: { temperature: [68, 79], humidity: [30, 65] } } },
     { name: 'loading', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'pending', ready: '.placeholder' },
     { name: 'loading-fixed-4rows', theme: 'dark', lang: 'en', width: 330, layout: 'grid', rows: 4, data: 'pending', ready: '.placeholder' },
 ];

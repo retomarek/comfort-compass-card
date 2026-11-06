@@ -10,8 +10,8 @@ import styles from './card.styles.js';
 
 const DEFAULT_DAYS = 30;
 const DEFAULT_PRESSURE = 101325;
-// pyedautils' usual indoor comfort zone: 20–26 °C, 30–60 % rH, at most 12 g/kg.
-export const DEFAULT_COMFORT_ZONE = { temperature: [20, 26], humidity: [30, 60], absolute_humidity: [0, 12] };
+// pyedautils' usual indoor comfort zone: 20–26 °C, 30–65 % rH, at most 12 g/kg.
+export const DEFAULT_COMFORT_ZONE = { temperature: [20, 26], humidity: [30, 65], absolute_humidity: [0, 12] };
 // A comfort zone above this many °C is almost certainly entered in °F.
 const FAHRENHEIT_HINT_ABOVE = 45;
 const SCALES = ['fit', 'fixed'];

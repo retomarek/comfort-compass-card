@@ -89,7 +89,7 @@ days_to_show: 90
 | `humidity_entity` | string | | **Required.** Relative-humidity sensor in %. |
 | `title` | string | | Card title. |
 | `days_to_show` | number | `30` | Completed days to count, 1 to 3650. Home Assistant keeps the daily long-term statistics indefinitely, so a long period works once the sensor has that much history. |
-| `comfort_zone` | object | 20–26 °C, 30–60 %, 0–12 g/kg | See below. Temperatures always in °C. |
+| `comfort_zone` | object | 20–26 °C, 30–65 %, 0–12 g/kg | See below. Temperatures always in °C. |
 | `warning_bands` | `true` \| object | `true` (defaults) | Limits for mild and moderate. See below. |
 | `altitude` | number | | Altitude in m above sea level (-500 to 9000), for the absolute humidity. Overrides `pressure`. |
 | `pressure` | number | `101325` | Air pressure in hPa (300–1100) or Pa (30000–110000). |
@@ -104,7 +104,7 @@ Invalid values (an unknown `scale`, a `comfort_zone` without a `[min, max]` pair
 ```yaml
 comfort_zone:
   temperature: [20, 26]        # °C
-  humidity: [30, 60]           # % relative humidity
+  humidity: [30, 65]           # % relative humidity
   absolute_humidity: [0, 12]   # g/kg
 ```
 
