@@ -18,8 +18,8 @@
 > **Sister card: [Mollier hx Card](https://github.com/retomarek/mollier-hx-card).** Draws the same days on a psychrometric h,x diagram, with the same comfort zone and warning bands, plus outside air and ventilation. The compass shows *how often*, the diagram *where* and *why*.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/screenshot.png" alt="Comfort compass in a dark dashboard with legend: 52 % of 120 days in range, 31 % warm and humid, 8 % too humid, 8 % too warm" width="62%">
-  <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/screenshot-light-de.png" alt="The same compass in the light theme with German labels, without legend" width="34%">
+  <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/screenshot.png" alt="Comfort compass in a dark dashboard, default look without legend: 52 % of 120 days in range, the largest arm warm and humid" width="34%">
+  <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/screenshot-light-de.png" alt="The same compass in the light theme with German labels and the optional legend (show_legend: true)" width="62%">
 </p>
 
 The card takes the daily means of a temperature and a humidity sensor and compares every day with your comfort zone. The dashed circle stands for all days. The green disc is the share of days in range; each of the eight arms is the share of days that were off in one direction: too warm, too humid, too dry, too cold, or a mix of two. Disc and arms together always have the area of the dashed circle. Each arm is split into mild, moderate and severe, from the inside out.

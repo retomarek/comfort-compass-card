@@ -35,8 +35,8 @@ const THEMES = {
 };
 
 const SHOTS = [
-    { file: 'screenshot.png', theme: 'dark', lang: 'en', title: 'Living room', width: 560, extra: { show_legend: true } },
-    { file: 'screenshot-light-de.png', theme: 'light', lang: 'de', title: 'Wohnzimmer', width: 340, extra: {} },
+    { file: 'screenshot.png', theme: 'dark', lang: 'en', title: 'Living room', width: 340, extra: {} },
+    { file: 'screenshot-light-de.png', theme: 'light', lang: 'de', title: 'Wohnzimmer', width: 560, extra: { show_legend: true } },
 ];
 
 const CONFIG = {
