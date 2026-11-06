@@ -172,11 +172,18 @@ To add a new language, copy [`en.json`](src/localize/languages/en.json) to `<lan
 
 Daily means come from Home Assistant's `recorder/statistics_during_period` WebSocket API. The classification is a port of `pyedautils.comfort.comfort_compass_distribution` and the glyph of `pyedautils.plots.comfort.plot_comfort_compass` from [pyedautils](https://github.com/retomarek/pyedautils). Absolute humidity uses the pyedautils psychrometric functions (`data/d3_mollierhx/mollierFunctions.js`), the same as the Mollier hx Card.
 
+## Related projects
+
+- [d3-mollierhx](https://github.com/hslu-ige-laes/d3-mollierhx): the interactive Mollier h,x diagram for the browser, built on D3.js ([live demo](https://hslu-ige-laes.github.io/d3-mollierhx/)).
+- [pyedautils](https://github.com/retomarek/pyedautils): Python Energy Data Analysis Utilities, with the h,x diagram (`plot_mollier_hx`), the comfort compass (`plot_comfort_compass`) and [guides on reading them](https://retomarek.github.io/pyedautils/guides/) (`pip install pyedautils`).
+- [Mollier hx Card](https://github.com/retomarek/mollier-hx-card): the h,x diagram as a Home Assistant dashboard card, with outside air and ventilation line.
+
 ## Questions and feedback
 
 - **Questions or ideas?** Ask in [Q&A](https://github.com/retomarek/comfort-compass-card/discussions/categories/q-a).
 - **Found a bug or want a feature?** Open an [issue](https://github.com/retomarek/comfort-compass-card/issues/new/choose).
 - **Translation wrong?** See [Translations](#translations): a small pull request is the quickest fix.
+- **Find it useful?** A ⭐ on GitHub helps others find it.
 
 ## Credits
 
