@@ -32,7 +32,7 @@ The card takes the daily means of a temperature and a humidity sensor and compar
 
 Comfort, health and the risk of mould always depend on temperature **and** humidity at the same time. Looking at one of them alone, or at two separate graphs, can easily mislead:
 
-- **Relative humidity changes with temperature.** Air at 21 °C and 60 % holds about 9.3 g of water per kg. Warm the same air to 26 °C and it reads only 44 %; cool it at a 15 °C outer wall and it reaches about 87 %, enough for mould. The amount of water did not change at all.
+- **Relative humidity changes with temperature.** Air at 21 °C and 60 % holds about 9.8 g of water per kg (at 450 m a.s.l.). Warm the same air to 26 °C and it reads only 44 %; cool it at a 15 °C outer wall and it reaches about 87 %, enough for mould. The amount of water did not change at all.
 - **The same reading means different things.** 23 °C feels pleasant at 45 %, but sticky at 70 %.
 
 That is why the compass judges every day on both together: a day only counts as *in range* when temperature and humidity are both in the comfort zone, and the direction of an arm tells you which combination was off. *Warm + humid* calls for cooling or ventilation, *cold + humid* points to condensation and mould risk, *warm + dry* to overheated, dry winter air.
