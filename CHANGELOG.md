@@ -4,9 +4,29 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.0.0-beta.5] - 2026-11-06
+
 ### Added
 
 - Q&A discussions for questions and ideas (one short template); issues stay for bugs and features. README: "Questions and feedback".
+- Hint on the card when the comfort zone looks like °F (temperatures are always °C, band offsets K).
+
+### Changed
+
+- Options renamed for 1.0, same as the Mollier hx Card: `header` → `title`, `days` → `days_to_show`. The old names keep working; the editor writes the new ones.
+- `days_to_show` up to 3650 days; `pressure` accepted in hPa or Pa.
+- A given `comfort_zone` needs `temperature` and `humidity`; `absolute_humidity` is optional and, when left out, means no absolute limit (no longer silently 0–12 g/kg).
+- Invalid values (`scale`, `comfort_zone`, `days_to_show`, `pressure`, `altitude`) give a clear error instead of being ignored.
+- Statistics code shared with the Mollier hx Card: completed days in the server's day buckets, humidity unit from the sensor.
+
+### Fixed
+
+- No "no data" message while the first load is still running; the card shows an empty body of the compass's size instead.
+- A missing sensor says "Entity not found" instead of the hint about `state_class`.
+- A failed load is retried with back-off (30 s up to 10 min); a failed hourly refresh keeps the last good compass. Changing sensors or period clears the old data and error.
+- Touch: a second tap on the same segment, a tap elsewhere on the card or 5 s without interaction closes the tooltip.
+- Editor: clearing a number field no longer writes empty values; it falls back to the previous value or the default. A comfort zone without `absolute_humidity` stays without it.
+- README: long-term statistics are kept indefinitely, not for a year.
 
 ## [1.0.0-beta.4] - 2026-11-06
 
@@ -20,16 +40,13 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [1.0.0-beta.3] - 2026-11-06
 
-### Changed
-
-- README starts with a banner (logo, name, claim); `npm run social-preview` renders it together with the social preview.
-
 ### Added
 
 - Translations for French, Italian, Spanish, Portuguese, Dutch, Polish, Swedish, Danish, Norwegian, Czech, Russian and Chinese (Simplified). They are machine-translated; corrections from native speakers are welcome as pull requests.
 
 ### Changed
 
+- README starts with a banner (logo, name, claim); `npm run social-preview` renders it together with the social preview.
 - Build tools updated (Puppeteer 25, GitHub actions checkout/setup-node v7).
 
 ## [1.0.0-beta.2] - 2026-11-05
@@ -56,7 +73,8 @@ First test version. The comfort compass was part of the [Mollier hx Card](https:
 - Fahrenheit sensors supported (statistics requested in °C); hourly refresh, retry after a failed load; only completed days are counted.
 - Claude Code setup for contributors: `card-reviewer` agent, `visual-check` and `release` skills (`npm run visual-check`).
 
-[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.4...HEAD
+[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.5...HEAD
+[1.0.0-beta.5]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.4...v1.0.0-beta.5
 [1.0.0-beta.4]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.4
 [1.0.0-beta.3]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.3
 [1.0.0-beta.2]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.2

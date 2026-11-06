@@ -35,21 +35,21 @@ const THEMES = {
 };
 
 const SHOTS = [
-    { file: 'screenshot.png', theme: 'dark', lang: 'en', header: 'Living room', width: 560, extra: { show_legend: true } },
-    { file: 'screenshot-light-de.png', theme: 'light', lang: 'de', header: 'Wohnzimmer', width: 340, extra: {} },
+    { file: 'screenshot.png', theme: 'dark', lang: 'en', title: 'Living room', width: 560, extra: { show_legend: true } },
+    { file: 'screenshot-light-de.png', theme: 'light', lang: 'de', title: 'Wohnzimmer', width: 340, extra: {} },
 ];
 
 const CONFIG = {
     type: 'custom:comfort-compass-card',
     temperature_entity: 'sensor.living_room_temperature',
     humidity_entity: 'sensor.living_room_humidity',
-    days: 120,
+    days_to_show: 120,
     altitude: 450,
 };
 
 function page(shot) {
     const c = THEMES[shot.theme];
-    const config = { ...CONFIG, ...shot.extra, header: shot.header };
+    const config = { ...CONFIG, ...shot.extra, title: shot.title };
     return `<!doctype html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 <style>

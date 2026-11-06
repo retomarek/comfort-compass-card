@@ -2,8 +2,8 @@
   "card": {
     "no_statistics": "Brak dziennych statystyk. Sprawdź, czy oba czujniki mają state_class: measurement.",
     "fetch_failed": "Nie udało się wczytać historii: {error}",
-    "no_data": "Brak jeszcze dni z danymi w tym okresie.",
-    "period": "{count} dni"
+    "entity_not_found": "Nie znaleziono encji: {entities}",
+    "fahrenheit_hint": "Strefa komfortu wygląda na podaną w °F. Wprowadź temperatury w °C."
   },
   "compass": {
     "title": "Kompas komfortu",
@@ -38,10 +38,10 @@
   },
   "editor": {
     "fields": {
-      "header": "Tytuł",
+      "title": "Tytuł",
       "temperature_entity": "Czujnik temperatury",
       "humidity_entity": "Czujnik wilgotności",
-      "days": "Dni historii",
+      "days_to_show": "Dni historii",
       "air_mode": "Ciśnienie atmosferyczne z",
       "pressure": "Ciśnienie atmosferyczne",
       "altitude": "Wysokość",

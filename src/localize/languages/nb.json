@@ -2,8 +2,8 @@
   "card": {
     "no_statistics": "Ingen daglig statistikk tilgjengelig. Kontroller at begge sensorene har state_class: measurement.",
     "fetch_failed": "Kunne ikke laste inn historikken: {error}",
-    "no_data": "Ingen dager med data i denne perioden ennå.",
-    "period": "{count} dager"
+    "entity_not_found": "Fant ikke entiteten: {entities}",
+    "fahrenheit_hint": "Komfortsonen ser ut til å være i °F. Angi temperaturene i °C."
   },
   "compass": {
     "title": "Komfortkompass",
@@ -38,10 +38,10 @@
   },
   "editor": {
     "fields": {
-      "header": "Tittel",
+      "title": "Tittel",
       "temperature_entity": "Temperatursensor",
       "humidity_entity": "Luftfuktighetssensor",
-      "days": "Dager historikk",
+      "days_to_show": "Dager historikk",
       "air_mode": "Lufttrykk fra",
       "pressure": "Lufttrykk",
       "altitude": "Høyde",

@@ -77,25 +77,29 @@ Add a card, pick **Comfort compass card** and fill in the form. Or use YAML:
 type: custom:comfort-compass-card
 temperature_entity: sensor.living_room_temperature
 humidity_entity: sensor.living_room_humidity
-header: Living room
-days: 90
+title: Living room
+days_to_show: 90
 ```
+
+Renamed in 1.0 (old names still work): `header` → `title`, `days` → `days_to_show`. If both are given, the new name wins.
 
 ### Options
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `temperature_entity` | string | | **Required.** Temperature sensor. |
-| `humidity_entity` | string | | **Required.** Relative-humidity sensor. Values in 0..1 or 0..100 are detected. |
-| `header` | string | | Card title. |
-| `days` | number | `30` | Days to count. The recorder keeps long-term statistics for a year by default. |
-| `comfort_zone` | object | 20–26 °C, 30–60 %, 0–12 g/kg | See below. |
-| `warning_bands` | object | see below | Limits for mild and moderate. |
-| `altitude` | number | | Altitude in m above sea level, for the absolute humidity. Overrides `pressure`. |
-| `pressure` | number | `101325` | Air pressure in Pa. |
+| `humidity_entity` | string | | **Required.** Relative-humidity sensor in %. |
+| `title` | string | | Card title. Formerly `header`. |
+| `days_to_show` | number | `30` | Completed days to count, 1 to 3650. Formerly `days`. Home Assistant keeps the daily long-term statistics indefinitely, so a long period works once the sensor has that much history. |
+| `comfort_zone` | object | 20–26 °C, 30–60 %, 0–12 g/kg | See below. Temperatures always in °C. |
+| `warning_bands` | `true` \| object | `true` (defaults) | Limits for mild and moderate. See below. |
+| `altitude` | number | | Altitude in m above sea level (-500 to 9000), for the absolute humidity. Overrides `pressure`. |
+| `pressure` | number | `101325` | Air pressure in hPa (300–1100) or Pa (30000–110000). |
 | `show_legend` | boolean | `false` | List the directions with days and share. Beside the compass when the card is wide, below it otherwise. |
 | `show_labels` | boolean | `true` | Name the eight directions around the compass. |
-| `scale` | string | `fit` | `fit` zooms to this compass so it fills the card. `fixed` keeps the dashed 100 % circle the same size in every card, so several rooms can be compared by area. See [Comparing rooms](#comparing-rooms). |
+| `scale` | `fit` \| `fixed` | `fit` | `fit` zooms to this compass so it fills the card. `fixed` keeps the dashed 100 % circle the same size in every card, so several rooms can be compared by area. See [Comparing rooms](#comparing-rooms). |
+
+Invalid values (an unknown `scale`, a `comfort_zone` without a `[min, max]` pair for temperature or humidity, `days_to_show` below 1, a pressure or altitude outside the ranges above) give a clear error message instead of a wrong compass. Longer periods than 3650 days are cut to 3650.
 
 #### `comfort_zone`
 
@@ -108,9 +112,13 @@ comfort_zone:
 
 A day is *in range* when all three hold. A humid day is one above the relative **or** the absolute limit, so a warm day above 12 g/kg counts as warm and humid even if its relative humidity is fine.
 
+Temperatures are always in °C, also with Fahrenheit sensors (the statistics are converted to °C). A zone that looks like °F (upper limit above 45) shows a hint on the card.
+
+Without `comfort_zone` the defaults above apply. If you give a `comfort_zone`, `temperature` and `humidity` are required; `absolute_humidity` is optional, and without it there is no absolute limit: humidity is then judged by relative humidity only.
+
 #### `warning_bands`
 
-± offsets around the comfort zone that separate the severity stages: temperature in K, relative humidity in %-points, absolute humidity in g/kg.
+± offsets around the comfort zone that separate the severity stages: temperature in K, relative humidity in %-points, absolute humidity in g/kg. `true` (or leaving it out) uses the defaults; the compass always needs stages, so `false` also means the defaults. Each band and each value is optional.
 
 ```yaml
 warning_bands:
@@ -118,7 +126,7 @@ warning_bands:
   red: { temperature: 2.5, humidity: 10, absolute_humidity: 2.5 }      # moderate up to here, severe beyond
 ```
 
-These are the defaults. The worse of temperature and humidity decides the stage. The [Mollier hx Card](https://github.com/retomarek/mollier-hx-card) takes the same `comfort_zone` and `warning_bands` and draws them as zone and dashed bands.
+These are the defaults. The worse of temperature and humidity decides the stage. `color` and `label` per band are accepted for compatibility with the Mollier hx Card but have no effect here. The [Mollier hx Card](https://github.com/retomarek/mollier-hx-card) takes the same `comfort_zone` and `warning_bands` and draws them as zone and dashed bands.
 
 ### Reading the compass
 
@@ -140,7 +148,7 @@ To compare rooms, set `scale: fixed` on all of them (in the editor: *Display →
 type: custom:comfort-compass-card
 temperature_entity: sensor.bedroom_temperature
 humidity_entity: sensor.bedroom_humidity
-header: Bedroom
+title: Bedroom
 scale: fixed
 ```
 

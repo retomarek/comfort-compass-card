@@ -38,7 +38,10 @@ export function compassDistribution(records, cz, bands, pressure, mollier) {
 
     const [tLo, tHi] = cz.range_t;
     const hLo = cz.range_phi[0] * 100, hHi = cz.range_phi[1] * 100;
-    const [xLo, xHi] = cz.range_x;
+    // range_x null: comfort zone without absolute_humidity → judged by
+    // relative humidity only (pyedautils hum_abs_band=None).
+    const useAbs = Array.isArray(cz.range_x);
+    const [xLo, xHi] = useAbs ? cz.range_x : [0, 0];
     const tl = [b.orange.dt, b.red.dt];
     const hl = [b.orange.dphi, b.red.dphi];
     const xl = [b.orange.dx / 1000, b.red.dx / 1000];
@@ -50,12 +53,19 @@ export function compassDistribution(records, cz, bands, pressure, mollier) {
         const tExc = ti === 1 ? t - tHi : ti === -1 ? tLo - t : 0;
         const tLevel = level(tExc, tl[0], tl[1]);
 
-        // Humidity: relative OR absolute (comfort zone's x cap), like pyedautils with hum_abs_band.
-        const xa = mollier.get_x_y(t, r.phi, pressure).x;
-        const hi = (h > hHi || xa > xHi) ? 1 : (h < hLo || xa < xLo) ? -1 : 0;
-        const relExc = hi === 1 ? h - hHi : hi === -1 ? hLo - h : 0;
-        const absExc = hi === 1 ? xa - xHi : hi === -1 ? xLo - xa : 0;
-        const hLevel = Math.max(level(relExc, hl[0], hl[1]), level(absExc, xl[0], xl[1]));
+        let hi, hLevel;
+        if (useAbs) {
+            // Humidity: relative OR absolute (comfort zone's x cap), like pyedautils with hum_abs_band.
+            const xa = mollier.get_x_y(t, r.phi, pressure).x;
+            hi = (h > hHi || xa > xHi) ? 1 : (h < hLo || xa < xLo) ? -1 : 0;
+            const relExc = hi === 1 ? h - hHi : hi === -1 ? hLo - h : 0;
+            const absExc = hi === 1 ? xa - xHi : hi === -1 ? xLo - xa : 0;
+            hLevel = Math.max(level(relExc, hl[0], hl[1]), level(absExc, xl[0], xl[1]));
+        } else {
+            hi = h < hLo ? -1 : h > hHi ? 1 : 0;
+            const hExc = hi === 1 ? h - hHi : hi === -1 ? hLo - h : 0;
+            hLevel = level(hExc, hl[0], hl[1]);
+        }
 
         const lvl = Math.max(tLevel, hLevel);
         const stage = lvl <= 1 ? 'l' : lvl <= 2 ? 'd' : 's';
@@ -101,8 +111,24 @@ const LABEL_POS = [
 ];
 
 // Hover/tap tooltip, positioned inside .compass-body (like the diagram's tooltip).
-function showTip(ev, tip) {
-    const el = ev.currentTarget;
+// Mouse: shown while hovering a segment. Touch / pen: a tap opens it, a second
+// tap on the same segment, a tap elsewhere on the card or TIP_MS without
+// interaction closes it.
+const TIP_MS = 5000;
+
+function hideBox(box) {
+    clearTimeout(box._timer);
+    box._timer = undefined;
+    box._owner = null;
+    box.style.display = 'none';
+}
+
+// Closes every tooltip under `root` (the card's shadow root) and stops its timer.
+export function hideTips(root) {
+    root?.querySelectorAll?.('.tip').forEach(hideBox);
+}
+
+function showTip(el, tip, autoHide) {
     const body = el.closest('.compass-body');
     const box = body && body.querySelector('.tip');
     if (!box) return;
@@ -119,10 +145,36 @@ function showTip(ev, tip) {
     box.style.left = `${r.left + r.width / 2 - b.left}px`;
     box.style.top = `${r.top - b.top}px`;
     box.style.display = 'block';
+    box._owner = el;
+    clearTimeout(box._timer);
+    box._timer = autoHide ? setTimeout(() => hideBox(box), TIP_MS) : undefined;
 }
-function hideTip(ev) {
-    const box = ev.currentTarget.closest('.compass-body')?.querySelector('.tip');
-    if (box) box.style.display = 'none';
+
+const tipBoxOf = (el) => el.closest('.compass-body')?.querySelector('.tip');
+const isMouse = (ev) => ev.pointerType === 'mouse';
+
+function onEnter(ev, tip) {
+    if (isMouse(ev)) showTip(ev.currentTarget, tip, false);
+}
+function onLeave(ev) {
+    const box = isMouse(ev) && tipBoxOf(ev.currentTarget);
+    if (box) hideBox(box);
+}
+// The click event does not reliably carry the pointer type: remember it from pointerdown.
+function onDown(ev) {
+    ev.currentTarget._pointer = ev.pointerType;
+}
+function onTap(ev, tip) {
+    const el = ev.currentTarget;
+    const touch = el._pointer && el._pointer !== 'mouse';
+    el._pointer = undefined;
+    if (!touch) {
+        showTip(el, tip, false);
+        return;
+    }
+    const box = tipBoxOf(el);
+    if (box && box._owner === el && box.style.display === 'block') hideBox(box);
+    else showTip(el, tip, true);
 }
 
 // Readable text on a segment colour: dark ink on the light "mild" plane.
@@ -253,7 +305,6 @@ export function renderCompass(dist, t, opts = {}) {
     const okPct = (ok * 100).toFixed(0);
     const okFont = Math.max(12, Math.min(22, rGreen * K * 0.45));
     const okTip = { bg: OK_COLOR, fg: '#ffffff', lines: [name('ok'), days(g('ok'))] };
-    const on = (tipData) => (ev) => showTip(ev, tipData);
 
     const legend = !opts.showLegend ? nothing : html`
         <div class="legend">
@@ -274,9 +325,11 @@ export function renderCompass(dist, t, opts = {}) {
                 <svg class="glyph" viewBox=${vb} role="img" aria-label=${t('compass.title')}>
                     <circle class="ref" r=${f2(R0 * K)}></circle>
                     ${rGreen > 0 ? svg`<circle class="seg ok" r=${f2(rGreen * K)} fill=${OK_COLOR}
-                        @mouseenter=${on(okTip)} @click=${on(okTip)} @mouseleave=${hideTip}></circle>` : nothing}
+                        @pointerenter=${(ev) => onEnter(ev, okTip)} @pointerleave=${onLeave}
+                        @pointerdown=${onDown} @click=${(ev) => onTap(ev, okTip)}></circle>` : nothing}
                     ${rings.map((w) => svg`<path class="seg" d=${sectorPath(w.r1, w.r2, w.deg)} fill=${w.color}
-                        @mouseenter=${on(w.tip)} @click=${on(w.tip)} @mouseleave=${hideTip}></path>`)}
+                        @pointerenter=${(ev) => onEnter(ev, w.tip)} @pointerleave=${onLeave}
+                        @pointerdown=${onDown} @click=${(ev) => onTap(ev, w.tip)}></path>`)}
                     ${ok * 100 >= 15 ? svg`<text class="ok-pct" y=${f2(okFont * 0.36)} text-anchor="middle" font-size=${f2(okFont)}>${okPct}%</text>` : nothing}
                     ${labels}
                 </svg>

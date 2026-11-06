@@ -2,8 +2,8 @@
   "card": {
     "no_statistics": "Geen dagelijkse statistieken beschikbaar. Controleer of beide sensoren state_class: measurement hebben.",
     "fetch_failed": "Kan de geschiedenis niet laden: {error}",
-    "no_data": "Nog geen dagen met gegevens in deze periode.",
-    "period": "{count} dagen"
+    "entity_not_found": "Entiteit niet gevonden: {entities}",
+    "fahrenheit_hint": "De comfortzone lijkt in °F te staan. Voer de temperaturen in °C in."
   },
   "compass": {
     "title": "Comfortkompas",
@@ -38,10 +38,10 @@
   },
   "editor": {
     "fields": {
-      "header": "Titel",
+      "title": "Titel",
       "temperature_entity": "Temperatuursensor",
       "humidity_entity": "Luchtvochtigheidssensor",
-      "days": "Dagen geschiedenis",
+      "days_to_show": "Dagen geschiedenis",
       "air_mode": "Luchtdruk uit",
       "pressure": "Luchtdruk",
       "altitude": "Hoogte",

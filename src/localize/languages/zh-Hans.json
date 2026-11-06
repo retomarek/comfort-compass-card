@@ -2,8 +2,8 @@
   "card": {
     "no_statistics": "没有可用的每日统计数据。请检查两个传感器是否都设置了 state_class: measurement。",
     "fetch_failed": "无法加载历史记录：{error}",
-    "no_data": "此期间内尚无有数据的天数。",
-    "period": "{count} 天"
+    "entity_not_found": "未找到实体：{entities}",
+    "fahrenheit_hint": "舒适区看起来是 °F。请以 °C 输入温度。"
   },
   "compass": {
     "title": "舒适度罗盘",
@@ -38,10 +38,10 @@
   },
   "editor": {
     "fields": {
-      "header": "标题",
+      "title": "标题",
       "temperature_entity": "温度传感器",
       "humidity_entity": "湿度传感器",
-      "days": "历史天数",
+      "days_to_show": "历史天数",
       "air_mode": "气压来源",
       "pressure": "气压",
       "altitude": "海拔",

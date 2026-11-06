@@ -2,8 +2,8 @@
   "card": {
     "no_statistics": "Keine Tagesstatistiken vorhanden. Prüfe, ob beide Sensoren state_class: measurement haben.",
     "fetch_failed": "Verlauf konnte nicht geladen werden: {error}",
-    "no_data": "In diesem Zeitraum gibt es noch keine Tage mit Daten.",
-    "period": "{count} Tage"
+    "entity_not_found": "Entität nicht gefunden: {entities}",
+    "fahrenheit_hint": "Die Komfortzone sieht nach °F aus. Bitte gib die Temperaturen in °C ein."
   },
   "compass": {
     "title": "Komfort-Kompass",
@@ -38,10 +38,10 @@
   },
   "editor": {
     "fields": {
-      "header": "Titel",
+      "title": "Titel",
       "temperature_entity": "Temperatursensor",
       "humidity_entity": "Feuchtesensor",
-      "days": "Tage Verlauf",
+      "days_to_show": "Tage Verlauf",
       "air_mode": "Luftdruck aus",
       "pressure": "Luftdruck",
       "altitude": "Höhe",

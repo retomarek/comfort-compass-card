@@ -2,8 +2,8 @@
   "card": {
     "no_statistics": "Нет суточной статистики. Убедитесь, что у обоих датчиков задан state_class: measurement.",
     "fetch_failed": "Не удалось загрузить историю: {error}",
-    "no_data": "За этот период пока нет дней с данными.",
-    "period": "{count} дн."
+    "entity_not_found": "Объект не найден: {entities}",
+    "fahrenheit_hint": "Похоже, зона комфорта задана в °F. Укажите температуры в °C."
   },
   "compass": {
     "title": "Компас комфорта",
@@ -38,10 +38,10 @@
   },
   "editor": {
     "fields": {
-      "header": "Заголовок",
+      "title": "Заголовок",
       "temperature_entity": "Датчик температуры",
       "humidity_entity": "Датчик влажности",
-      "days": "История (дней)",
+      "days_to_show": "История (дней)",
       "air_mode": "Источник давления",
       "pressure": "Атмосферное давление",
       "altitude": "Высота",

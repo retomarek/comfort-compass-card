@@ -2,8 +2,8 @@
   "card": {
     "no_statistics": "Nejsou k dispozici žádné denní statistiky. Zkontrolujte, zda oba senzory mají state_class: measurement.",
     "fetch_failed": "Historii se nepodařilo načíst: {error}",
-    "no_data": "V tomto období zatím nejsou žádné dny s daty.",
-    "period": "{count} dní"
+    "entity_not_found": "Entita nenalezena: {entities}",
+    "fahrenheit_hint": "Zóna komfortu vypadá jako ve °F. Zadejte teploty ve °C."
   },
   "compass": {
     "title": "Kompas komfortu",
@@ -38,10 +38,10 @@
   },
   "editor": {
     "fields": {
-      "header": "Název",
+      "title": "Název",
       "temperature_entity": "Senzor teploty",
       "humidity_entity": "Senzor vlhkosti",
-      "days": "Dny historie",
+      "days_to_show": "Dny historie",
       "air_mode": "Zdroj tlaku vzduchu",
       "pressure": "Tlak vzduchu",
       "altitude": "Nadmořská výška",

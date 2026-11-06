@@ -21,17 +21,19 @@ const BASE_CONFIG = {
     type: `custom:${TAG}`,
     temperature_entity: 'sensor.t',
     humidity_entity: 'sensor.h',
-    header: 'Living room',
-    days: 120,
+    title: 'Living room',
+    days_to_show: 120,
     altitude: 450,
 };
-// Selector inside the card's shadow root that exists once it has drawn.
-const READY = '.glyph, .message';
+// Selector inside the card's shadow root that exists once it has drawn
+// (a case can override it with `ready`).
+const READY = '.glyph, p.message:not(.hint)';
 // ---------------------------------------------------------------------------
 
 // width: tile width; rows: sections row count (fixed height = rows*64-8 px);
 // layout: what HA sets ('grid' in sections, 'panel', or null for masonry);
-// data: 'ok' | 'empty' (no statistics) | 'error' (fetch fails).
+// data: 'ok' | 'empty' (no statistics) | 'error' (fetch fails) | 'pending' (never answers).
+// states: overrides the entity states (a missing entity: leave it out).
 const CASES = [
     { name: 'dark-en', theme: 'dark', lang: 'en', width: 330, layout: 'grid' },
     { name: 'light-de', theme: 'light', lang: 'de', width: 330, layout: 'grid' },
@@ -45,6 +47,13 @@ const CASES = [
     { name: 'fixed-scale-no-labels', theme: 'light', lang: 'en', width: 330, layout: 'grid', config: { scale: 'fixed', show_labels: false } },
     { name: 'no-statistics', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'empty' },
     { name: 'fetch-error-de', theme: 'dark', lang: 'de', width: 330, layout: 'grid', data: 'error' },
+    { name: 'entity-missing', theme: 'light', lang: 'en', width: 330, layout: 'grid', config: { humidity_entity: 'sensor.h_old' } },
+    { name: 'zone-without-abs', theme: 'dark', lang: 'en', width: 560, layout: 'grid',
+        config: { show_legend: true, comfort_zone: { temperature: [20, 26], humidity: [30, 60] } } },
+    { name: 'fahrenheit-hint-de', theme: 'light', lang: 'de', width: 330, layout: 'grid',
+        config: { comfort_zone: { temperature: [68, 79], humidity: [30, 60] } } },
+    { name: 'loading', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'pending', ready: '.placeholder' },
+    { name: 'loading-fixed-4rows', theme: 'dark', lang: 'en', width: 330, layout: 'grid', rows: 4, data: 'pending', ready: '.placeholder' },
 ];
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -108,6 +117,7 @@ function html(c) {
     callWS: async () => {
       if (data === 'error') throw new Error('Connection lost');
       if (data === 'empty') return {};
+      if (data === 'pending') return new Promise(() => {});
       return { 'sensor.t': tR, 'sensor.h': hR };
     },
   };
@@ -131,7 +141,7 @@ try {
         await tab.setContent(html(c), { waitUntil: 'load' });
         let ready = true;
         try {
-            await tab.waitForFunction((tag, sel) => document.querySelector(tag)?.shadowRoot?.querySelector(sel), { timeout: 8000 }, TAG, READY);
+            await tab.waitForFunction((tag, sel) => document.querySelector(tag)?.shadowRoot?.querySelector(sel), { timeout: 8000 }, TAG, c.ready || READY);
         } catch { ready = false; }
         await new Promise((r) => setTimeout(r, 300));
         const size = await tab.evaluate(() => { const r = document.getElementById('card').getBoundingClientRect(); return `${Math.round(r.width)}x${Math.round(r.height)}`; });

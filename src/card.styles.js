@@ -40,6 +40,22 @@ export default css`
     .message.error {
         color: var(--error-color, #db4437);
     }
+    .message.hint {
+        margin: 0 0 8px;
+        font-size: 13px;
+    }
+    /* While the first load runs: an empty box of about the compass's size, so
+       the dashboard does not jump when the glyph appears. */
+    .placeholder {
+        width: 100%;
+        max-width: var(--ccc-max);
+        aspect-ratio: 1.15;
+        margin: 0 auto;
+    }
+    :host([fixed-height]) .placeholder {
+        flex: 1 1 auto;
+        aspect-ratio: auto;
+    }
 
     /* Glyph and legend */
     .compass-body {

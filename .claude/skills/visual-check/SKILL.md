@@ -17,7 +17,7 @@ The card is SVG + CSS inside Home Assistant's dashboard grid; most regressions a
 
 ## Cases
 
-Defined in `scripts/visual-check.mjs` (`CASES`): dark/English, light/German, legend wide and narrow, full width (1400 px), fixed tiles (6 and 3 rows, 4 rows at full width with legend), panel view, fixed scale without labels, no statistics, failing fetch. Add a case when a change introduces a new state or option.
+Defined in `scripts/visual-check.mjs` (`CASES`): dark/English, light/German, legend wide and narrow, full width (1400 px), fixed tiles (6 and 3 rows, 4 rows at full width with legend), panel view, fixed scale without labels, no statistics, failing fetch, missing entity, comfort zone without absolute humidity, °F hint, loading (auto and fixed). Add a case when a change introduces a new state or option.
 
 ## Notes
 

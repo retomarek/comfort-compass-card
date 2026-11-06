@@ -1,33 +1,50 @@
 import { html, LitElement, nothing } from 'lit';
 import { createMollier } from './vendor/mollierFunctions.js';
 import { parseWarningBands } from './bands.js';
-import { compassDistribution, renderCompass } from './compass.js';
+import { compassDistribution, renderCompass, hideTips } from './compass.js';
 import { localize } from './localize/localize.js';
-import { fetchDailyMeans, REFRESH_MS } from './statistics.js';
+import {
+    daysFromConfig, fetchDailyMeans, missingEntities, pressureFromConfig, REFRESH_MS, RETRY_MS,
+} from './statistics.js';
 import styles from './card.styles.js';
 
 const DEFAULT_DAYS = 30;
 const DEFAULT_PRESSURE = 101325;
 // pyedautils' usual indoor comfort zone: 20–26 °C, 30–60 % rH, at most 12 g/kg.
 export const DEFAULT_COMFORT_ZONE = { temperature: [20, 26], humidity: [30, 60], absolute_humidity: [0, 12] };
+// A comfort zone above this many °C is almost certainly entered in °F.
+const FAHRENHEIT_HINT_ABOVE = 45;
+const SCALES = ['fit', 'fixed'];
 
-// International Standard Atmosphere: altitude [m] → pressure [Pa].
-function pressureFromAltitude(altitudeM) {
-    return 101325 * Math.pow(1 - 2.25577e-5 * altitudeM, 5.25588);
+const given = (v) => v !== undefined && v !== null;
+
+function parsePair(cz, key, unit) {
+    const v = cz[key];
+    const ok = Array.isArray(v) && v.length === 2
+        && v.every((n) => n !== null && n !== '' && typeof n !== 'boolean' && Number.isFinite(Number(n)));
+    if (!ok) {
+        throw new Error(`comfort_zone.${key} must be a pair [min, max] in ${unit} (got ${JSON.stringify(v)})`);
+    }
+    return v.map(Number).sort((p, q) => p - q);
 }
 
-const pair = (v) => Array.isArray(v) && v.length === 2 && v.every((n) => Number.isFinite(Number(n)));
-
-// User units (°C, %, g/kg) → internal units (°C, 0..1, kg/kg). Missing or
-// malformed parts fall back to the default zone.
+// User units (°C, %, g/kg) → internal units (°C, 0..1, kg/kg). No comfort_zone
+// at all → the default zone. A given zone needs temperature and humidity;
+// absolute_humidity is optional and, when missing, means no absolute criterion
+// (range_x null, like pyedautils' hum_abs_band=None).
 export function parseComfortZone(cz) {
-    const src = { ...DEFAULT_COMFORT_ZONE, ...(cz && typeof cz === 'object' ? cz : {}) };
-    const t = pair(src.temperature) ? src.temperature : DEFAULT_COMFORT_ZONE.temperature;
-    const h = pair(src.humidity) ? src.humidity : DEFAULT_COMFORT_ZONE.humidity;
-    const x = pair(src.absolute_humidity) ? src.absolute_humidity : DEFAULT_COMFORT_ZONE.absolute_humidity;
-    const sort = (a) => a.map(Number).sort((p, q) => p - q);
-    const [t0, t1] = sort(t), [h0, h1] = sort(h), [x0, x1] = sort(x);
-    return { range_t: [t0, t1], range_phi: [h0 / 100, h1 / 100], range_x: [x0 / 1000, x1 / 1000] };
+    if (!given(cz)) cz = DEFAULT_COMFORT_ZONE;
+    if (typeof cz !== 'object' || Array.isArray(cz)) {
+        throw new Error('comfort_zone must be an object with temperature: [min, max] and humidity: [min, max]');
+    }
+    const [t0, t1] = parsePair(cz, 'temperature', '°C');
+    const [h0, h1] = parsePair(cz, 'humidity', '%');
+    const x = given(cz.absolute_humidity) ? parsePair(cz, 'absolute_humidity', 'g/kg') : null;
+    return {
+        range_t: [t0, t1],
+        range_phi: [h0 / 100, h1 / 100],
+        range_x: x ? [x[0] / 1000, x[1] / 1000] : null,
+    };
 }
 
 export class ComfortCompassCard extends LitElement {
@@ -42,6 +59,7 @@ export class ComfortCompassCard extends LitElement {
             _config: { state: true },
             _days: { state: true },
             _error: { state: true },
+            _loading: { state: true },
             _compact: { state: true },
             _box: { state: true },
         };
@@ -53,7 +71,13 @@ export class ComfortCompassCard extends LitElement {
         super();
         this._hass = undefined;
         this._fetchKey = null;
+        this._fetchSeq = 0;
+        this._retryIndex = 0;
+        this._retryTimer = undefined;
+        this._retryDue = false;
         this._days = [];
+        this._error = undefined;
+        this._loading = false;
         this._compact = false;
         this._box = null;
         this._resizeObserver = undefined;
@@ -65,8 +89,10 @@ export class ComfortCompassCard extends LitElement {
         super.connectedCallback();
         clearInterval(this._refreshTimer);
         this._refreshTimer = setInterval(() => this._maybeFetch(true), REFRESH_MS);
-        // Re-attached (e.g. back from another dashboard view): refresh once.
-        if (this._wasConnected) this._maybeFetch(true);
+        // Re-attached (e.g. back from another dashboard view), or a load failed
+        // before the card was attached: refresh once.
+        if (this._wasConnected || this._retryDue) this._maybeFetch(true);
+        this._retryDue = false;
         this._wasConnected = true;
         if (!this._resizeObserver && typeof ResizeObserver !== 'undefined') {
             this._resizeObserver = new ResizeObserver(() => this._measure());
@@ -92,8 +118,15 @@ export class ComfortCompassCard extends LitElement {
         super.disconnectedCallback();
         clearInterval(this._refreshTimer);
         this._refreshTimer = undefined;
+        this._clearRetry();
+        hideTips(this.renderRoot);
         this._resizeObserver?.disconnect();
         this._observed = undefined;
+    }
+
+    _clearRetry() {
+        clearTimeout(this._retryTimer);
+        this._retryTimer = undefined;
     }
 
     _measure() {
@@ -126,17 +159,31 @@ export class ComfortCompassCard extends LitElement {
         }
     }
 
+    // Validates everything first and only then takes the new config, so a
+    // rejected config leaves the card as it was. Pre-1.0 names (header, days)
+    // are accepted as aliases; the new name wins.
     setConfig(config) {
+        if (!config || typeof config !== 'object') throw new Error('Invalid configuration');
         if (!config.temperature_entity) throw new Error('temperature_entity is required');
         if (!config.humidity_entity) throw new Error('humidity_entity is required');
+        const scale = given(config.scale) ? config.scale : 'fit';
+        if (!SCALES.includes(scale)) {
+            throw new Error(`scale must be one of ${SCALES.join(', ')} (got ${JSON.stringify(config.scale)})`);
+        }
+        const period = daysFromConfig(config, DEFAULT_DAYS);
+        const pressure = pressureFromConfig(config, DEFAULT_PRESSURE);
+        const comfort = parseComfortZone(config.comfort_zone);
+        // false / null mean the defaults too: the compass always needs stages.
+        const bands = parseWarningBands(config.warning_bands || true);
+
         this._config = config;
-        this._period = Math.max(1, Math.round(Number(config.days) || DEFAULT_DAYS));
-        this._pressure = Number.isFinite(Number(config.altitude)) && config.altitude !== null && config.altitude !== ''
-            ? pressureFromAltitude(Number(config.altitude))
-            : Number(config.pressure) || DEFAULT_PRESSURE;
-        this._comfort = parseComfortZone(config.comfort_zone);
-        this._bands = parseWarningBands(config.warning_bands || true);
-        this._mollier = createMollier('classical');
+        this._scale = scale;
+        this._period = period;
+        this._pressure = pressure;
+        this._comfort = comfort;
+        this._bands = bands;
+        this._fahrenheitHint = comfort.range_t[1] > FAHRENHEIT_HINT_ABOVE;
+        this._mollier ??= createMollier('classical');
         this._updateSizingMode();
         if (this._hass) this._maybeFetch();
     }
@@ -147,6 +194,8 @@ export class ComfortCompassCard extends LitElement {
         const darkChanged = this._hass?.themes?.darkMode !== hass?.themes?.darkMode;
         this._hass = hass;
         if (first && this._config) this._maybeFetch();
+        // A sensor that was missing has appeared (renamed back, integration loaded).
+        else if (this._error?.key === 'card.entity_not_found' && !this._missing().length) this._maybeFetch(true);
         if (langChanged || darkChanged) this.requestUpdate();
     }
 
@@ -171,25 +220,62 @@ export class ComfortCompassCard extends LitElement {
         return localize(this._hass, key, vars);
     }
 
+    _missing() {
+        const c = this._config;
+        return c ? missingEntities(this._hass, [c.temperature_entity, c.humidity_entity]) : [];
+    }
+
     // Loads the daily means once per entity/period combination; `force` re-fetches
-    // (hourly timer, retry after an error). A response that arrives after the
-    // config changed is dropped, so a slow old request cannot overwrite a newer one.
+    // (hourly timer, re-attach, retry). A new combination drops the old data and
+    // error. A failed load is retried with back-off (RETRY_MS); a failed refresh
+    // keeps the last good data. A response that arrives after a newer request
+    // was started is dropped, so a slow old request cannot overwrite a newer one.
     async _maybeFetch(force = false) {
         const c = this._config;
         if (!this._hass || !c) return;
         const key = `${c.temperature_entity}|${c.humidity_entity}|${this._period}`;
         if (key === this._fetchKey && !force) return;
+        if (key !== this._fetchKey) {
+            this._days = [];
+            this._error = undefined;
+            this._retryIndex = 0;
+        }
         this._fetchKey = key;
+        this._clearRetry();
+        const seq = ++this._fetchSeq;
+
+        const missing = this._missing();
+        if (missing.length) {
+            this._days = [];
+            this._loading = false;
+            this._error = { key: 'card.entity_not_found', vars: { entities: missing.join(', ') } };
+            return;
+        }
+
+        if (!this._days.length) this._loading = true;
         try {
             const days = await fetchDailyMeans(this._hass, c.temperature_entity, c.humidity_entity, this._period);
-            if (this._fetchKey !== key) return;
+            if (seq !== this._fetchSeq) return;
             this._days = days;
             this._error = days.length ? undefined : { key: 'card.no_statistics' };
+            this._retryIndex = 0;
         } catch (err) {
-            if (this._fetchKey !== key) return;
-            this._error = { key: 'card.fetch_failed', vars: { error: (err && err.message) || err } };
-            this._fetchKey = null;                  // retry on the next timer tick
+            if (seq !== this._fetchSeq) return;
+            if (!this._days.length) {
+                this._error = { key: 'card.fetch_failed', vars: { error: (err && err.message) || err } };
+            }
+            const delay = RETRY_MS[Math.min(this._retryIndex, RETRY_MS.length - 1)];
+            this._retryIndex += 1;
+            if (this.isConnected) this._retryTimer = setTimeout(() => this._maybeFetch(true), delay);
+            else this._retryDue = true;
+        } finally {
+            if (seq === this._fetchSeq) this._loading = false;
         }
+    }
+
+    // A tap anywhere on the card outside a segment closes an open tooltip.
+    _onCardClick(ev) {
+        if (!ev.composedPath().some((el) => el.classList?.contains('seg'))) hideTips(this.renderRoot);
     }
 
     render() {
@@ -199,12 +285,13 @@ export class ComfortCompassCard extends LitElement {
         if (this._error) {
             const hint = this._error.key === 'card.no_statistics';
             body = html`<p class="message ${hint ? '' : 'error'}">${this._t(this._error.key, this._error.vars)}</p>`;
-        } else if (!this._days.length) {
-            body = this._fetchKey ? html`<p class="message">${this._t('card.no_data')}</p>` : nothing;
+        } else if (this._loading || !this._days.length) {
+            // First load: an empty body of about the compass's size, no text.
+            body = html`<div class="placeholder"></div>`;
         } else {
             const dist = compassDistribution(this._days, this._comfort, this._bands, this._pressure, this._mollier);
             body = renderCompass(dist, (key, vars) => this._t(key, vars), {
-                fixedScale: c.scale === 'fixed',
+                fixedScale: this._scale === 'fixed',
                 showLegend: c.show_legend === true,
                 showLabels: c.show_labels !== false && !this._compact,
                 dark: !!this._hass?.themes?.darkMode,
@@ -212,9 +299,13 @@ export class ComfortCompassCard extends LitElement {
                 boxH: this._box?.h,
             });
         }
+        const title = given(c.title) ? c.title : c.header;
         return html`
-            <ha-card .header=${c.header || undefined}>
-                <div class="card-content">${body}</div>
+            <ha-card .header=${title ? String(title) : undefined} @click=${this._onCardClick}>
+                <div class="card-content">
+                    ${this._fahrenheitHint ? html`<p class="message hint">${this._t('card.fahrenheit_hint')}</p>` : nothing}
+                    ${body}
+                </div>
             </ha-card>
         `;
     }
@@ -230,7 +321,7 @@ export class ComfortCompassCard extends LitElement {
         return {
             temperature_entity: pick('temperature') || 'sensor.living_room_temperature',
             humidity_entity: pick('humidity') || 'sensor.living_room_humidity',
-            days: DEFAULT_DAYS,
+            days_to_show: DEFAULT_DAYS,
         };
     }
 

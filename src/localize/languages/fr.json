@@ -2,8 +2,8 @@
   "card": {
     "no_statistics": "Aucune statistique journalière disponible. Vérifiez que les deux capteurs ont state_class: measurement.",
     "fetch_failed": "Impossible de charger l'historique : {error}",
-    "no_data": "Aucun jour avec des données sur cette période pour l'instant.",
-    "period": "{count} jours"
+    "entity_not_found": "Entité introuvable : {entities}",
+    "fahrenheit_hint": "La zone de confort semble être en °F. Saisissez les températures en °C."
   },
   "compass": {
     "title": "Boussole de confort",
@@ -38,10 +38,10 @@
   },
   "editor": {
     "fields": {
-      "header": "Titre",
+      "title": "Titre",
       "temperature_entity": "Capteur de température",
       "humidity_entity": "Capteur d'humidité",
-      "days": "Jours d'historique",
+      "days_to_show": "Jours d'historique",
       "air_mode": "Pression atmosphérique selon",
       "pressure": "Pression atmosphérique",
       "altitude": "Altitude",

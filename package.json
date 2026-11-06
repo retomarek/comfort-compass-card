@@ -1,6 +1,6 @@
 {
   "name": "comfort-compass-card",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "A Home Assistant dashboard card that shows how the days split into in range, too warm, too humid, too dry or too cold.",
   "type": "module",
   "source": "src/comfort-compass-card.js",

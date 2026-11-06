@@ -18,9 +18,10 @@ No tests, linter or typechecker.
 ## Architecture
 
 - `src/comfort-compass-card.js`: entry; registers `comfort-compass-card` and `comfort-compass-card-editor`, `window.customCards`, console version banner (keep `version` in sync with `package.json`).
-- `src/card.js`: `ComfortCompassCard` (LitElement). `setConfig` parses comfort zone (user units → °C / 0..1 / kg/kg), bands, pressure/altitude. First `hass` triggers `recorder/statistics_during_period` (period day, mean). Reactive props are initialised in the constructor, never as class fields (a class field shadows Lit's accessor and breaks re-rendering).
+- `src/card.js`: `ComfortCompassCard` (LitElement). `setConfig` validates everything before taking the config (throws clear errors), parses comfort zone (user units → °C / 0..1 / kg/kg; a given zone without `absolute_humidity` → `range_x: null`, relative humidity only), bands, pressure/altitude and `days_to_show` (via `src/statistics.js`); pre-1.0 aliases `header`/`days` still accepted. First `hass` triggers `recorder/statistics_during_period` (period day, mean); loading shows an empty placeholder, failures retry with `RETRY_MS` back-off. Reactive props are initialised in the constructor, never as class fields (a class field shadows Lit's accessor and breaks re-rendering).
 - `src/compass.js`: `compassDistribution()` is a 1:1 port of `pyedautils.comfort.comfort_compass_distribution` (stage limits = band offsets, humidity judged relative OR absolute). `renderCompass()` draws the glyph as a Lit `svg` template (area-true wedges, labels hugging each arm, viewBox computed from the content) plus optional legend and a hover/tap tooltip.
 - `src/bands.js`: band parsing and defaults, shared with mollier-hx-card. Keep in sync.
+- `src/statistics.js`: statistics fetch and config helpers (days, pressure, missing entities), shared with mollier-hx-card. Keep in sync.
 - `src/vendor/mollierFunctions.js`: verbatim from pyedautils `data/d3_mollierhx` (+ ES exports); used for absolute humidity.
 - `src/editor.js`: `<ha-form>` editor; writes only non-default values; keeps `grid_options` and YAML-only band keys.
 - `src/localize/`: `en.json` is base and fallback; add keys to `en.json` and `de.json` together.
@@ -36,5 +37,5 @@ SemVer. Bump `package.json` and the `version` constant, build, update `CHANGELOG
 ## Claude Code setup
 
 - `.claude/agents/card-reviewer.md`: read-only reviewer with the HA card, Lit, compass-logic, translation and packaging checklist. Run it on a change before committing or releasing.
-- `.claude/skills/visual-check/`: `npm run visual-check` renders the bundle in ~12 dashboard situations (`scripts/visual-check.mjs`, output in `tmp/visual/`); look at the images after any rendering, style or sizing change.
+- `.claude/skills/visual-check/`: `npm run visual-check` renders the bundle in ~17 dashboard situations (`scripts/visual-check.mjs`, output in `tmp/visual/`); look at the images after any rendering, style or sizing change.
 - `.claude/skills/release/`: release checklist (versions, changelog, workflows, HACS catalog).
