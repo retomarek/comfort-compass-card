@@ -1,5 +1,5 @@
 // Keep in sync with "version" in package.json.
-const version = "1.0.0-beta.5";
+const version = "1.0.0-rc.1";
 import { ComfortCompassCard } from "./card.js";
 import { ComfortCompassCardEditor } from "./editor.js";
 

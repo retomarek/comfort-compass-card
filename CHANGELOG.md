@@ -4,6 +4,10 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.0.0-rc.1] - 2026-11-06
+
+Release candidate for 1.0.0: this code becomes 1.0.0 if no problems turn up.
+
 ### Changed
 
 - Comfort zone default and editor suggestion: relative humidity 30–65 % (was 30–60 %), as in pyedautils.
@@ -81,7 +85,8 @@ First test version. The comfort compass was part of the [Mollier hx Card](https:
 - Fahrenheit sensors supported (statistics requested in °C); hourly refresh, retry after a failed load; only completed days are counted.
 - Claude Code setup for contributors: `card-reviewer` agent, `visual-check` and `release` skills (`npm run visual-check`).
 
-[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.5...HEAD
+[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.1...HEAD
+[1.0.0-rc.1]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.1
 [1.0.0-beta.5]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-beta.4...v1.0.0-beta.5
 [1.0.0-beta.4]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.4
 [1.0.0-beta.3]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-beta.3
