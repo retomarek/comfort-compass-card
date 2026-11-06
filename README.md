@@ -15,7 +15,7 @@
   <a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=retomarek&repository=comfort-compass-card&category=plugin"><img alt="Open in your Home Assistant" src="https://my.home-assistant.io/badges/hacs_repository.svg"></a>
 </p>
 
-> **Sister card: [Mollier hx Card](https://github.com/retomarek/mollier-hx-card).** Draws the same days on a psychrometric h,x diagram, with the same comfort zone and warning bands, plus outside air and ventilation. The compass shows *how often*, the diagram *where* and *why*.
+<p align="center">How many days were too warm, too humid, too dry or too cold? One glance, for any room in Home Assistant.</p>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/screenshot.png" alt="Comfort compass in a dark dashboard, default look without legend: 52 % of 120 days in range, the largest arm warm and humid" width="34%">
@@ -23,6 +23,8 @@
 </p>
 
 The card takes the daily means of a temperature and a humidity sensor and compares every day with your comfort zone. The dashed circle stands for all days. The green disc is the share of days in range; each of the eight arms is the share of days that were off in one direction: too warm, too humid, too dry, too cold, or a mix of two. Disc and arms together always have the area of the dashed circle. Each arm is split into mild, moderate and severe, from the inside out.
+
+> **Sister card: [Mollier hx Card](https://github.com/retomarek/mollier-hx-card).** Draws the same days on a psychrometric h,x diagram, with the same comfort zone and warning bands, plus outside air and ventilation. The compass shows *how often*, the diagram *where* and *why*.
 
 > **Built on [pyedautils](https://github.com/retomarek/pyedautils)**, the *Python Energy Data Analysis Utilities*: a pip-installable library (`pip install pyedautils`) for analysing and visualising energy and comfort time series. The compass is a port of its `comfort_compass_distribution()` and `plot_comfort_compass()`, so you can take the same sensor data into Python or Jupyter for deeper analysis.
 
@@ -34,16 +36,6 @@ Comfort, health and the risk of mould always depend on temperature **and** humid
 - **The same reading means different things.** 23 °C feels pleasant at 45 %, but sticky at 70 %.
 
 That is why the compass judges every day on both together: a day only counts as *in range* when temperature and humidity are both in the comfort zone, and the direction of an arm tells you which combination was off. *Warm + humid* calls for cooling or ventilation, *cold + humid* points to condensation and mould risk, *warm + dry* to overheated, dry winter air.
-
-## Good for people and the environment
-
-The h,x diagram behind this card explains why the compass looks the way it does, and what you can do about it:
-
-- **Too dry in winter** (left arms) usually comes from ventilating with cold outside air: at 0 °C and 80 % it carries only about 3.2 g/kg of water, which is just **20 %** relative humidity once heated to 21 °C.
-- **Heating less** moves days towards *in range*: the water content stays, the relative humidity rises. Air with 6.4 g/kg reads about 35 % at 23 °C, but 40 % at 21 °C. As a rule of thumb, every degree less saves around **6 % of heating energy**, good for comfort, the bill and the climate.
-- **Too humid or cold + humid** (right and lower right arms) means a risk of condensation and mould at cold surfaces: at 21 °C and 60 %, the dew point is 12.9 °C, and mould can grow on surfaces below about 16 °C, such as outside wall corners in winter. Short, wide-open airing helps, as long as the outside air is drier than the room air.
-
-The [Mollier hx Card README](https://github.com/retomarek/mollier-hx-card#the-hx-diagram-in-five-minutes) explains the h,x diagram step by step, with these examples; more background on [Wikipedia](https://en.wikipedia.org/wiki/Psychrometrics#Mollier_diagram). The two cards work well side by side: the diagram shows *where* each day was, the compass *how often*.
 
 ## Features
 
@@ -127,7 +119,13 @@ warning_bands:
 
 These are the defaults. The worse of temperature and humidity decides the stage. `color` and `label` per band are accepted for compatibility with the Mollier hx Card but have no effect here. The [Mollier hx Card](https://github.com/retomarek/mollier-hx-card) takes the same `comfort_zone` and `warning_bands` and draws them as zone and dashed bands.
 
-### Reading the compass
+### Size in the dashboard
+
+In a sections dashboard the card takes half the width and sets its own height. The compass is at most 340 px wide and centred, also at full width. Set a row count under *Layout* to give it a fixed height; the compass then fits the tile.
+
+## Reading the compass
+
+> **More in the pyedautils guide.** [Reading the comfort compass](https://retomarek.github.io/pyedautils/guides/comfort_compass.html) explains the compass step by step, with worked examples computed with pyedautils: [reading the compass](https://retomarek.github.io/pyedautils/guides/comfort_compass.html#compass-reading-the-diagram), [comfort](https://retomarek.github.io/pyedautils/guides/comfort_compass.html#compass-comfort), [saving energy](https://retomarek.github.io/pyedautils/guides/comfort_compass.html#compass-saving-energy).
 
 The dashed circle is the area of **100 % of the days**. The green disc and the arms always add up to exactly that area:
 
@@ -137,7 +135,7 @@ The dashed circle is the area of **100 % of the days**. The green disc and the a
 
 Hover or tap a segment for the number of days and its share.
 
-### Comparing rooms
+## Comparing rooms
 
 By default (`scale: fit`) every compass is zoomed to its own glyph, so it fills the card. The dashed circle then has a different size in each card, and **two compasses cannot be compared by area**, only by their percentages.
 
@@ -151,9 +149,15 @@ title: Bedroom
 scale: fixed
 ```
 
-### Size in the dashboard
+## Good for people and the environment
 
-In a sections dashboard the card takes half the width and sets its own height. The compass is at most 340 px wide and centred, also at full width. Set a row count under *Layout* to give it a fixed height; the compass then fits the tile.
+The h,x diagram behind this card explains why the compass looks the way it does, and what you can do about it:
+
+- **Too dry in winter** (left arms) usually comes from ventilating with cold outside air: at 0 °C and 80 % it carries only about 3.2 g/kg of water, which is just **20 %** relative humidity once heated to 21 °C.
+- **Heating less** moves days towards *in range*: the water content stays, the relative humidity rises. Air with 6.4 g/kg reads about 35 % at 23 °C, but 40 % at 21 °C. As a rule of thumb, every degree less saves around **6 % of heating energy**, good for comfort, the bill and the climate.
+- **Too humid or cold + humid** (right and lower right arms) means a risk of condensation and mould at cold surfaces: at 21 °C and 60 %, the dew point is 12.9 °C, and mould can grow on surfaces below about 16 °C, such as outside wall corners in winter. Short, wide-open airing helps, as long as the outside air is drier than the room air.
+
+The [Mollier hx Card README](https://github.com/retomarek/mollier-hx-card#the-hx-diagram-in-five-minutes) explains the h,x diagram step by step, with these examples, and the pyedautils guide [The h,x diagram in five minutes](https://retomarek.github.io/pyedautils/guides/mollier_hx.html) goes deeper ([saving energy](https://retomarek.github.io/pyedautils/guides/mollier_hx.html#hx-saving-energy)); more background on [Wikipedia](https://en.wikipedia.org/wiki/Psychrometrics#Mollier_diagram). The two cards work well side by side: the diagram shows *where* each day was, the compass *how often*.
 
 ## Translations
 
@@ -183,7 +187,7 @@ Daily means come from Home Assistant's `recorder/statistics_during_period` WebSo
 - **Questions or ideas?** Ask in [Q&A](https://github.com/retomarek/comfort-compass-card/discussions/categories/q-a).
 - **Found a bug or want a feature?** Open an [issue](https://github.com/retomarek/comfort-compass-card/issues/new/choose).
 - **Translation wrong?** See [Translations](#translations): a small pull request is the quickest fix.
-- **Find it useful?** A ⭐ on GitHub helps others find it.
+- **Find it useful?** A star on GitHub helps others find it.
 
 ## Credits
 
@@ -191,4 +195,4 @@ Daily means come from Home Assistant's `recorder/statistics_during_period` WebSo
 
 ## License
 
-[MIT](LICENSE)
+MIT © Reto Marek, see [LICENSE](LICENSE).
