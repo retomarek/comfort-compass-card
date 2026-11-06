@@ -3,12 +3,12 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/retomarek/comfort-compass-card/releases"><img alt="Release" src="https://img.shields.io/github/v/release/retomarek/comfort-compass-card?include_prereleases&style=flat-square&color=22c55e"></a>
+  <a href="https://github.com/retomarek/comfort-compass-card/releases"><img alt="Release" src="https://img.shields.io/github/v/release/retomarek/comfort-compass-card?include_prereleases&style=flat-square&color=22c55e&cacheSeconds=3600"></a>
   <a href="https://github.com/hacs/integration"><img alt="HACS Custom" src="https://img.shields.io/badge/HACS-Custom-41BDF5?style=flat-square"></a>
-  <img alt="Home Assistant 2024.11+" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18BCF2?style=flat-square&logo=homeassistant&logoColor=white">
-  <a href="https://github.com/retomarek/comfort-compass-card/actions/workflows/validate.yaml"><img alt="Validate" src="https://img.shields.io/github/actions/workflow/status/retomarek/comfort-compass-card/validate.yaml?branch=main&style=flat-square&label=HACS%20validation"></a>
-  <a href="https://github.com/retomarek/comfort-compass-card/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/retomarek/comfort-compass-card/total?style=flat-square&color=9acd32"></a>
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/retomarek/comfort-compass-card?style=flat-square"></a>
+  <img alt="Home Assistant 2024.11+" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18BCF2?style=flat-square&logo=homeassistant&logoColor=white&cacheSeconds=3600">
+  <a href="https://github.com/retomarek/comfort-compass-card/actions/workflows/validate.yaml"><img alt="Validate" src="https://img.shields.io/github/actions/workflow/status/retomarek/comfort-compass-card/validate.yaml?branch=main&style=flat-square&label=HACS%20validation&cacheSeconds=3600"></a>
+  <a href="https://github.com/retomarek/comfort-compass-card/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/retomarek/comfort-compass-card/total?style=flat-square&color=9acd32&cacheSeconds=3600"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/retomarek/comfort-compass-card?style=flat-square&cacheSeconds=3600"></a>
 </p>
 
 <p align="center">
