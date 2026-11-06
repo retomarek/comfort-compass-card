@@ -81,16 +81,14 @@ title: Living room
 days_to_show: 90
 ```
 
-Renamed in 1.0 (old names still work): `header` → `title`, `days` → `days_to_show`. If both are given, the new name wins.
-
 ### Options
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `temperature_entity` | string | | **Required.** Temperature sensor. |
 | `humidity_entity` | string | | **Required.** Relative-humidity sensor in %. |
-| `title` | string | | Card title. Formerly `header`. |
-| `days_to_show` | number | `30` | Completed days to count, 1 to 3650. Formerly `days`. Home Assistant keeps the daily long-term statistics indefinitely, so a long period works once the sensor has that much history. |
+| `title` | string | | Card title. |
+| `days_to_show` | number | `30` | Completed days to count, 1 to 3650. Home Assistant keeps the daily long-term statistics indefinitely, so a long period works once the sensor has that much history. |
 | `comfort_zone` | object | 20–26 °C, 30–60 %, 0–12 g/kg | See below. Temperatures always in °C. |
 | `warning_bands` | `true` \| object | `true` (defaults) | Limits for mild and moderate. See below. |
 | `altitude` | number | | Altitude in m above sea level (-500 to 9000), for the absolute humidity. Overrides `pressure`. |

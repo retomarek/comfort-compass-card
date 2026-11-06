@@ -4,6 +4,10 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+### Removed
+
+- Aliases for the pre-1.0 option names. Use the names from the README (`title`, `days_to_show`).
+
 ## [1.0.0-beta.5] - 2026-11-06
 
 ### Added

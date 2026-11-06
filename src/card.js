@@ -160,8 +160,7 @@ export class ComfortCompassCard extends LitElement {
     }
 
     // Validates everything first and only then takes the new config, so a
-    // rejected config leaves the card as it was. Pre-1.0 names (header, days)
-    // are accepted as aliases; the new name wins.
+    // rejected config leaves the card as it was.
     setConfig(config) {
         if (!config || typeof config !== 'object') throw new Error('Invalid configuration');
         if (!config.temperature_entity) throw new Error('temperature_entity is required');
@@ -299,7 +298,7 @@ export class ComfortCompassCard extends LitElement {
                 boxH: this._box?.h,
             });
         }
-        const title = given(c.title) ? c.title : c.header;
+        const title = c.title;
         return html`
             <ha-card .header=${title ? String(title) : undefined} @click=${this._onCardClick}>
                 <div class="card-content">

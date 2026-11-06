@@ -16,10 +16,8 @@ const DEFAULTS = {
 
 // Keys this form owns. Everything else in the existing config (grid_options,
 // visibility, view_layout, card_mod, YAML-only options) is kept as it is.
-// `header` and `days` are the pre-1.0 names of title / days_to_show: read,
-// then replaced by the new names.
 const OWNED_KEYS = [
-    'type', 'temperature_entity', 'humidity_entity', 'title', 'header', 'days_to_show', 'days',
+    'type', 'temperature_entity', 'humidity_entity', 'title', 'days_to_show',
     'altitude', 'pressure', 'comfort_zone', 'warning_bands', 'show_labels', 'show_legend', 'scale',
 ];
 
@@ -41,7 +39,7 @@ function configToData(c = {}) {
     const zone = (key, i) => firstNum(pairAt(cz[key], i), cz === DEFAULT_COMFORT_ZONE || key !== 'absolute_humidity'
         ? DEFAULT_COMFORT_ZONE[key][i] : undefined);
     return {
-        title: (given(c.title) ? c.title : c.header) ?? '',
+        title: c.title ?? '',
         temperature_entity: c.temperature_entity ?? '',
         humidity_entity: c.humidity_entity ?? '',
         days_to_show: firstNum(c.days_to_show, c.days, DEFAULTS.days_to_show),
