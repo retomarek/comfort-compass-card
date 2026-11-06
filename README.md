@@ -51,7 +51,7 @@ The [Mollier hx Card README](https://github.com/retomarek/mollier-hx-card#the-hx
 - **Reads like an h,x diagram**: warm at the top, cold at the bottom, humid on the right, dry on the left.
 - **Severity from warning bands**: mild means inside the orange band, moderate inside the red band, severe beyond it. Relative **and** absolute humidity count.
 - **Says what green means**: the disc shows the share of days and the words *in range*; when the disc is too small for text, a line below the compass says it ("● 8 % in range").
-- **Hover or tap** a segment for its days, share and severity split. A legend is optional.
+- **Hover or tap** a segment for its days and share. A legend is optional.
 - **Fits any dashboard**: the glyph is capped in size and centred, so it stays tidy at full width and fills a tile with a fixed height.
 - **Follows your theme**, light or dark, and your Home Assistant language (14 languages, see [Translations](#translations)).
 - **Visual editor** with entity pickers limited to sensors that have long-term statistics.

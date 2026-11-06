@@ -213,17 +213,12 @@ export function renderCompass(dist, t, opts = {}) {
             cum += frac(`${k}_${st}`);
             const rNext = Math.sqrt(rGreen * rGreen + (2 * AREA * cum) / WID_RAD);
             if (rNext > rPrev + 1e-9) {
-                const tot = dirTotal(k);
                 rings.push({
                     r1: rPrev, r2: rNext, deg: THETA[i], color: STAGE_COLORS[k][st],
                     tip: {
                         bg: STAGE_COLORS[k][st], fg: inkOn(st),
-                        lines: [
-                            `${name(k)} · ${stage(st)}`,
-                            days(cnt),
-                            `${name(k)}: ${days(tot)}`,
-                            STAGES.map((s2) => `${stage(s2)} ${pct(g(`${k}_${s2}`))}%`).join(' / '),
-                        ],
+                        // Only the hovered segment: direction · stage and its days.
+                        lines: [`${name(k)} · ${stage(st)}`, days(cnt)],
                     },
                 });
             }
