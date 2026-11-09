@@ -9,6 +9,7 @@
     "title": "Comfortkompas",
     "day": "dag",
     "days": "dagen",
+    "now": "Nu",
     "names": {
       "ok": "binnen bereik",
       "w": "te warm",
@@ -58,6 +59,7 @@
       "red_dphi": "Matig tot ± luchtvochtigheid",
       "red_dx": "Matig tot ± abs. vochtigheid",
       "show_legend": "Legenda tonen",
+      "show_current": "Huidige toestand tonen",
       "show_labels": "Richtingslabels tonen",
       "fixed_scale": "Vaste schaal (ruimtes vergelijken)"
     },

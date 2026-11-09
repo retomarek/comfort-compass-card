@@ -30,12 +30,13 @@ function level(exc, l1, l2) {
     return 3;
 }
 
-// records: [{t: °C, phi: 0..1}] (daily means) → {ok, f_l, f_d, …} counts.
-export function compassDistribution(records, cz, bands, pressure, mollier) {
+// Classifies one record {t: °C, phi: 0..1} → 'ok' or '<direction>_<stage>'
+// (e.g. 'w_l'), or null for missing values. Used for the daily means and for
+// the live sensor values, so the "now" marker always agrees with the glyph.
+export function classifyRecord(r, cz, bands, pressure, mollier) {
     const b = bands || parseWarningBands(true);
-    const out = { ok: 0 };
-    for (const k of DIRS) for (const st of STAGES) out[`${k}_${st}`] = 0;
-
+    const t = r.t, h = r.phi * 100;
+    if (!Number.isFinite(t) || !Number.isFinite(h)) return null;
     const [tLo, tHi] = cz.range_t;
     const hLo = cz.range_phi[0] * 100, hHi = cz.range_phi[1] * 100;
     // range_x null: comfort zone without absolute_humidity → judged by
@@ -46,31 +47,37 @@ export function compassDistribution(records, cz, bands, pressure, mollier) {
     const hl = [b.orange.dphi, b.red.dphi];
     const xl = [b.orange.dx / 1000, b.red.dx / 1000];
 
+    const ti = t < tLo ? -1 : t > tHi ? 1 : 0;
+    const tExc = ti === 1 ? t - tHi : ti === -1 ? tLo - t : 0;
+    const tLevel = level(tExc, tl[0], tl[1]);
+
+    let hi, hLevel;
+    if (useAbs) {
+        // Humidity: relative OR absolute (comfort zone's x cap), like pyedautils with hum_abs_band.
+        const xa = mollier.get_x_y(t, r.phi, pressure).x;
+        hi = (h > hHi || xa > xHi) ? 1 : (h < hLo || xa < xLo) ? -1 : 0;
+        const relExc = hi === 1 ? h - hHi : hi === -1 ? hLo - h : 0;
+        const absExc = hi === 1 ? xa - xHi : hi === -1 ? xLo - xa : 0;
+        hLevel = Math.max(level(relExc, hl[0], hl[1]), level(absExc, xl[0], xl[1]));
+    } else {
+        hi = h < hLo ? -1 : h > hHi ? 1 : 0;
+        const hExc = hi === 1 ? h - hHi : hi === -1 ? hLo - h : 0;
+        hLevel = level(hExc, hl[0], hl[1]);
+    }
+
+    const lvl = Math.max(tLevel, hLevel);
+    const stage = lvl <= 1 ? 'l' : lvl <= 2 ? 'd' : 's';
+    const state = STATE_MAP[`${ti},${hi}`];
+    return state === 'ok' ? 'ok' : `${state}_${stage}`;
+}
+
+// records: [{t: °C, phi: 0..1}] (daily means) → {ok, f_l, f_d, …} counts.
+export function compassDistribution(records, cz, bands, pressure, mollier) {
+    const out = { ok: 0 };
+    for (const k of DIRS) for (const st of STAGES) out[`${k}_${st}`] = 0;
     for (const r of records) {
-        const t = r.t, h = r.phi * 100;
-        if (!Number.isFinite(t) || !Number.isFinite(h)) continue;
-        const ti = t < tLo ? -1 : t > tHi ? 1 : 0;
-        const tExc = ti === 1 ? t - tHi : ti === -1 ? tLo - t : 0;
-        const tLevel = level(tExc, tl[0], tl[1]);
-
-        let hi, hLevel;
-        if (useAbs) {
-            // Humidity: relative OR absolute (comfort zone's x cap), like pyedautils with hum_abs_band.
-            const xa = mollier.get_x_y(t, r.phi, pressure).x;
-            hi = (h > hHi || xa > xHi) ? 1 : (h < hLo || xa < xLo) ? -1 : 0;
-            const relExc = hi === 1 ? h - hHi : hi === -1 ? hLo - h : 0;
-            const absExc = hi === 1 ? xa - xHi : hi === -1 ? xLo - xa : 0;
-            hLevel = Math.max(level(relExc, hl[0], hl[1]), level(absExc, xl[0], xl[1]));
-        } else {
-            hi = h < hLo ? -1 : h > hHi ? 1 : 0;
-            const hExc = hi === 1 ? h - hHi : hi === -1 ? hLo - h : 0;
-            hLevel = level(hExc, hl[0], hl[1]);
-        }
-
-        const lvl = Math.max(tLevel, hLevel);
-        const stage = lvl <= 1 ? 'l' : lvl <= 2 ? 'd' : 's';
-        const state = STATE_MAP[`${ti},${hi}`];
-        out[state === 'ok' ? 'ok' : `${state}_${stage}`] += 1;
+        const key = classifyRecord(r, cz, bands, pressure, mollier);
+        if (key) out[key] += 1;
     }
     return out;
 }
@@ -186,6 +193,9 @@ const inkOn = (stageKey) => (stageKey === 'l' ? '#1f2733' : '#ffffff');
 //   Default: zoom to this glyph so it fills the space.
 // opts.showLabels (default true), opts.showLegend (default false),
 // opts.dark: theme is dark → direction labels use the light shade.
+// opts.current: live reading {key, t, phi, x} (key from classifyRecord) → the
+//   matching part of the glyph breathes (outline, or a dot where the segment
+//   would start when no day fell into that state yet) and a "now" line is shown.
 export function renderCompass(dist, t, opts = {}) {
     const showLabels = opts.showLabels !== false;
     const labelShade = opts.dark ? 'l' : 's';
@@ -205,6 +215,7 @@ export function renderCompass(dist, t, opts = {}) {
     // Area-true stacked wedges: cumulative area (WID/2)(r²−rg²) = share·AREA.
     const rings = [];
     const armR = [];                  // outer radius per direction (at least the dashed circle)
+    const stageR = {};                // inner radius of every stage slot, also of empty ones
     let rMax = Math.max(rGreen, R0);
     DIRS.forEach((k, i) => {
         let cum = 0, rPrev = rGreen;
@@ -212,9 +223,10 @@ export function renderCompass(dist, t, opts = {}) {
             const cnt = g(`${k}_${st}`);
             cum += frac(`${k}_${st}`);
             const rNext = Math.sqrt(rGreen * rGreen + (2 * AREA * cum) / WID_RAD);
+            stageR[`${k}_${st}`] = rPrev;
             if (rNext > rPrev + 1e-9) {
                 rings.push({
-                    r1: rPrev, r2: rNext, deg: THETA[i], color: STAGE_COLORS[k][st],
+                    key: `${k}_${st}`, r1: rPrev, r2: rNext, deg: THETA[i], color: STAGE_COLORS[k][st],
                     tip: {
                         bg: STAGE_COLORS[k][st], fg: inkOn(st),
                         // Only the hovered segment: direction · stage and its days.
@@ -264,7 +276,8 @@ export function renderCompass(dist, t, opts = {}) {
             box.y0 = Math.min(box.y0, top); box.y1 = Math.max(box.y1, top + h);
             return { ax, baseline: top + font * 0.875, anchor: pos.anchor, lines, color: STAGE_COLORS[DIRS[i]][labelShade] };
         });
-        const pad = font / 3;
+        // Room for the breathing "now" marker (wider stroke, scaled dot at an arm tip).
+        const pad = font / 3 + (opts.current ? font * 0.5 : 0);
         return { font, lh, specs, vb: [box.x0 - pad, box.y0 - pad, box.x1 - box.x0 + 2 * pad, box.y1 - box.y0 + 2 * pad] };
     };
 
@@ -312,8 +325,49 @@ export function renderCompass(dist, t, opts = {}) {
     const pctInside = R > 0 && okFont * 1.1 <= R * 1.5 && okPct.length * 0.62 * okFont <= R * 1.45;
     const okTip = { bg: OK_COLOR, fg: '#ffffff', lines: [name('ok'), days(g('ok'))] };
 
+    // "Now" marker. The outline follows the shape it marks; its stroke width is
+    // tied to the label font, so it looks the same at every card size.
+    const cur = opts.current && opts.current.key ? opts.current : null;
+    const curDir = cur && cur.key !== 'ok' ? cur.key.split('_')[0] : null;
+    const curStage = cur && cur.key !== 'ok' ? cur.key.split('_')[1] : null;
+    const curColor = !cur ? null : cur.key === 'ok' ? OK_COLOR : STAGE_COLORS[curDir][curStage];
+    const curName = !cur ? '' : cur.key === 'ok' ? name('ok') : `${name(curDir)} · ${stage(curStage)}`;
+    // Numbers in the user's locale (27,4 in German); the card works in °C.
+    const nf = (v, d) => {
+        try {
+            return new Intl.NumberFormat(opts.locale || undefined, { minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
+        } catch (e) {
+            return v.toFixed(d);
+        }
+    };
+    const curValues = !cur ? '' : `${nf(cur.t, 1)} °C · ${nf(cur.phi * 100, 0)} %`
+        + (Number.isFinite(cur.x) ? ` · ${nf(cur.x * 1000, 1)} g/kg` : '');
+    const curTip = cur ? { bg: curColor, fg: cur.key === 'ok' ? '#ffffff' : inkOn(curStage), lines: [`${t('compass.now')} · ${curName}`, curValues] } : null;
+    const sw = L.font * 0.28;
+    let nowMark = nothing;
+    if (cur) {
+        const style = `--now-w:${f2(sw)};--now-w2:${f2(sw * 2.6)}`;
+        const ring = rings.find((w) => w.key === cur.key);
+        if (cur.key === 'ok' && rGreen > 0) {
+            nowMark = svg`<circle class="now" style=${style} r=${f2(rGreen * K + sw)}></circle>`;
+        } else if (ring) {
+            nowMark = svg`<path class="now" style=${style} d=${sectorPath(ring.r1, ring.r2, ring.deg)}></path>`;
+        } else {
+            // No day in this state yet (or no green disc): a dot where that
+            // segment would start (its arm's edge), at the centre for "ok".
+            const [cx, cy] = cur.key === 'ok' ? [0, 0] : pt(stageR[cur.key], THETA[DIRS.indexOf(curDir)]);
+            nowMark = svg`<circle class="now-dot" cx=${f2(cx)} cy=${f2(cy)} r=${f2(L.font * 0.45)} fill=${curColor}
+                style=${`--now-w:${f2(sw)}`}
+                @pointerenter=${(ev) => onEnter(ev, curTip)} @pointerleave=${onLeave}
+                @pointerdown=${onDown} @click=${(ev) => onTap(ev, curTip)}></circle>`;
+        }
+    }
+
     const legend = !opts.showLegend ? nothing : html`
         <div class="legend">
+            ${cur ? html`
+                <div class="row now-row"><span class="dot now-legend" style="background:${curColor}"></span>
+                    <span class="name"><b>${t('compass.now')}</b> · ${curName}<span class="now-values">${curValues}</span></span></div>` : nothing}
             ${rows.map((r) => html`
                 <div class="row"><span class="dot" style="background:${r.color}"></span>
                     <span class="name">${name(r.k)}</span>
@@ -340,11 +394,14 @@ export function renderCompass(dist, t, opts = {}) {
                         <text class="ok-word" y=${f2(blockH / 2 - wordFont * 0.18)} text-anchor="middle" font-size=${f2(wordFont)}>${okWord}</text>`
                     : pctInside ? svg`<text class="ok-pct" y=${f2(okFont * 0.36)} text-anchor="middle" font-size=${f2(okFont)}>${okPct}</text>` : nothing}
                     ${labels}
+                    ${nowMark}
                 </svg>
             </div>
             ${legend}
             ${!wordInside && !opts.showLegend && total > 0 ? html`
                 <div class="ok-caption"><span class="dot" style="background:${OK_COLOR}"></span><b>${okPct}</b> ${okWord}</div>` : nothing}
+            ${cur && !opts.showLegend && !opts.compact ? html`
+                <div class="now-caption" title=${curValues}><span class="dot now-legend" style="background:${curColor}"></span><b>${t('compass.now')}</b> ${curName}<span class="now-values inline">${curValues}</span></div>` : nothing}
             <div class="tip" role="tooltip"></div>
         </div>
     `;

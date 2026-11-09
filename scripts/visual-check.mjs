@@ -52,6 +52,10 @@ const CASES = [
         config: { show_legend: true, comfort_zone: { temperature: [20, 26], humidity: [30, 65] } } },
     { name: 'fahrenheit-hint-de', theme: 'light', lang: 'de', width: 330, layout: 'grid',
         config: { comfort_zone: { temperature: [68, 79], humidity: [30, 65] } } },
+    { name: 'now-warm-legend-de', theme: 'light', lang: 'de', width: 560, layout: 'grid', config: { show_legend: true },
+        states: { 'sensor.t': '27.4', 'sensor.h': '45' } },
+    { name: 'now-humid-dark', theme: 'dark', lang: 'en', width: 330, layout: 'grid', states: { 'sensor.t': '22', 'sensor.h': '80' } },
+    { name: 'now-off', theme: 'dark', lang: 'en', width: 330, layout: 'grid', config: { show_current: false } },
     { name: 'loading', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'pending', ready: '.placeholder' },
     { name: 'loading-fixed-4rows', theme: 'dark', lang: 'en', width: 330, layout: 'grid', rows: 4, data: 'pending', ready: '.placeholder' },
 ];

@@ -9,6 +9,7 @@
     "title": "舒适度罗盘",
     "day": "天",
     "days": "天",
+    "now": "当前",
     "names": {
       "ok": "在范围内",
       "w": "过热",
@@ -58,6 +59,7 @@
       "red_dphi": "中度上限 ± 湿度",
       "red_dx": "中度上限 ± 绝对湿度",
       "show_legend": "显示图例",
+      "show_current": "显示当前状态",
       "show_labels": "显示方向标签",
       "fixed_scale": "固定刻度（比较房间）"
     },

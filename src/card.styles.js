@@ -214,9 +214,70 @@ export default css`
     .tip .tip-head {
         font-weight: 600;
     }
+
+    /* Live reading: the matching part of the glyph breathes. */
+    .glyph .now {
+        fill: none;
+        stroke: var(--primary-text-color);
+        stroke-width: var(--now-w);
+        stroke-linejoin: round;
+        pointer-events: none;
+        animation: ccc-breathe 3s ease-in-out infinite;
+    }
+    .glyph .now-dot {
+        stroke: var(--ccc-gap-color);
+        stroke-width: var(--now-w);
+        cursor: pointer;
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: ccc-pulse 3s ease-in-out infinite;
+    }
+    @keyframes ccc-breathe {
+        0%, 100% { stroke-opacity: 0.9; stroke-width: var(--now-w); }
+        50% { stroke-opacity: 0.2; stroke-width: var(--now-w2); }
+    }
+    @keyframes ccc-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.35); opacity: 0.6; }
+    }
+    .now-legend {
+        box-shadow: 0 0 0 2px var(--ccc-gap-color), 0 0 0 3.5px var(--primary-text-color);
+        animation: ccc-pulse 3s ease-in-out infinite;
+    }
+    .legend .now-row {
+        padding-bottom: 6px;
+        margin-bottom: 2px;
+        border-bottom: 1px solid var(--divider-color);
+    }
+    .legend .now-row .name {
+        grid-column: 2 / -1;
+    }
+    .now-values {
+        display: block;
+        color: var(--secondary-text-color);
+        font-size: 12px;
+    }
+    .now-values.inline {
+        display: inline;
+        margin-left: 4px;
+    }
+    .now-caption {
+        flex-wrap: wrap;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--primary-text-color);
+        cursor: help;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         .glyph .seg {
             transition: none;
+        }
+        .glyph .now, .glyph .now-dot, .now-legend {
+            animation: none;
         }
     }
 `;

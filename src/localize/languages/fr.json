@@ -9,6 +9,7 @@
     "title": "Boussole de confort",
     "day": "jour",
     "days": "jours",
+    "now": "Maintenant",
     "names": {
       "ok": "dans la plage",
       "w": "trop chaud",
@@ -58,6 +59,7 @@
       "red_dphi": "Modéré jusqu'à ± humidité",
       "red_dx": "Modéré jusqu'à ± humidité abs.",
       "show_legend": "Afficher la légende",
+      "show_current": "Afficher l'état actuel",
       "show_labels": "Afficher les directions",
       "fixed_scale": "Échelle fixe (comparer les pièces)"
     },

@@ -4,6 +4,10 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+### Added
+
+- `show_current` (default on): the live reading of the two sensors is classified like the daily means and the matching part of the compass breathes; a "Now" line names the state and the values (in the legend when it is shown). Editor switch under Display.
+
 ## [1.0.0-rc.3] - 2026-11-06
 
 ### Changed

@@ -9,6 +9,7 @@
     "title": "Kompas komfortu",
     "day": "den",
     "days": "dní",
+    "now": "Nyní",
     "names": {
       "ok": "v rozsahu",
       "w": "příliš teplo",
@@ -58,6 +59,7 @@
       "red_dphi": "Střední do ± vlhkosti",
       "red_dx": "Střední do ± abs. vlhkosti",
       "show_legend": "Zobrazit legendu",
+      "show_current": "Zobrazit aktuální stav",
       "show_labels": "Zobrazit popisky směrů",
       "fixed_scale": "Pevné měřítko (porovnání místností)"
     },

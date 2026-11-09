@@ -9,6 +9,7 @@
     "title": "Komfortkompass",
     "day": "dag",
     "days": "dager",
+    "now": "Nå",
     "names": {
       "ok": "innenfor målområdet",
       "w": "for varmt",
@@ -58,6 +59,7 @@
       "red_dphi": "Moderat opptil ± luftfuktighet",
       "red_dx": "Moderat opptil ± abs. luftfuktighet",
       "show_legend": "Vis forklaring",
+      "show_current": "Vis nåværende tilstand",
       "show_labels": "Vis retningsetiketter",
       "fixed_scale": "Fast skala (sammenlign rom)"
     },

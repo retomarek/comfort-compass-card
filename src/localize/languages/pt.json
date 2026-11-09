@@ -9,6 +9,7 @@
     "title": "Bússola de conforto",
     "day": "dia",
     "days": "dias",
+    "now": "Agora",
     "names": {
       "ok": "dentro da faixa",
       "w": "quente demais",
@@ -58,6 +59,7 @@
       "red_dphi": "Moderado até ± umidade",
       "red_dx": "Moderado até ± umidade abs.",
       "show_legend": "Mostrar legenda",
+      "show_current": "Mostrar o estado atual",
       "show_labels": "Mostrar direções",
       "fixed_scale": "Escala fixa (comparar cômodos)"
     },

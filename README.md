@@ -88,6 +88,7 @@ days_to_show: 90
 | `pressure` | number | `101325` | Air pressure in hPa (300–1100) or Pa (30000–110000). |
 | `show_legend` | boolean | `false` | List the directions with days and share. Beside the compass when the card is wide, below it otherwise. |
 | `show_labels` | boolean | `true` | Name the eight directions around the compass. |
+| `show_current` | boolean | `true` | Mark the live reading of the two sensors: the matching part of the compass breathes (a dot where that segment would start when no day fell into that state yet), and a "Now" line below the compass or at the top of the legend names the state and the values. In very small tiles only the marker is shown. Without animation when the system asks for reduced motion. |
 | `scale` | `fit` \| `fixed` | `fit` | `fit` zooms to this compass so it fills the card. `fixed` keeps the dashed 100 % circle the same size in every card, so several rooms can be compared by area. See [Comparing rooms](#comparing-rooms). |
 
 Invalid values (an unknown `scale`, a `comfort_zone` without a `[min, max]` pair for temperature or humidity, `days_to_show` below 1, a pressure or altitude outside the ranges above) give a clear error message instead of a wrong compass. Longer periods than 3650 days are cut to 3650.

@@ -1,10 +1,11 @@
 import { html, LitElement, nothing } from 'lit';
 import { createMollier } from './vendor/mollierFunctions.js';
 import { parseWarningBands } from './bands.js';
-import { compassDistribution, renderCompass, hideTips } from './compass.js';
+import { classifyRecord, compassDistribution, renderCompass, hideTips } from './compass.js';
 import { localize } from './localize/localize.js';
 import {
     daysFromConfig, fetchDailyMeans, missingEntities, pressureFromConfig, REFRESH_MS, RETRY_MS,
+    stateCelsius, stateHumidity,
 } from './statistics.js';
 import styles from './card.styles.js';
 
@@ -62,6 +63,7 @@ export class ComfortCompassCard extends LitElement {
             _loading: { state: true },
             _compact: { state: true },
             _box: { state: true },
+            _current: { state: true },
         };
     }
 
@@ -80,6 +82,7 @@ export class ComfortCompassCard extends LitElement {
         this._loading = false;
         this._compact = false;
         this._box = null;
+        this._current = null;
         this._resizeObserver = undefined;
     }
 
@@ -169,6 +172,9 @@ export class ComfortCompassCard extends LitElement {
         if (!SCALES.includes(scale)) {
             throw new Error(`scale must be one of ${SCALES.join(', ')} (got ${JSON.stringify(config.scale)})`);
         }
+        if (given(config.show_current) && typeof config.show_current !== 'boolean') {
+            throw new Error(`show_current must be true or false (got ${JSON.stringify(config.show_current)})`);
+        }
         const period = daysFromConfig(config, DEFAULT_DAYS);
         const pressure = pressureFromConfig(config, DEFAULT_PRESSURE);
         const comfort = parseComfortZone(config.comfort_zone);
@@ -184,7 +190,30 @@ export class ComfortCompassCard extends LitElement {
         this._fahrenheitHint = comfort.range_t[1] > FAHRENHEIT_HINT_ABOVE;
         this._mollier ??= createMollier('classical');
         this._updateSizingMode();
-        if (this._hass) this._maybeFetch();
+        if (this._hass) {
+            this._maybeFetch();
+            this._updateCurrent();
+        }
+    }
+
+    // Live reading of the two sensors, classified like the daily means.
+    // Only replaced when what is shown changes (state key or the rounded
+    // values), because hass changes on every state change in Home Assistant.
+    _updateCurrent() {
+        const c = this._config;
+        let next = null;
+        if (c && c.show_current !== false && this._hass && this._mollier) {
+            const t = stateCelsius(this._hass.states[c.temperature_entity]);
+            const phi = stateHumidity(this._hass.states[c.humidity_entity]);
+            if (Number.isFinite(t) && Number.isFinite(phi)) {
+                const key = classifyRecord({ t, phi }, this._comfort, this._bands, this._pressure, this._mollier);
+                const x = this._mollier.get_x_y(t, phi, this._pressure).x;
+                if (key) next = { key, t, phi, x };
+            }
+        }
+        const prev = this._current;
+        const sig = (p) => (p ? `${p.key}|${p.t.toFixed(1)}|${(p.phi * 100).toFixed(0)}|${(p.x * 1000).toFixed(1)}` : '');
+        if (sig(prev) !== sig(next)) this._current = next;
     }
 
     set hass(hass) {
@@ -192,6 +221,7 @@ export class ComfortCompassCard extends LitElement {
         const langChanged = this._hass?.locale?.language !== hass?.locale?.language;
         const darkChanged = this._hass?.themes?.darkMode !== hass?.themes?.darkMode;
         this._hass = hass;
+        this._updateCurrent();
         if (first && this._config) this._maybeFetch();
         // A sensor that was missing has appeared (renamed back, integration loaded).
         else if (this._error?.key === 'card.entity_not_found' && !this._missing().length) this._maybeFetch(true);
@@ -274,7 +304,7 @@ export class ComfortCompassCard extends LitElement {
 
     // A tap anywhere on the card outside a segment closes an open tooltip.
     _onCardClick(ev) {
-        if (!ev.composedPath().some((el) => el.classList?.contains('seg'))) hideTips(this.renderRoot);
+        if (!ev.composedPath().some((el) => el.classList?.contains('seg') || el.classList?.contains('now-dot'))) hideTips(this.renderRoot);
     }
 
     render() {
@@ -296,6 +326,10 @@ export class ComfortCompassCard extends LitElement {
                 dark: !!this._hass?.themes?.darkMode,
                 boxW: this._box?.w,
                 boxH: this._box?.h,
+                current: this._current,
+                locale: this._hass?.locale?.language,
+                // Small tile: only the breathing marker, no "now" line, so the glyph keeps its room.
+                compact: this._compact,
             });
         }
         const title = c.title;

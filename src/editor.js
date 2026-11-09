@@ -18,7 +18,7 @@ const DEFAULTS = {
 // visibility, view_layout, card_mod, YAML-only options) is kept as it is.
 const OWNED_KEYS = [
     'type', 'temperature_entity', 'humidity_entity', 'title', 'days_to_show',
-    'altitude', 'pressure', 'comfort_zone', 'warning_bands', 'show_labels', 'show_legend', 'scale',
+    'altitude', 'pressure', 'comfort_zone', 'warning_bands', 'show_labels', 'show_legend', 'show_current', 'scale',
 ];
 
 const given = (v) => v !== undefined && v !== null && v !== '';
@@ -60,6 +60,7 @@ function configToData(c = {}) {
         red_dx: band('red', 'absolute_humidity', 'dx'),
         show_labels: c.show_labels !== false,
         show_legend: c.show_legend === true,
+        show_current: c.show_current !== false,
         fixed_scale: c.scale === 'fixed',
     };
 }
@@ -114,6 +115,7 @@ function dataToConfig(d, previous = {}) {
 
     if (!d.show_labels) config.show_labels = false;
     if (d.show_legend) config.show_legend = true;
+    if (d.show_current === false) config.show_current = false;
     if (d.fixed_scale) config.scale = 'fixed';
     return config;
 }
@@ -168,6 +170,7 @@ function buildSchema(d, t) {
                 schema: [
                     { name: 'show_labels', selector: { boolean: {} } },
                     { name: 'show_legend', selector: { boolean: {} } },
+                    { name: 'show_current', selector: { boolean: {} } },
                     { name: 'fixed_scale', selector: { boolean: {} } },
                 ],
             }],

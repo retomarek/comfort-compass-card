@@ -9,6 +9,7 @@
     "title": "Kompas komfortu",
     "day": "dzień",
     "days": "dni",
+    "now": "Teraz",
     "names": {
       "ok": "w zakresie",
       "w": "za ciepło",
@@ -58,6 +59,7 @@
       "red_dphi": "Umiarkowane do ± wilgotności",
       "red_dx": "Umiarkowane do ± wilg. bezwzględnej",
       "show_legend": "Pokaż legendę",
+      "show_current": "Pokaż bieżący stan",
       "show_labels": "Pokaż etykiety kierunków",
       "fixed_scale": "Stała skala (porównanie pomieszczeń)"
     },

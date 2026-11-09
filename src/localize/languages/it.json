@@ -9,6 +9,7 @@
     "title": "Bussola del comfort",
     "day": "giorno",
     "days": "giorni",
+    "now": "Ora",
     "names": {
       "ok": "nell'intervallo",
       "w": "troppo caldo",
@@ -58,6 +59,7 @@
       "red_dphi": "Moderato fino a ± umidità",
       "red_dx": "Moderato fino a ± umidità ass.",
       "show_legend": "Mostra legenda",
+      "show_current": "Mostra lo stato attuale",
       "show_labels": "Mostra etichette direzioni",
       "fixed_scale": "Scala fissa (confronta stanze)"
     },

@@ -9,6 +9,7 @@
     "title": "Brújula de confort",
     "day": "día",
     "days": "días",
+    "now": "Ahora",
     "names": {
       "ok": "en rango",
       "w": "demasiado cálido",
@@ -58,6 +59,7 @@
       "red_dphi": "Moderado hasta ± humedad",
       "red_dx": "Moderado hasta ± humedad abs.",
       "show_legend": "Mostrar leyenda",
+      "show_current": "Mostrar el estado actual",
       "show_labels": "Mostrar direcciones",
       "fixed_scale": "Escala fija (comparar habitaciones)"
     },

@@ -9,6 +9,7 @@
     "title": "Comfort compass",
     "day": "day",
     "days": "days",
+    "now": "Now",
     "names": {
       "ok": "in range",
       "w": "too warm",
@@ -58,6 +59,7 @@
       "red_dphi": "Moderate up to ± humidity",
       "red_dx": "Moderate up to ± abs. humidity",
       "show_legend": "Show legend",
+      "show_current": "Show current reading",
       "show_labels": "Show direction labels",
       "fixed_scale": "Fixed scale (compare rooms)"
     },
