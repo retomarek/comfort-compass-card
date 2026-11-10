@@ -59,7 +59,7 @@
       "red_dphi": "Moderado até ± umidade",
       "red_dx": "Moderado até ± umidade abs.",
       "show_legend": "Mostrar legenda",
-      "show_current": "Mostrar o estado atual",
+      "show_current": "Marcar o estado atual (pulsante)",
       "show_current_legend": "Mostrar o estado atual como texto",
       "show_labels": "Mostrar direções",
       "fixed_scale": "Escala fixa (comparar cômodos)"

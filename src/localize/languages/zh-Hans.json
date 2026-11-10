@@ -59,7 +59,7 @@
       "red_dphi": "中度上限 ± 湿度",
       "red_dx": "中度上限 ± 绝对湿度",
       "show_legend": "显示图例",
-      "show_current": "显示当前状态",
+      "show_current": "标记当前状态（呼吸动画）",
       "show_current_legend": "以文字显示当前状态",
       "show_labels": "显示方向标签",
       "fixed_scale": "固定刻度（比较房间）"

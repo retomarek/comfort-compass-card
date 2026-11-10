@@ -59,7 +59,7 @@
       "red_dphi": "Moderat op til ± luftfugtighed",
       "red_dx": "Moderat op til ± abs. luftfugtighed",
       "show_legend": "Vis signaturforklaring",
-      "show_current": "Vis aktuel tilstand",
+      "show_current": "Marker aktuel tilstand (pulserende)",
       "show_current_legend": "Vis aktuel tilstand som tekst",
       "show_labels": "Vis retningsetiketter",
       "fixed_scale": "Fast skala (sammenlign rum)"

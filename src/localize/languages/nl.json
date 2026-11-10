@@ -59,7 +59,7 @@
       "red_dphi": "Matig tot ± luchtvochtigheid",
       "red_dx": "Matig tot ± abs. vochtigheid",
       "show_legend": "Legenda tonen",
-      "show_current": "Huidige toestand tonen",
+      "show_current": "Huidige toestand markeren (ademend)",
       "show_current_legend": "Huidige toestand als tekst tonen",
       "show_labels": "Richtingslabels tonen",
       "fixed_scale": "Vaste schaal (ruimtes vergelijken)"

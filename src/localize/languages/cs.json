@@ -59,7 +59,7 @@
       "red_dphi": "Střední do ± vlhkosti",
       "red_dx": "Střední do ± abs. vlhkosti",
       "show_legend": "Zobrazit legendu",
-      "show_current": "Zobrazit aktuální stav",
+      "show_current": "Označit aktuální stav (pulzující)",
       "show_current_legend": "Zobrazit aktuální stav jako text",
       "show_labels": "Zobrazit popisky směrů",
       "fixed_scale": "Pevné měřítko (porovnání místností)"

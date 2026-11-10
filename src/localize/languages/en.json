@@ -59,7 +59,7 @@
       "red_dphi": "Moderate up to ± humidity",
       "red_dx": "Moderate up to ± abs. humidity",
       "show_legend": "Show legend",
-      "show_current": "Show current reading",
+      "show_current": "Mark current reading (breathing)",
       "show_current_legend": "Show current reading as text",
       "show_labels": "Show direction labels",
       "fixed_scale": "Fixed scale (compare rooms)"

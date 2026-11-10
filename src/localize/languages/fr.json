@@ -59,7 +59,7 @@
       "red_dphi": "Modéré jusqu'à ± humidité",
       "red_dx": "Modéré jusqu'à ± humidité abs.",
       "show_legend": "Afficher la légende",
-      "show_current": "Afficher l'état actuel",
+      "show_current": "Marquer l'état actuel (pulsation)",
       "show_current_legend": "Afficher l'état actuel en texte",
       "show_labels": "Afficher les directions",
       "fixed_scale": "Échelle fixe (comparer les pièces)"
