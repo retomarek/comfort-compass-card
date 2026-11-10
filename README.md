@@ -43,6 +43,7 @@ That is why the compass judges every day on both together: a day only counts as 
 - **Reads like an h,x diagram**: warm at the top, cold at the bottom, humid on the right, dry on the left.
 - **Severity from warning bands**: mild means inside the orange band, moderate inside the red band, severe beyond it. Relative **and** absolute humidity count.
 - **Says what green means**: the disc shows the share of days and the words *in range*; when the disc is too small for text, a line below the compass says it ("● 8 % in range").
+- **Shows where you are now**: the segment that matches the live sensor reading slowly breathes in its own colour, and a "Now" line gives the state and the values (`show_current`, `show_current_legend`).
 - **Hover or tap** a segment for its days and share. A legend is optional.
 - **Fits any dashboard**: the glyph is capped in size and centred, so it stays tidy at full width and fills a tile with a fixed height.
 - **Follows your theme**, light or dark, and your Home Assistant language (14 languages, see [Translations](#translations)).
@@ -136,6 +137,8 @@ The dashed circle is the area of **100 % of the days**. The green disc and the a
 - Each arm points in the direction of the deviation (warm up, cold down, humid right, dry left, mixes diagonal). From the inside out its segments are mild, moderate and severe, each with an area equal to its share of days.
 
 Hover or tap a segment for the number of days and its share.
+
+The segment that slowly breathes is where the room is **right now**: the live temperature and humidity are sorted into the same directions and stages as the daily means. If no day has been in that state yet, a small dot at the start of that arm marks it. The "Now" line names the state and the current values.
 
 ## Comparing rooms
 

@@ -194,8 +194,9 @@ const inkOn = (stageKey) => (stageKey === 'l' ? '#1f2733' : '#ffffff');
 // opts.showLabels (default true), opts.showLegend (default false),
 // opts.dark: theme is dark → direction labels use the light shade.
 // opts.current: live reading {key, t, phi, x} (key from classifyRecord) → the
-//   matching part of the glyph breathes (outline, or a dot where the segment
-//   would start when no day fell into that state yet) and a "now" line is shown.
+//   matching segment breathes in its own colour (or a dot where the segment
+//   would start when no day fell into that state yet).
+// opts.currentLegend (default true): also show the "now" line.
 export function renderCompass(dist, t, opts = {}) {
     const showLabels = opts.showLabels !== false;
     const labelShade = opts.dark ? 'l' : 's';
@@ -325,8 +326,7 @@ export function renderCompass(dist, t, opts = {}) {
     const pctInside = R > 0 && okFont * 1.1 <= R * 1.5 && okPct.length * 0.62 * okFont <= R * 1.45;
     const okTip = { bg: OK_COLOR, fg: '#ffffff', lines: [name('ok'), days(g('ok'))] };
 
-    // "Now" marker. The outline follows the shape it marks; its stroke width is
-    // tied to the label font, so it looks the same at every card size.
+    // Live reading: state, colour, values and tooltip for the "now" marker.
     const cur = opts.current && opts.current.key ? opts.current : null;
     const curDir = cur && cur.key !== 'ok' ? cur.key.split('_')[0] : null;
     const curStage = cur && cur.key !== 'ok' ? cur.key.split('_')[1] : null;
