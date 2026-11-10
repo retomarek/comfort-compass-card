@@ -55,6 +55,8 @@ const CASES = [
     { name: 'now-warm-legend-de', theme: 'light', lang: 'de', width: 560, layout: 'grid', config: { show_legend: true },
         states: { 'sensor.t': '27.4', 'sensor.h': '45' } },
     { name: 'now-humid-dark', theme: 'dark', lang: 'en', width: 330, layout: 'grid', states: { 'sensor.t': '22', 'sensor.h': '80' } },
+    { name: 'now-no-legend-line', theme: 'light', lang: 'de', width: 560, layout: 'grid', config: { show_legend: true, show_current_legend: false } },
+    { name: 'now-no-caption', theme: 'dark', lang: 'en', width: 330, layout: 'grid', config: { show_current_legend: false } },
     { name: 'now-off', theme: 'dark', lang: 'en', width: 330, layout: 'grid', config: { show_current: false } },
     { name: 'loading', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'pending', ready: '.placeholder' },
     { name: 'loading-fixed-4rows', theme: 'dark', lang: 'en', width: 330, layout: 'grid', rows: 4, data: 'pending', ready: '.placeholder' },

@@ -60,6 +60,7 @@
       "red_dx": "Moderato fino a ± umidità ass.",
       "show_legend": "Mostra legenda",
       "show_current": "Mostra lo stato attuale",
+      "show_current_legend": "Mostra lo stato attuale come testo",
       "show_labels": "Mostra etichette direzioni",
       "fixed_scale": "Scala fissa (confronta stanze)"
     },

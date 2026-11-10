@@ -60,6 +60,7 @@
       "red_dx": "Moderado hasta ± humedad abs.",
       "show_legend": "Mostrar leyenda",
       "show_current": "Mostrar el estado actual",
+      "show_current_legend": "Mostrar el estado actual como texto",
       "show_labels": "Mostrar direcciones",
       "fixed_scale": "Escala fija (comparar habitaciones)"
     },

@@ -215,34 +215,31 @@ export default css`
         font-weight: 600;
     }
 
-    /* Live reading: the matching part of the glyph breathes. */
-    .glyph .now {
-        fill: none;
-        stroke: var(--primary-text-color);
-        stroke-width: var(--now-w);
-        stroke-linejoin: round;
-        pointer-events: none;
-        animation: ccc-breathe 3s ease-in-out infinite;
+    /* Live reading: the matching segment breathes its own colour. Plain
+       opacity: Safari/WebKit does not reliably animate fill-opacity on SVG. */
+    .glyph .seg.live,
+    .glyph .now-dot {
+        animation: ccc-breathe 4s ease-in-out infinite;
+    }
+    /* White share text sits on the green disc: keep it readable. */
+    .glyph .seg.ok.live {
+        animation-name: ccc-breathe-ok;
+    }
+    @keyframes ccc-breathe-ok {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.75; }
     }
     .glyph .now-dot {
         stroke: var(--ccc-gap-color);
-        stroke-width: var(--now-w);
+        stroke-width: 1.5;
         cursor: pointer;
-        transform-box: fill-box;
-        transform-origin: center;
-        animation: ccc-pulse 3s ease-in-out infinite;
     }
     @keyframes ccc-breathe {
-        0%, 100% { stroke-opacity: 0.9; stroke-width: var(--now-w); }
-        50% { stroke-opacity: 0.2; stroke-width: var(--now-w2); }
-    }
-    @keyframes ccc-pulse {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.35); opacity: 0.6; }
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.45; }
     }
     .now-legend {
-        box-shadow: 0 0 0 2px var(--ccc-gap-color), 0 0 0 3.5px var(--primary-text-color);
-        animation: ccc-pulse 3s ease-in-out infinite;
+        animation: ccc-breathe 4s ease-in-out infinite;
     }
     .legend .now-row {
         padding-bottom: 6px;
@@ -276,7 +273,7 @@ export default css`
         .glyph .seg {
             transition: none;
         }
-        .glyph .now, .glyph .now-dot, .now-legend {
+        .glyph .seg.live, .glyph .now-dot, .now-legend {
             animation: none;
         }
     }

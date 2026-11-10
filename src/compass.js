@@ -276,8 +276,8 @@ export function renderCompass(dist, t, opts = {}) {
             box.y0 = Math.min(box.y0, top); box.y1 = Math.max(box.y1, top + h);
             return { ax, baseline: top + font * 0.875, anchor: pos.anchor, lines, color: STAGE_COLORS[DIRS[i]][labelShade] };
         });
-        // Room for the breathing "now" marker (wider stroke, scaled dot at an arm tip).
-        const pad = font / 3 + (opts.current ? font * 0.5 : 0);
+        // Room for the "now" dot at an arm tip.
+        const pad = font / 3 + (opts.current ? font * 0.4 : 0);
         return { font, lh, specs, vb: [box.x0 - pad, box.y0 - pad, box.x1 - box.x0 + 2 * pad, box.y1 - box.y0 + 2 * pad] };
     };
 
@@ -343,29 +343,25 @@ export function renderCompass(dist, t, opts = {}) {
     const curValues = !cur ? '' : `${nf(cur.t, 1)} °C · ${nf(cur.phi * 100, 0)} %`
         + (Number.isFinite(cur.x) ? ` · ${nf(cur.x * 1000, 1)} g/kg` : '');
     const curTip = cur ? { bg: curColor, fg: cur.key === 'ok' ? '#ffffff' : inkOn(curStage), lines: [`${t('compass.now')} · ${curName}`, curValues] } : null;
-    const sw = L.font * 0.28;
+    // "Now" marker: the matching segment breathes its own colour (fill
+    // opacity), so nothing is drawn on top of the glyph. Only when that state
+    // has no segment yet a small dot marks where it would start.
+    const liveKey = cur ? cur.key : null;
+    // The live segment's tip also names the current values (the only place
+    // they show when the "Now" line is switched off).
+    const nowLine = cur ? `${t('compass.now')}: ${curValues}` : '';
+    const withNow = (tip, key) => (key === liveKey ? { ...tip, lines: [...tip.lines, nowLine] } : tip);
     let nowMark = nothing;
-    if (cur) {
-        const style = `--now-w:${f2(sw)};--now-w2:${f2(sw * 2.6)}`;
-        const ring = rings.find((w) => w.key === cur.key);
-        if (cur.key === 'ok' && rGreen > 0) {
-            nowMark = svg`<circle class="now" style=${style} r=${f2(rGreen * K + sw)}></circle>`;
-        } else if (ring) {
-            nowMark = svg`<path class="now" style=${style} d=${sectorPath(ring.r1, ring.r2, ring.deg)}></path>`;
-        } else {
-            // No day in this state yet (or no green disc): a dot where that
-            // segment would start (its arm's edge), at the centre for "ok".
-            const [cx, cy] = cur.key === 'ok' ? [0, 0] : pt(stageR[cur.key], THETA[DIRS.indexOf(curDir)]);
-            nowMark = svg`<circle class="now-dot" cx=${f2(cx)} cy=${f2(cy)} r=${f2(L.font * 0.45)} fill=${curColor}
-                style=${`--now-w:${f2(sw)}`}
-                @pointerenter=${(ev) => onEnter(ev, curTip)} @pointerleave=${onLeave}
-                @pointerdown=${onDown} @click=${(ev) => onTap(ev, curTip)}></circle>`;
-        }
+    if (cur && !(cur.key === 'ok' ? rGreen > 0 : rings.some((w) => w.key === cur.key))) {
+        const [cx, cy] = cur.key === 'ok' ? [0, 0] : pt(stageR[cur.key], THETA[DIRS.indexOf(curDir)]);
+        nowMark = svg`<circle class="now-dot" cx=${f2(cx)} cy=${f2(cy)} r=${f2(L.font * 0.38)} fill=${curColor}
+            @pointerenter=${(ev) => onEnter(ev, curTip)} @pointerleave=${onLeave}
+            @pointerdown=${onDown} @click=${(ev) => onTap(ev, curTip)}></circle>`;
     }
 
     const legend = !opts.showLegend ? nothing : html`
         <div class="legend">
-            ${cur ? html`
+            ${cur && opts.currentLegend !== false ? html`
                 <div class="row now-row"><span class="dot now-legend" style="background:${curColor}"></span>
                     <span class="name"><b>${t('compass.now')}</b> · ${curName}<span class="now-values">${curValues}</span></span></div>` : nothing}
             ${rows.map((r) => html`
@@ -382,14 +378,14 @@ export function renderCompass(dist, t, opts = {}) {
     return html`
         <div class="compass-body ${opts.showLegend ? 'with-legend' : ''}">
             <div class="glyph-box">
-                <svg class="glyph" viewBox=${vb} role="img" aria-label=${t('compass.title')}>
+                <svg class="glyph" viewBox=${vb} role="img" aria-label=${cur ? `${t('compass.title')}. ${t('compass.now')}: ${curName}, ${curValues}` : t('compass.title')}>
                     <circle class="ref" r=${f2(R0 * K)}></circle>
-                    ${rGreen > 0 ? svg`<circle class="seg ok" r=${f2(rGreen * K)} fill=${OK_COLOR}
-                        @pointerenter=${(ev) => onEnter(ev, okTip)} @pointerleave=${onLeave}
-                        @pointerdown=${onDown} @click=${(ev) => onTap(ev, okTip)}></circle>` : nothing}
-                    ${rings.map((w) => svg`<path class="seg" d=${sectorPath(w.r1, w.r2, w.deg)} fill=${w.color}
-                        @pointerenter=${(ev) => onEnter(ev, w.tip)} @pointerleave=${onLeave}
-                        @pointerdown=${onDown} @click=${(ev) => onTap(ev, w.tip)}></path>`)}
+                    ${rGreen > 0 ? svg`<circle class="seg ok ${liveKey === 'ok' ? 'live' : ''}" r=${f2(rGreen * K)} fill=${OK_COLOR}
+                        @pointerenter=${(ev) => onEnter(ev, withNow(okTip, 'ok'))} @pointerleave=${onLeave}
+                        @pointerdown=${onDown} @click=${(ev) => onTap(ev, withNow(okTip, 'ok'))}></circle>` : nothing}
+                    ${rings.map((w) => svg`<path class="seg ${w.key === liveKey ? 'live' : ''}" d=${sectorPath(w.r1, w.r2, w.deg)} fill=${w.color}
+                        @pointerenter=${(ev) => onEnter(ev, withNow(w.tip, w.key))} @pointerleave=${onLeave}
+                        @pointerdown=${onDown} @click=${(ev) => onTap(ev, withNow(w.tip, w.key))}></path>`)}
                     ${wordInside ? svg`<text class="ok-pct" y=${f2(-blockH / 2 + okFont * 0.82)} text-anchor="middle" font-size=${f2(okFont)}>${okPct}</text>
                         <text class="ok-word" y=${f2(blockH / 2 - wordFont * 0.18)} text-anchor="middle" font-size=${f2(wordFont)}>${okWord}</text>`
                     : pctInside ? svg`<text class="ok-pct" y=${f2(okFont * 0.36)} text-anchor="middle" font-size=${f2(okFont)}>${okPct}</text>` : nothing}
@@ -400,7 +396,7 @@ export function renderCompass(dist, t, opts = {}) {
             ${legend}
             ${!wordInside && !opts.showLegend && total > 0 ? html`
                 <div class="ok-caption"><span class="dot" style="background:${OK_COLOR}"></span><b>${okPct}</b> ${okWord}</div>` : nothing}
-            ${cur && !opts.showLegend && !opts.compact ? html`
+            ${cur && opts.currentLegend !== false && !opts.showLegend && !opts.compact ? html`
                 <div class="now-caption" title=${curValues}><span class="dot now-legend" style="background:${curColor}"></span><b>${t('compass.now')}</b> ${curName}<span class="now-values inline">${curValues}</span></div>` : nothing}
             <div class="tip" role="tooltip"></div>
         </div>

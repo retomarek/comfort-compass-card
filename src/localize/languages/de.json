@@ -60,6 +60,7 @@
       "red_dx": "Mittel bis ± abs. Feuchte",
       "show_legend": "Legende anzeigen",
       "show_current": "Aktuellen Zustand anzeigen",
+      "show_current_legend": "Aktuellen Zustand als Text anzeigen",
       "show_labels": "Richtungen beschriften",
       "fixed_scale": "Feste Skala (Räume vergleichen)"
     },

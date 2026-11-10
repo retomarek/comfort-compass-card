@@ -60,6 +60,7 @@
       "red_dx": "Matig tot ± abs. vochtigheid",
       "show_legend": "Legenda tonen",
       "show_current": "Huidige toestand tonen",
+      "show_current_legend": "Huidige toestand als tekst tonen",
       "show_labels": "Richtingslabels tonen",
       "fixed_scale": "Vaste schaal (ruimtes vergelijken)"
     },

@@ -60,6 +60,7 @@
       "red_dx": "Måttlig upp till ± abs. luftfuktighet",
       "show_legend": "Visa teckenförklaring",
       "show_current": "Visa aktuellt läge",
+      "show_current_legend": "Visa aktuellt läge som text",
       "show_labels": "Visa riktningsetiketter",
       "fixed_scale": "Fast skala (jämför rum)"
     },

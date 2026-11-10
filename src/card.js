@@ -172,8 +172,10 @@ export class ComfortCompassCard extends LitElement {
         if (!SCALES.includes(scale)) {
             throw new Error(`scale must be one of ${SCALES.join(', ')} (got ${JSON.stringify(config.scale)})`);
         }
-        if (given(config.show_current) && typeof config.show_current !== 'boolean') {
-            throw new Error(`show_current must be true or false (got ${JSON.stringify(config.show_current)})`);
+        for (const key of ['show_current', 'show_current_legend']) {
+            if (given(config[key]) && typeof config[key] !== 'boolean') {
+                throw new Error(`${key} must be true or false (got ${JSON.stringify(config[key])})`);
+            }
         }
         const period = daysFromConfig(config, DEFAULT_DAYS);
         const pressure = pressureFromConfig(config, DEFAULT_PRESSURE);
@@ -327,6 +329,7 @@ export class ComfortCompassCard extends LitElement {
                 boxW: this._box?.w,
                 boxH: this._box?.h,
                 current: this._current,
+                currentLegend: c.show_current_legend !== false,
                 locale: this._hass?.locale?.language,
                 // Small tile: only the breathing marker, no "now" line, so the glyph keeps its room.
                 compact: this._compact,

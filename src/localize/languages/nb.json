@@ -60,6 +60,7 @@
       "red_dx": "Moderat opptil ± abs. luftfuktighet",
       "show_legend": "Vis forklaring",
       "show_current": "Vis nåværende tilstand",
+      "show_current_legend": "Vis nåværende tilstand som tekst",
       "show_labels": "Vis retningsetiketter",
       "fixed_scale": "Fast skala (sammenlign rom)"
     },

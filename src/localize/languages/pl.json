@@ -60,6 +60,7 @@
       "red_dx": "Umiarkowane do ± wilg. bezwzględnej",
       "show_legend": "Pokaż legendę",
       "show_current": "Pokaż bieżący stan",
+      "show_current_legend": "Pokaż bieżący stan jako tekst",
       "show_labels": "Pokaż etykiety kierunków",
       "fixed_scale": "Stała skala (porównanie pomieszczeń)"
     },
