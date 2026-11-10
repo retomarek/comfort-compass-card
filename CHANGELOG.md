@@ -4,9 +4,15 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.0.0-rc.4] - 2026-11-10
+
 ### Added
 
 - `show_current` (default on): the live reading of the two sensors is classified like the daily means and the matching segment slowly breathes in its own colour; a "Now" line names the state and the values (in the legend when it is shown). Editor switch under Display. `show_current_legend: false` hides the "Now" line and keeps only the marker.
+
+### Changed
+
+- The dashed 100 % reference circle is drawn a touch stronger, so it stays visible on dark themes.
 
 ## [1.0.0-rc.3] - 2026-11-06
 
@@ -103,7 +109,8 @@ First test version. The comfort compass was part of the [Mollier hx Card](https:
 - Fahrenheit sensors supported (statistics requested in °C); hourly refresh, retry after a failed load; only completed days are counted.
 - Claude Code setup for contributors: `card-reviewer` agent, `visual-check` and `release` skills (`npm run visual-check`).
 
-[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.3...HEAD
+[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.4...HEAD
+[1.0.0-rc.4]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.4
 [1.0.0-rc.3]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.3
 [1.0.0-rc.2]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.2
 [1.0.0-rc.1]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.1
