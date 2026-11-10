@@ -98,7 +98,10 @@
 
     .glyph .ref {
         fill: none;
-        stroke: var(--divider-color, #b9c0ca);
+        /* A touch stronger than the divider colour, which is nearly
+           invisible on dark themes. */
+        stroke: var(--secondary-text-color, #8a8f98);
+        stroke-opacity: 0.4;
         stroke-width: 1;
         stroke-dasharray: 3 3;
     }
