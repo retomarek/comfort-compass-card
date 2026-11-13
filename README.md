@@ -173,7 +173,7 @@ Every palette keeps the meaning of the compass: warm is reddish at the top, cold
   <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/palettes.png" alt="All colour palettes of the comfort compass, each on a dark and a light theme" width="100%">
 </p>
 
-The overview is rendered from the real card on every push to `main` (`npm run screenshots`), so it always matches the current palettes.
+The overview is rendered from the real card on every code push to `main` (`npm run screenshots`), so it always matches the current palettes.
 
 | `palette` | Style | Theme | Notes |
 | --- | --- | --- | --- |
