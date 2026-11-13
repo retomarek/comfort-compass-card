@@ -13,6 +13,7 @@
 
 import { html, svg, nothing } from 'lit';
 import { parseWarningBands } from './bands.js';
+import { DEFAULT_PALETTE, resolvePalette } from './palettes.js';
 
 // --- classification (pyedautils.comfort.comfort_compass_distribution) ------
 
@@ -84,18 +85,6 @@ export function compassDistribution(records, cz, bands, pressure, mollier) {
 
 // --- glyph (pyedautils.plots.comfort.plot_comfort_compass) -------------------
 
-const OK_COLOR = '#22C55E';
-const STAGE_COLORS = {
-    w: { l: '#e49e93', d: '#cf6e60', s: '#b04336' },
-    wf: { l: '#dc9dbb', d: '#c66d9a', s: '#a64278' },
-    f: { l: '#baa7e2', d: '#9a7ccf', s: '#7954b3' },
-    kf: { l: '#9eb0ea', d: '#7289da', s: '#4e63bf' },
-    c: { l: '#82b9e5', d: '#3d96d4', s: '#0072af' },
-    ct: { l: '#afb982', d: '#8b955f', s: '#69713d' },
-    t: { l: '#d6a977', d: '#bf7f29', s: '#965d00' },
-    wt: { l: '#e0a383', d: '#cb7545', s: '#ab4b00' },
-};
-const STAGE_GREYS = { l: '#b2b2b2', d: '#8e8e8e', s: '#6c6c6c' };
 const THETA = [0, 45, 90, 135, 180, 225, 270, 315];
 const R0 = 1.0;
 const AREA = Math.PI * R0 * R0;
@@ -184,22 +173,23 @@ function onTap(ev, tip) {
     else showTip(el, tip, true);
 }
 
-// Readable text on a segment colour: dark ink on the light "mild" plane.
-const inkOn = (stageKey) => (stageKey === 'l' ? '#1f2733' : '#ffffff');
-
 // t(key, vars) is the card's localize() bound to hass.
 // opts.fixedScale: frame to the worst case (pyedautils fixed_scale=True), so the
 //   dashed 100 % circle has the same size in every card and rooms are comparable.
 //   Default: zoom to this glyph so it fills the space.
 // opts.showLabels (default true), opts.showLegend (default false),
-// opts.dark: theme is dark → direction labels use the light shade.
+// opts.dark: theme is dark → direction labels use the lightest shade, and
+//   palettes with a dark variant use it.
+// opts.palette: palette name (src/palettes.js), default 'default'.
 // opts.current: live reading {key, t, phi, x} (key from classifyRecord) → the
 //   matching segment breathes in its own colour (or a dot where the segment
 //   would start when no day fell into that state yet).
 // opts.currentLegend (default true): also show the "now" line.
 export function renderCompass(dist, t, opts = {}) {
     const showLabels = opts.showLabels !== false;
-    const labelShade = opts.dark ? 'l' : 's';
+    const pal = resolvePalette(opts.palette || DEFAULT_PALETTE, !!opts.dark);
+    const OK_COLOR = pal.ok;
+    const STAGE_COLORS = pal.stages;
     const g = (k) => Number(dist[k] || 0);
     const total = Object.values(dist).reduce((a, v) => a + Number(v || 0), 0);
     const frac = (k) => (total ? g(k) / total : 0);
@@ -229,7 +219,7 @@ export function renderCompass(dist, t, opts = {}) {
                 rings.push({
                     key: `${k}_${st}`, r1: rPrev, r2: rNext, deg: THETA[i], color: STAGE_COLORS[k][st],
                     tip: {
-                        bg: STAGE_COLORS[k][st], fg: inkOn(st),
+                        bg: STAGE_COLORS[k][st], fg: pal.ink(k, st),
                         // Only the hovered segment: direction · stage and its days.
                         lines: [`${name(k)} · ${stage(st)}`, days(cnt)],
                     },
@@ -275,7 +265,7 @@ export function renderCompass(dist, t, opts = {}) {
             const left = pos.anchor === 'start' ? ax : pos.anchor === 'end' ? ax - w : ax - w / 2;
             box.x0 = Math.min(box.x0, left); box.x1 = Math.max(box.x1, left + w);
             box.y0 = Math.min(box.y0, top); box.y1 = Math.max(box.y1, top + h);
-            return { ax, baseline: top + font * 0.875, anchor: pos.anchor, lines, color: STAGE_COLORS[DIRS[i]][labelShade] };
+            return { ax, baseline: top + font * 0.875, anchor: pos.anchor, lines, color: pal.labelColor(DIRS[i], !!opts.dark) };
         });
         // Room for the "now" dot at an arm tip.
         const pad = font / 3 + (opts.current ? font * 0.4 : 0);
@@ -324,7 +314,7 @@ export function renderCompass(dist, t, opts = {}) {
     const blockW = Math.max(okPct.length * 0.62 * okFont, okWord.length * CHAR_W * wordFont);
     const wordInside = R > 0 && blockH <= R * 1.45 && blockW <= R * 1.8;
     const pctInside = R > 0 && okFont * 1.1 <= R * 1.5 && okPct.length * 0.62 * okFont <= R * 1.45;
-    const okTip = { bg: OK_COLOR, fg: '#ffffff', lines: [name('ok'), days(g('ok'))] };
+    const okTip = { bg: OK_COLOR, fg: pal.okInk, lines: [name('ok'), days(g('ok'))] };
 
     // Live reading: state, colour, values and tooltip for the "now" marker.
     const cur = opts.current && opts.current.key ? opts.current : null;
@@ -342,7 +332,7 @@ export function renderCompass(dist, t, opts = {}) {
     };
     const curValues = !cur ? '' : `${nf(cur.t, 1)} °C · ${nf(cur.phi * 100, 0)} %`
         + (Number.isFinite(cur.x) ? ` · ${nf(cur.x * 1000, 1)} g/kg` : '');
-    const curTip = cur ? { bg: curColor, fg: cur.key === 'ok' ? '#ffffff' : inkOn(curStage), lines: [`${t('compass.now')} · ${curName}`, curValues] } : null;
+    const curTip = cur ? { bg: curColor, fg: cur.key === 'ok' ? pal.okInk : pal.ink(curDir, curStage), lines: [`${t('compass.now')} · ${curName}`, curValues] } : null;
     // "Now" marker: the matching segment breathes its own colour (fill
     // opacity), so nothing is drawn on top of the glyph. Only when that state
     // has no segment yet a small dot marks where it would start.
@@ -371,14 +361,14 @@ export function renderCompass(dist, t, opts = {}) {
                     <span class="share">${pct(r.cnt)}%</span></div>`)}
             ${devs.length ? html`
                 <div class="stage-key">
-                    ${STAGES.map((st) => html`<span><span class="dot" style="background:${STAGE_GREYS[st]}"></span>${stage(st)}</span>`)}
+                    ${STAGES.map((st) => html`<span><span class="dot" style="background:${pal.greys[st]}"></span>${stage(st)}</span>`)}
                 </div>` : nothing}
         </div>`;
 
     return html`
         <div class="compass-body ${opts.showLegend ? 'with-legend' : ''}">
             <div class="glyph-box">
-                <svg class="glyph" viewBox=${vb} role="img" aria-label=${cur ? `${t('compass.title')}. ${t('compass.now')}: ${curName}, ${curValues}` : t('compass.title')}>
+                <svg class="glyph" style="--ccc-ok-ink:${pal.okInk}" viewBox=${vb} role="img" aria-label=${cur ? `${t('compass.title')}. ${t('compass.now')}: ${curName}, ${curValues}` : t('compass.title')}>
                     <circle class="ref" r=${f2(R0 * K)}></circle>
                     ${rGreen > 0 ? svg`<circle class="seg ok ${liveKey === 'ok' ? 'live' : ''}" r=${f2(rGreen * K)} fill=${OK_COLOR}
                         @pointerenter=${(ev) => onEnter(ev, withNow(okTip, 'ok'))} @pointerleave=${onLeave}

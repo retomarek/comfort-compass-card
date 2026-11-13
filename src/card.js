@@ -8,6 +8,7 @@ import {
     stateCelsius, stateHumidity,
 } from './statistics.js';
 import styles from './card.styles.js';
+import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
 const DEFAULT_DAYS = 30;
 const DEFAULT_PRESSURE = 101325;
@@ -172,6 +173,10 @@ export class ComfortCompassCard extends LitElement {
         if (!SCALES.includes(scale)) {
             throw new Error(`scale must be one of ${SCALES.join(', ')} (got ${JSON.stringify(config.scale)})`);
         }
+        const palette = given(config.palette) ? config.palette : DEFAULT_PALETTE;
+        if (!PALETTE_NAMES.includes(palette)) {
+            throw new Error(`palette must be one of ${PALETTE_NAMES.join(', ')} (got ${JSON.stringify(config.palette)})`);
+        }
         for (const key of ['show_current', 'show_current_legend']) {
             if (given(config[key]) && typeof config[key] !== 'boolean') {
                 throw new Error(`${key} must be true or false (got ${JSON.stringify(config[key])})`);
@@ -185,6 +190,7 @@ export class ComfortCompassCard extends LitElement {
 
         this._config = config;
         this._scale = scale;
+        this._palette = palette;
         this._period = period;
         this._pressure = pressure;
         this._comfort = comfort;
@@ -326,6 +332,7 @@ export class ComfortCompassCard extends LitElement {
                 showLegend: c.show_legend === true,
                 showLabels: c.show_labels !== false && !this._compact,
                 dark: !!this._hass?.themes?.darkMode,
+                palette: this._palette,
                 boxW: this._box?.w,
                 boxH: this._box?.h,
                 current: this._current,

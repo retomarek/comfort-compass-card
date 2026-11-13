@@ -1,5 +1,6 @@
 // Renders the built card (dist/comfort-compass-card.js) with deterministic sample
-// data in headless Chrome and writes the README images to docs/.
+// data in headless Chrome and writes the README images to docs/, including the
+// palette overview docs/palettes.png (every palette, dark and light theme).
 //
 //   npm run build && npm run screenshots
 //
@@ -101,6 +102,89 @@ function page(shot) {
 </script></body></html>`;
 }
 
+// --- palette overview --------------------------------------------------------
+// One tile per palette: the card on a dark and on a light theme side by side.
+// The sample days spread over all eight directions and three stages, so every
+// colour of a palette shows. Names come from the editor labels (en.json).
+const EN = JSON.parse(readFileSync(resolve(root, 'src/localize/languages/en.json'), 'utf8'));
+const PALETTE_NAMES = Object.keys(EN.editor.palettes);
+const GALLERY_COLS = 3;
+const GALLERY_CARD = 250;
+
+function galleryPage() {
+    const tiles = PALETTE_NAMES.map((p) => `
+  <figure class="tile"><figcaption><b>${EN.editor.palettes[p]}</b><code>palette: ${p}</code></figcaption>
+    <div class="pair">
+      <div class="th dark"><comfort-compass-card data-palette="${p}" data-dark="1"></comfort-compass-card></div>
+      <div class="th light"><comfort-compass-card data-palette="${p}" data-dark=""></comfort-compass-card></div>
+    </div></figure>`).join('');
+    const d = THEMES.dark, l = THEMES.light;
+    return `<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<style>
+  html, body { margin: 0; background: #f3f4f6; }
+  body { padding: 20px; font-family: Roboto, "Noto Sans", sans-serif; }
+  #wrap { display: grid; grid-template-columns: repeat(${GALLERY_COLS}, auto); gap: 18px; width: max-content; }
+  .tile { margin: 0; background: #ffffff; border: 1px solid #e3e5e8; border-radius: 14px; padding: 10px 10px 10px; }
+  figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 2px 4px 8px;
+    font-size: 15px; color: #1f2733; }
+  figcaption code { font: 12px/1 "DejaVu Sans Mono", monospace; color: #6b7280; }
+  .pair { display: grid; grid-template-columns: repeat(2, ${GALLERY_CARD}px); gap: 8px; }
+  .th { border-radius: 12px; }
+  .th.dark { --primary-text-color: ${d.text}; --secondary-text-color: ${d.muted}; --divider-color: ${d.divider};
+    --ha-card-background: ${d.card}; --card-background-color: ${d.card}; color: ${d.text}; }
+  .th.light { --primary-text-color: ${l.text}; --secondary-text-color: ${l.muted}; --divider-color: ${l.divider};
+    --ha-card-background: ${l.card}; --card-background-color: ${l.card}; color: ${l.text}; }
+</style></head><body><div id="wrap">${tiles}</div>
+<script>
+  customElements.define('ha-card', class extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: 'open' }).innerHTML =
+        '<style>:host{display:block;background:var(--ha-card-background);border-radius:12px;border:1px solid var(--divider-color);overflow:hidden;color:var(--primary-text-color)}</style><slot></slot>';
+    }
+    set header(h) {}
+  });
+</script>
+<script>${bundle.replace(/<\/script/g, '<\\/script')}</script>
+<script>
+  // Deterministic days around the default comfort zone (20–26 °C, 30–65 %):
+  // 110 in range and, per direction, mild / moderate / severe days.
+  const T = 'sensor.t', H = 'sensor.h', tR = [], hR = [];
+  const pts = [];
+  for (let i = 0; i < 110; i++) pts.push([23 + ((i * 7) % 9 - 4) * 0.6, 47 + ((i * 5) % 11 - 5) * 2.5]);
+  // [dt sign, dphi sign, weight] per direction; offsets per stage.
+  const dirs = [[1, 0, 5], [1, 1, 4], [0, 1, 4], [-1, 1, 3], [-1, 0, 4], [-1, -1, 3], [0, -1, 4], [1, -1, 3]];
+  const off = [[0.5, 2.5, 3], [1.7, 7.5, 2], [3.6, 15, 1]];
+  for (const [st, sh, wgt] of dirs) {
+    off.forEach(([dt, dp, n]) => {
+      for (let j = 0; j < Math.round(wgt * n / 2) + 1; j++) {
+        const t = st > 0 ? 26 + dt : st < 0 ? 20 - dt : 23;
+        const h = sh > 0 ? 65 + dp : sh < 0 ? 30 - dp : 47;
+        pts.push([t, h]);
+      }
+    });
+  }
+  const end = Date.UTC(2026, 10, 5);
+  pts.forEach(([t, h], i) => {
+    const s = new Date(end - (pts.length - i) * 86400000).toISOString();
+    tR.push({ start: s, mean: t }); hR.push({ start: s, mean: h });
+  });
+  for (const card of document.querySelectorAll('comfort-compass-card')) {
+    card.setConfig({
+      type: 'custom:comfort-compass-card', temperature_entity: T, humidity_entity: H,
+      days_to_show: pts.length + 5, comfort_zone: { temperature: [20, 26], humidity: [30, 65] },
+      show_current: false, palette: card.dataset.palette,
+    });
+    card.hass = {
+      language: 'en', locale: { language: 'en' }, themes: { darkMode: !!card.dataset.dark },
+      states: { [T]: { state: '23' }, [H]: { state: '47' } },
+      callWS: async () => ({ [T]: tR, [H]: hR }),
+    };
+  }
+</script></body></html>`;
+}
+
 const browser = await puppeteer.launch({
     executablePath: findChrome(),
     headless: true,
@@ -122,6 +206,19 @@ try {
         console.log(`docs/${shot.file}`);
         await tab.close();
     }
+    const tab = await browser.newPage();
+    await tab.setViewport({ width: 1800, height: 1200, deviceScaleFactor: 2 });
+    await tab.setContent(galleryPage(), { waitUntil: 'networkidle0' });
+    await tab.evaluate(() => document.fonts.ready);
+    await tab.waitForFunction((n) => {
+        const cards = [...document.querySelectorAll('comfort-compass-card')];
+        return cards.length === n && cards.every((c) => c.shadowRoot?.querySelector('.glyph .seg'));
+    }, { timeout: 30000 }, PALETTE_NAMES.length * 2);
+    // Let the cards size their labels to the measured glyph box.
+    await new Promise((r) => setTimeout(r, 400));
+    await (await tab.$('#wrap')).screenshot({ path: resolve(outDir, 'palettes.png') });
+    console.log('docs/palettes.png');
+    await tab.close();
 } finally {
     await browser.close();
 }

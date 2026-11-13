@@ -10,7 +10,7 @@ A Home Assistant custom dashboard card (Lit + Parcel, no D3) distributed through
 
 - `npm run build`: Parcel production build (no cache), `src/comfort-compass-card.js` → `dist/comfort-compass-card.js`. Commit `dist/` too.
 - `npm run watch`: development build.
-- `npm run screenshots`: renders the built bundle with deterministic sample data in headless Chrome (`puppeteer-core`, browser from `$CHROME_PATH` or PATH) into `docs/screenshot*.png`. CI does the same on every push to `main` (`.github/workflows/screenshots.yaml`).
+- `npm run screenshots`: renders the built bundle with deterministic sample data in headless Chrome (`puppeteer-core`, browser from `$CHROME_PATH` or PATH) into `docs/screenshot*.png` and the palette overview `docs/palettes.png`. CI does the same on every push to `main` (`.github/workflows/screenshots.yaml`).
 - `npm run social-preview`: re-renders `docs/banner.png` (README header) and `docs/social-preview.png` from `scripts/banner.html` / `scripts/social-preview.html` (upload manually: repo Settings → General → Social preview).
 
 No tests, linter or typechecker.
@@ -20,6 +20,7 @@ No tests, linter or typechecker.
 - `src/comfort-compass-card.js`: entry; registers `comfort-compass-card` and `comfort-compass-card-editor`, `window.customCards`, console version banner (keep `version` in sync with `package.json`).
 - `src/card.js`: `ComfortCompassCard` (LitElement). `setConfig` validates everything before taking the config (throws clear errors), parses comfort zone (user units → °C / 0..1 / kg/kg; a given zone without `absolute_humidity` → `range_x: null`, relative humidity only), bands, pressure/altitude and `days_to_show` (via `src/statistics.js`). First `hass` triggers `recorder/statistics_during_period` (period day, mean); loading shows an empty placeholder, failures retry with `RETRY_MS` back-off. Reactive props are initialised in the constructor, never as class fields (a class field shadows Lit's accessor and breaks re-rendering).
 - `src/compass.js`: `compassDistribution()` is a 1:1 port of `pyedautils.comfort.comfort_compass_distribution` (stage limits = band offsets, humidity judged relative OR absolute). `renderCompass()` draws the glyph as a Lit `svg` template (area-true wedges, labels hugging each arm, viewBox computed from the content) plus optional legend and a hover/tap tooltip.
+- `src/palettes.js`: `palette` option. Per palette one base colour per direction (+ `ok`), optional `dark` / `light` variants picked by `hass.themes.darkMode`; stages derived in OKLCH (`ramp` 'down' = mild light → severe dark, 'up' = mild dim → severe bright for dark cards). `default` keeps the original explicit colours and ink. Labels are adjusted to WCAG AA against the default card backgrounds. New palette: add it here and its label in `en.json` / `de.json` (`editor.palettes`); `docs/palettes.png` picks it up from `en.json`.
 - `src/bands.js`: band parsing and defaults, shared with mollier-hx-card. Keep in sync.
 - `src/statistics.js`: statistics fetch and config helpers (days, pressure, missing entities), shared with mollier-hx-card. Keep in sync.
 - `src/vendor/mollierFunctions.js`: verbatim from pyedautils `data/d3_mollierhx` (+ ES exports); used for absolute humidity.

@@ -46,6 +46,7 @@ That is why the compass judges every day on both together: a day only counts as 
 - **Shows where you are now**: the segment that matches the live sensor reading slowly breathes in its own colour, and a "Now" line gives the state and the values (`show_current`, `show_current_legend`).
 - **Hover or tap** a segment for its days and share. A legend is optional.
 - **Fits any dashboard**: the glyph is capped in size and centred, so it stays tidy at full width and fills a tile with a fixed height.
+- **18 colour palettes**: neon, colour-blind safe, high contrast, pastel, Nord, Dracula, Catppuccin, retro, vintage and more, readable on light and dark themes, several with their own dark and light variants (see [Colour palettes](#colour-palettes)).
 - **Follows your theme**, light or dark, and your Home Assistant language (14 languages, see [Translations](#translations)).
 - **Visual editor** with entity pickers limited to sensors that have long-term statistics.
 - Pairs with the [Mollier hx Card](https://github.com/retomarek/mollier-hx-card), which uses the same comfort zone and warning bands.
@@ -91,6 +92,7 @@ days_to_show: 90
 | `show_labels` | boolean | `true` | Name the eight directions around the compass. |
 | `show_current` | boolean | `true` | Mark the live reading of the two sensors: the matching segment slowly breathes in its own colour (a small dot where that segment would start when no day fell into that state yet), and a "Now" line below the compass or at the top of the legend names the state and the values. In very small tiles only the marker is shown. Without animation when the device asks for reduced motion (iOS/iPadOS: Settings → Accessibility → Motion → Reduce Motion; macOS: System Settings → Accessibility → Display → Reduce motion; Windows: Settings → Accessibility → Visual effects → Animation effects; Android: Settings → Accessibility → Remove animations). |
 | `show_current_legend` | boolean | `true` | Show the "Now" line with the state and the values (below the compass, or at the top of the legend). Set to `false` to keep only the breathing marker; the values then show in the tooltip of the breathing segment. Needs `show_current`. |
+| `palette` | string | `default` | Colour palette, see [Colour palettes](#colour-palettes). |
 | `scale` | `fit` \| `fixed` | `fit` | `fit` zooms to this compass so it fills the card. `fixed` keeps the dashed 100 % circle the same size in every card, so several rooms can be compared by area. See [Comparing rooms](#comparing-rooms). |
 
 Invalid values (an unknown `scale`, a `comfort_zone` without a `[min, max]` pair for temperature or humidity, `days_to_show` below 1, a pressure or altitude outside the ranges above) give a clear error message instead of a wrong compass. Longer periods than 3650 days are cut to 3650.
@@ -153,6 +155,48 @@ humidity_entity: sensor.bedroom_humidity
 title: Bedroom
 scale: fixed
 ```
+
+## Colour palettes
+
+Pick a palette under *Display → Colour palette* in the editor, or in YAML:
+
+```yaml
+type: custom:comfort-compass-card
+temperature_entity: sensor.living_room_temperature
+humidity_entity: sensor.living_room_humidity
+palette: okabe_ito
+```
+
+Every palette keeps the meaning of the compass: warm is reddish at the top, cold bluish at the bottom, humid on the right, dry on the left, and the centre colour for *in range* stands out. Each direction gets one base colour; the card derives mild, moderate and severe from it (same hue, stepped lightness), so the severity always reads as a ramp. Palettes marked *dark / light* switch automatically with your Home Assistant theme: on dark themes they glow (mild dim, severe bright), on light themes they use deeper tones. Direction labels are darkened or lightened when needed so they stay readable (WCAG AA contrast against Home Assistant's default card backgrounds; very unusual theme colours can still lower it).
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/retomarek/comfort-compass-card/main/docs/palettes.png" alt="All colour palettes of the comfort compass, each on a dark and a light theme" width="100%">
+</p>
+
+The overview is rendered from the real card on every push to `main` (`npm run screenshots`), so it always matches the current palettes.
+
+| `palette` | Style | Theme | Notes |
+| --- | --- | --- | --- |
+| `default` | soft, clear | both | The original look. |
+| `neon` | glowing | dark / light | Bright neon on dark cards, deep saturated colours on light ones. |
+| `okabe_ito` | colour-blind safe | both | Based on the Okabe & Ito palette, the standard for colour-vision deficiencies; two neutral tones fill the gaps. |
+| `tol_muted` | colour-blind safe, calm | both | Paul Tol's *muted* scheme. |
+| `high_contrast` | strong | dark / light | Clearly separated colours with high contrast, for low vision or bright rooms. |
+| `pastel` | soft pastels | both | Chalk on paper. |
+| `material` | Home Assistant | both | Material Design colours, the same named colours as Home Assistant's tile cards and Mushroom. |
+| `nord` | arctic, muted | both | Nord's frost blues and aurora colours. |
+| `dracula` | dark classic | dark / light | Dracula on dark themes, Alucard on light ones. |
+| `catppuccin` | pastel, modern | dark / light | Mocha on dark themes, Latte on light ones. |
+| `solarized` | classic | both | Solarized accent colours. |
+| `gruvbox` | retro | dark / light | Warm retro colours. |
+| `tokyo_night` | night | dark / light | Deep night blue with neon accents. |
+| `bauhaus` | design classic | both | Primary red, yellow and blue. |
+| `vintage` | old-fashioned | both | Faded print colours, like an old atlas. |
+| `earth` | natural | both | Forest, clay, sand and lake. |
+| `sunset` | warm, cheerful | both | Coral, rose and violet over a cool sea. |
+| `minimal` | calm | both | Only *in range* in colour, every deviation in neutral grey; the labels name the directions. |
+
+The colours of `nord`, `dracula`, `catppuccin`, `solarized`, `gruvbox` and `tokyo_night` are taken from the open-source colour schemes of the same name (all MIT licensed), so the card matches the popular Home Assistant themes built on them. Missing your favourite? Open a [feature request](https://github.com/retomarek/comfort-compass-card/issues/new/choose); a new palette is one entry in [`src/palettes.js`](src/palettes.js).
 
 ## Good for people and the environment
 

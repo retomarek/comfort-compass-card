@@ -4,6 +4,15 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+### Added
+
+- `palette`: 18 colour palettes (default, neon, colour-blind safe Okabe-Ito and Paul Tol, high contrast, pastel, Material, Nord, Dracula, Catppuccin, Solarized, Gruvbox, Tokyo Night, Bauhaus, vintage, earth, sunset, minimal). Palettes with dark and light variants follow the Home Assistant theme. Editor dropdown under Display.
+- README: palette overview image `docs/palettes.png`, rendered from the real card on every push to `main`.
+
+### Changed
+
+- Direction labels are lightened or darkened when needed to stay readable (WCAG AA against the default card backgrounds); the default palette is unchanged.
+
 ## [1.0.0-rc.4] - 2026-11-10
 
 ### Added

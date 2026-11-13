@@ -127,12 +127,12 @@ export default css`
         opacity: 0.55;
     }
     .glyph .ok-pct {
-        fill: #ffffff;
+        fill: var(--ccc-ok-ink, #ffffff);
         font-weight: 600;
         pointer-events: none;
     }
     .glyph .ok-word {
-        fill: #ffffff;
+        fill: var(--ccc-ok-ink, #ffffff);
         font-weight: 500;
         pointer-events: none;
     }

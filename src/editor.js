@@ -3,6 +3,7 @@ import { localize } from './localize/localize.js';
 import { DEFAULT_BANDS } from './bands.js';
 import { DEFAULT_COMFORT_ZONE } from './card.js';
 import { MAX_DAYS } from './statistics.js';
+import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
 // Visual editor on Home Assistant's <ha-form>. The form data is flat, the
 // YAML config nested; configToData / dataToConfig translate between them.
@@ -18,7 +19,7 @@ const DEFAULTS = {
 // visibility, view_layout, card_mod, YAML-only options) is kept as it is.
 const OWNED_KEYS = [
     'type', 'temperature_entity', 'humidity_entity', 'title', 'days_to_show',
-    'altitude', 'pressure', 'comfort_zone', 'warning_bands', 'show_labels', 'show_legend', 'show_current', 'show_current_legend', 'scale',
+    'altitude', 'pressure', 'comfort_zone', 'warning_bands', 'show_labels', 'show_legend', 'show_current', 'show_current_legend', 'scale', 'palette',
 ];
 
 const given = (v) => v !== undefined && v !== null && v !== '';
@@ -63,6 +64,7 @@ function configToData(c = {}) {
         show_current: c.show_current !== false,
         show_current_legend: c.show_current_legend !== false,
         fixed_scale: c.scale === 'fixed',
+        palette: PALETTE_NAMES.includes(c.palette) ? c.palette : DEFAULT_PALETTE,
     };
 }
 
@@ -119,6 +121,7 @@ function dataToConfig(d, previous = {}) {
     if (d.show_current === false) config.show_current = false;
     if (d.show_current_legend === false) config.show_current_legend = false;
     if (d.fixed_scale) config.scale = 'fixed';
+    if (d.palette && d.palette !== DEFAULT_PALETTE) config.palette = d.palette;
     return config;
 }
 
@@ -168,6 +171,14 @@ function buildSchema(d, t) {
             type: 'expandable',
             title: t('editor.sections.display'),
             schema: [{
+                name: 'palette',
+                selector: {
+                    select: {
+                        mode: 'dropdown',
+                        options: PALETTE_NAMES.map((p) => ({ value: p, label: t(`editor.palettes.${p}`) })),
+                    },
+                },
+            }, {
                 type: 'grid',
                 schema: [
                     { name: 'show_labels', selector: { boolean: {} } },

@@ -58,6 +58,9 @@ const CASES = [
     { name: 'now-no-legend-line', theme: 'light', lang: 'de', width: 560, layout: 'grid', config: { show_legend: true, show_current_legend: false } },
     { name: 'now-no-caption', theme: 'dark', lang: 'en', width: 330, layout: 'grid', config: { show_current_legend: false } },
     { name: 'now-off', theme: 'dark', lang: 'en', width: 330, layout: 'grid', config: { show_current: false } },
+    { name: 'palette-neon-dark-legend', theme: 'dark', lang: 'en', width: 560, layout: 'grid', config: { show_legend: true, palette: 'neon' },
+        states: { 'sensor.t': '22', 'sensor.h': '80' } },
+    { name: 'palette-pastel-light-de', theme: 'light', lang: 'de', width: 330, layout: 'grid', config: { palette: 'pastel' } },
     { name: 'loading', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'pending', ready: '.placeholder' },
     { name: 'loading-fixed-4rows', theme: 'dark', lang: 'en', width: 330, layout: 'grid', rows: 4, data: 'pending', ready: '.placeholder' },
 ];

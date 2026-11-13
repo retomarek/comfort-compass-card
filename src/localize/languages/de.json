@@ -62,7 +62,8 @@
       "show_current": "Aktuellen Zustand atmend markieren",
       "show_current_legend": "Aktuellen Zustand als Text anzeigen",
       "show_labels": "Richtungen beschriften",
-      "fixed_scale": "Feste Skala (Räume vergleichen)"
+      "fixed_scale": "Feste Skala (Räume vergleichen)",
+      "palette": "Farbpalette"
     },
     "options": {
       "pressure": "Druck (Pa)",
@@ -72,6 +73,26 @@
       "comfort": "Komfortzone",
       "bands": "Abstufung (Warnbänder)",
       "display": "Darstellung"
+    },
+    "palettes": {
+      "default": "Standard",
+      "neon": "Neon",
+      "okabe_ito": "Farbenblind-sicher (Okabe-Ito)",
+      "tol_muted": "Farbenblind-sicher, gedämpft (Paul Tol)",
+      "high_contrast": "Hoher Kontrast",
+      "pastel": "Pastell",
+      "material": "Material (Home-Assistant-Farben)",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "catppuccin": "Catppuccin",
+      "solarized": "Solarized",
+      "gruvbox": "Gruvbox (Retro)",
+      "tokyo_night": "Tokyo Night",
+      "bauhaus": "Bauhaus",
+      "vintage": "Vintage",
+      "earth": "Erde",
+      "sunset": "Sonnenuntergang",
+      "minimal": "Minimal (nur «im Zielband» farbig)"
     }
   }
 }

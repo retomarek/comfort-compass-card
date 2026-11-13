@@ -62,7 +62,8 @@
       "show_current": "Mark current reading (breathing)",
       "show_current_legend": "Show current reading as text",
       "show_labels": "Show direction labels",
-      "fixed_scale": "Fixed scale (compare rooms)"
+      "fixed_scale": "Fixed scale (compare rooms)",
+      "palette": "Colour palette"
     },
     "options": {
       "pressure": "Pressure (Pa)",
@@ -72,6 +73,26 @@
       "comfort": "Comfort zone",
       "bands": "Severity (warning bands)",
       "display": "Display"
+    },
+    "palettes": {
+      "default": "Default",
+      "neon": "Neon",
+      "okabe_ito": "Colour-blind safe (Okabe-Ito)",
+      "tol_muted": "Colour-blind safe, muted (Paul Tol)",
+      "high_contrast": "High contrast",
+      "pastel": "Pastel",
+      "material": "Material (Home Assistant colours)",
+      "nord": "Nord",
+      "dracula": "Dracula",
+      "catppuccin": "Catppuccin",
+      "solarized": "Solarized",
+      "gruvbox": "Gruvbox (retro)",
+      "tokyo_night": "Tokyo Night",
+      "bauhaus": "Bauhaus",
+      "vintage": "Vintage",
+      "earth": "Earth",
+      "sunset": "Sunset",
+      "minimal": "Minimal (only “in range” in colour)"
     }
   }
 }
