@@ -4,10 +4,12 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.0.0-rc.5] - 2026-11-13
+
 ### Added
 
 - `palette`: 18 colour palettes (default, neon, colour-blind safe Okabe-Ito and Paul Tol, high contrast, pastel, Material, Nord, Dracula, Catppuccin, Solarized, Gruvbox, Tokyo Night, Bauhaus, vintage, earth, sunset, minimal). Palettes with dark and light variants follow the Home Assistant theme. Editor dropdown under Display.
-- README: palette overview image `docs/palettes.png`, rendered from the real card on every push to `main`.
+- README: palette overview image `docs/palettes.png`, rendered from the real card on every code push to `main`.
 
 ### Changed
 
@@ -118,7 +120,8 @@ First test version. The comfort compass was part of the [Mollier hx Card](https:
 - Fahrenheit sensors supported (statistics requested in °C); hourly refresh, retry after a failed load; only completed days are counted.
 - Claude Code setup for contributors: `card-reviewer` agent, `visual-check` and `release` skills (`npm run visual-check`).
 
-[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.4...HEAD
+[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.5...HEAD
+[1.0.0-rc.5]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.4...v1.0.0-rc.5
 [1.0.0-rc.4]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.4
 [1.0.0-rc.3]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.3
 [1.0.0-rc.2]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.2
