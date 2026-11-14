@@ -228,7 +228,7 @@ export class ComfortCompassCard extends LitElement {
     _updateCurrent() {
         const c = this._config;
         let next = null;
-        if (c && c.show_current !== false && this._hass && this._mollier) {
+        if (c && (c.show_current !== false || c.show_current_legend !== false) && this._hass && this._mollier) {
             const t = stateCelsius(this._hass.states[c.temperature_entity]);
             const phi = stateHumidity(this._hass.states[c.humidity_entity]);
             if (Number.isFinite(t) && Number.isFinite(phi)) {
@@ -354,6 +354,7 @@ export class ComfortCompassCard extends LitElement {
                 boxW: this._box?.w,
                 boxH: this._box?.h,
                 current: this._current,
+                currentMarker: c.show_current !== false,
                 currentLegend: c.show_current_legend !== false,
                 locale: this._hass?.locale?.language,
                 // Small tile: only the breathing marker, no "now" line, so the glyph keeps its room.

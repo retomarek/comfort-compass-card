@@ -8,7 +8,11 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ### Added
 
-- `breathing`: strength of the breathing "now" marker in %, 10 (barely) to 90 (fades almost out); default 55, the look so far. Editor slider under Display, shown while the marker is on.
+- `breathing`: strength of the breathing "now" marker in %, 10 (barely) to 90 (fades almost out); default 55, the look so far. Editor slider under Display, right below the marker switch, shown while the marker is on.
+
+### Changed
+
+- `show_current` (breathing marker) and `show_current_legend` ("Now" line) are independent: the line can show without the marker. The editor always shows the line switch.
 
 ## [1.0.0-rc.5] - 2026-11-13
 

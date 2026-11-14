@@ -184,7 +184,10 @@ function onTap(ev, tip) {
 // opts.current: live reading {key, t, phi, x} (key from classifyRecord) → the
 //   matching segment breathes in its own colour (or a dot where the segment
 //   would start when no day fell into that state yet).
-// opts.currentLegend (default true): also show the "now" line.
+// opts.currentMarker (default true): mark the live state in the glyph
+//   (breathing segment or dot).
+// opts.currentLegend (default true): show the "now" line. Marker and line
+//   are independent; either needs opts.current.
 export function renderCompass(dist, t, opts = {}) {
     const showLabels = opts.showLabels !== false;
     const pal = resolvePalette(opts.palette || DEFAULT_PALETTE, !!opts.dark);
@@ -268,7 +271,7 @@ export function renderCompass(dist, t, opts = {}) {
             return { ax, baseline: top + font * 0.875, anchor: pos.anchor, lines, color: pal.labelColor(DIRS[i], !!opts.dark) };
         });
         // Room for the "now" dot at an arm tip.
-        const pad = font / 3 + (opts.current ? font * 0.4 : 0);
+        const pad = font / 3 + (opts.current && opts.currentMarker !== false ? font * 0.4 : 0);
         return { font, lh, specs, vb: [box.x0 - pad, box.y0 - pad, box.x1 - box.x0 + 2 * pad, box.y1 - box.y0 + 2 * pad] };
     };
 
@@ -336,13 +339,14 @@ export function renderCompass(dist, t, opts = {}) {
     // "Now" marker: the matching segment breathes its own colour (fill
     // opacity), so nothing is drawn on top of the glyph. Only when that state
     // has no segment yet a small dot marks where it would start.
-    const liveKey = cur ? cur.key : null;
+    const marker = !!cur && opts.currentMarker !== false;
+    const liveKey = marker ? cur.key : null;
     // The live segment's tip also names the current values (the only place
     // they show when the "Now" line is switched off).
     const nowLine = cur ? `${t('compass.now')}: ${curValues}` : '';
     const withNow = (tip, key) => (key === liveKey ? { ...tip, lines: [...tip.lines, nowLine] } : tip);
     let nowMark = nothing;
-    if (cur && !(cur.key === 'ok' ? rGreen > 0 : rings.some((w) => w.key === cur.key))) {
+    if (marker && !(cur.key === 'ok' ? rGreen > 0 : rings.some((w) => w.key === cur.key))) {
         const [cx, cy] = cur.key === 'ok' ? [0, 0] : pt(stageR[cur.key], THETA[DIRS.indexOf(curDir)]);
         nowMark = svg`<circle class="now-dot" cx=${f2(cx)} cy=${f2(cy)} r=${f2(L.font * 0.38)} fill=${curColor}
             @pointerenter=${(ev) => onEnter(ev, curTip)} @pointerleave=${onLeave}
@@ -352,7 +356,7 @@ export function renderCompass(dist, t, opts = {}) {
     const legend = !opts.showLegend ? nothing : html`
         <div class="legend">
             ${cur && opts.currentLegend !== false ? html`
-                <div class="row now-row"><span class="dot now-legend" style="background:${curColor}"></span>
+                <div class="row now-row"><span class="dot ${marker ? 'now-legend' : ''}" style="background:${curColor}"></span>
                     <span class="name"><b>${t('compass.now')}</b> · ${curName}<span class="now-values">${curValues}</span></span></div>` : nothing}
             ${rows.map((r) => html`
                 <div class="row"><span class="dot" style="background:${r.color}"></span>
@@ -387,7 +391,7 @@ export function renderCompass(dist, t, opts = {}) {
             ${!wordInside && !opts.showLegend && total > 0 ? html`
                 <div class="ok-caption"><span class="dot" style="background:${OK_COLOR}"></span><b>${okPct}</b> ${okWord}</div>` : nothing}
             ${cur && opts.currentLegend !== false && !opts.showLegend && !opts.compact ? html`
-                <div class="now-caption" title=${curValues}><span class="dot now-legend" style="background:${curColor}"></span><b>${t('compass.now')}</b> ${curName}<span class="now-values inline">${curValues}</span></div>` : nothing}
+                <div class="now-caption" title=${curValues}><span class="dot ${marker ? 'now-legend' : ''}" style="background:${curColor}"></span><b>${t('compass.now')}</b> ${curName}<span class="now-values inline">${curValues}</span></div>` : nothing}
             <div class="tip" role="tooltip"></div>
         </div>
     `;

@@ -194,8 +194,9 @@ function buildSchema(d, t) {
             { name: 'show_current', selector: { boolean: {} } },
             ...(d.show_current ? [
                 { name: 'breathing', selector: { number: { min: BREATHING_RANGE[0], max: BREATHING_RANGE[1], step: 5, mode: 'slider', unit_of_measurement: '%' } } },
-                { name: 'show_current_legend', selector: { boolean: {} } },
-            ] : [])],
+            ] : []),
+            // Independent of the marker: the "Now" line can show on its own.
+            { name: 'show_current_legend', selector: { boolean: {} } }],
         },
         {
             type: 'expandable',
