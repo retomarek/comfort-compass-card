@@ -61,6 +61,7 @@
       "show_legend": "Show legend",
       "show_current": "Mark current reading (breathing)",
       "show_current_legend": "Show current reading as text",
+      "breathing": "Breathing strength",
       "show_labels": "Show direction labels",
       "fixed_scale": "Fixed scale (compare rooms)",
       "palette": "Colour palette"

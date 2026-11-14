@@ -13,6 +13,10 @@ export default css`
         display: block;
         --ccc-max: 340px;
         --ccc-gap-color: var(--ha-card-background, var(--card-background-color, #fff));
+        /* Lowest opacity of the breathing "now" marker; the card sets both
+           from the breathing option (these are the defaults, 55 %). */
+        --ccc-breathe-min: 0.45;
+        --ccc-breathe-ok-min: 0.75;
     }
     ha-card {
         display: flex;
@@ -230,7 +234,7 @@ export default css`
     }
     @keyframes ccc-breathe-ok {
         0%, 100% { opacity: 1; }
-        50% { opacity: 0.75; }
+        50% { opacity: var(--ccc-breathe-ok-min); }
     }
     .glyph .now-dot {
         stroke: var(--ccc-gap-color);
@@ -239,7 +243,7 @@ export default css`
     }
     @keyframes ccc-breathe {
         0%, 100% { opacity: 1; }
-        50% { opacity: 0.45; }
+        50% { opacity: var(--ccc-breathe-min); }
     }
     .now-legend {
         animation: ccc-breathe 4s ease-in-out infinite;

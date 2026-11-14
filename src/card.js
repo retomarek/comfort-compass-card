@@ -17,6 +17,19 @@ export const DEFAULT_COMFORT_ZONE = { temperature: [20, 26], humidity: [30, 65],
 // A comfort zone above this many °C is almost certainly entered in °F.
 const FAHRENHEIT_HINT_ABOVE = 45;
 const SCALES = ['fit', 'fixed'];
+// Breathing strength of the "now" marker in %, 10 (barely) to 90 (almost
+// fades out; more would make the arm look like it blinks away). The green disc fades 5/11 as much (55 % → 0.75 as before), so
+// its share text stays readable.
+export const DEFAULT_BREATHING = 55;
+export const BREATHING_RANGE = [10, 90];
+
+// Config value → strength in %, or null if it is not a number in BREATHING_RANGE.
+export function breathingStrength(v) {
+    if (!given(v)) return DEFAULT_BREATHING;
+    if (v === '' || typeof v === 'boolean') return null;
+    const n = Number(v);
+    return Number.isFinite(n) && n >= BREATHING_RANGE[0] && n <= BREATHING_RANGE[1] ? n : null;
+}
 
 const given = (v) => v !== undefined && v !== null;
 
@@ -177,6 +190,10 @@ export class ComfortCompassCard extends LitElement {
         if (!PALETTE_NAMES.includes(palette)) {
             throw new Error(`palette must be one of ${PALETTE_NAMES.join(', ')} (got ${JSON.stringify(config.palette)})`);
         }
+        const breathing = breathingStrength(config.breathing);
+        if (breathing === null) {
+            throw new Error(`breathing must be a number from ${BREATHING_RANGE[0]} to ${BREATHING_RANGE[1]} (got ${JSON.stringify(config.breathing)})`);
+        }
         for (const key of ['show_current', 'show_current_legend']) {
             if (given(config[key]) && typeof config[key] !== 'boolean') {
                 throw new Error(`${key} must be true or false (got ${JSON.stringify(config[key])})`);
@@ -191,6 +208,7 @@ export class ComfortCompassCard extends LitElement {
         this._config = config;
         this._scale = scale;
         this._palette = palette;
+        this._breathing = breathing;
         this._period = period;
         this._pressure = pressure;
         this._comfort = comfort;
@@ -343,8 +361,10 @@ export class ComfortCompassCard extends LitElement {
             });
         }
         const title = c.title;
+        const b = this._breathing;
         return html`
-            <ha-card .header=${title ? String(title) : undefined} @click=${this._onCardClick}>
+            <ha-card .header=${title ? String(title) : undefined} @click=${this._onCardClick}
+                style=${`--ccc-breathe-min:${(1 - b / 100).toFixed(3)};--ccc-breathe-ok-min:${(1 - (b / 100) * (5 / 11)).toFixed(3)}`}>
                 <div class="card-content">
                     ${this._fahrenheitHint ? html`<p class="message hint">${this._t('card.fahrenheit_hint')}</p>` : nothing}
                     ${body}

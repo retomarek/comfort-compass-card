@@ -4,6 +4,10 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+### Added
+
+- `breathing`: strength of the breathing "now" marker in %, 10 (barely) to 90 (fades almost out); default 55, the look so far. Editor slider under Display, shown while the marker is on.
+
 ## [1.0.0-rc.5] - 2026-11-13
 
 ### Added

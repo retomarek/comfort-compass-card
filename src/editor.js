@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit';
 import { localize } from './localize/localize.js';
 import { DEFAULT_BANDS } from './bands.js';
-import { DEFAULT_COMFORT_ZONE } from './card.js';
+import { BREATHING_RANGE, breathingStrength, DEFAULT_BREATHING, DEFAULT_COMFORT_ZONE } from './card.js';
 import { MAX_DAYS } from './statistics.js';
 import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
@@ -19,7 +19,7 @@ const DEFAULTS = {
 // visibility, view_layout, card_mod, YAML-only options) is kept as it is.
 const OWNED_KEYS = [
     'type', 'temperature_entity', 'humidity_entity', 'title', 'days_to_show',
-    'altitude', 'pressure', 'comfort_zone', 'warning_bands', 'show_labels', 'show_legend', 'show_current', 'show_current_legend', 'scale', 'palette',
+    'altitude', 'pressure', 'comfort_zone', 'warning_bands', 'show_labels', 'show_legend', 'show_current', 'show_current_legend', 'scale', 'palette', 'breathing',
 ];
 
 const given = (v) => v !== undefined && v !== null && v !== '';
@@ -63,6 +63,7 @@ function configToData(c = {}) {
         show_legend: c.show_legend === true,
         show_current: c.show_current !== false,
         show_current_legend: c.show_current_legend !== false,
+        breathing: breathingStrength(c.breathing) ?? DEFAULT_BREATHING,
         fixed_scale: c.scale === 'fixed',
         palette: PALETTE_NAMES.includes(c.palette) ? c.palette : DEFAULT_PALETTE,
     };
@@ -120,6 +121,9 @@ function dataToConfig(d, previous = {}) {
     if (d.show_legend) config.show_legend = true;
     if (d.show_current === false) config.show_current = false;
     if (d.show_current_legend === false) config.show_current_legend = false;
+    // Kept while the marker is off, so switching it back on restores it.
+    const breathing = firstNum(d.breathing, previous.breathing, DEFAULT_BREATHING);
+    if (breathing !== DEFAULT_BREATHING) config.breathing = breathing;
     if (d.fixed_scale) config.scale = 'fixed';
     if (d.palette && d.palette !== DEFAULT_PALETTE) config.palette = d.palette;
     return config;
@@ -185,6 +189,7 @@ function buildSchema(d, t) {
                     { name: 'show_legend', selector: { boolean: {} } },
                     { name: 'show_current', selector: { boolean: {} } },
                     ...(d.show_current ? [{ name: 'show_current_legend', selector: { boolean: {} } }] : []),
+                    ...(d.show_current ? [{ name: 'breathing', selector: { number: { min: BREATHING_RANGE[0], max: BREATHING_RANGE[1], step: 5, mode: 'slider', unit_of_measurement: '%' } } }] : []),
                     { name: 'fixed_scale', selector: { boolean: {} } },
                 ],
             }],

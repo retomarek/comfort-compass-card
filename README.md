@@ -43,7 +43,7 @@ That is why the compass judges every day on both together: a day only counts as 
 - **Reads like an h,x diagram**: warm at the top, cold at the bottom, humid on the right, dry on the left.
 - **Severity from warning bands**: mild means inside the orange band, moderate inside the red band, severe beyond it. Relative **and** absolute humidity count.
 - **Says what green means**: the disc shows the share of days and the words *in range*; when the disc is too small for text, a line below the compass says it ("● 8 % in range").
-- **Shows where you are now**: the segment that matches the live sensor reading slowly breathes in its own colour, and a "Now" line gives the state and the values (`show_current`, `show_current_legend`).
+- **Shows where you are now**: the segment that matches the live sensor reading slowly breathes in its own colour, and a "Now" line gives the state and the values (`show_current`, `show_current_legend`, `breathing` for the strength).
 - **Hover or tap** a segment for its days and share. A legend is optional.
 - **Fits any dashboard**: the glyph is capped in size and centred, so it stays tidy at full width and fills a tile with a fixed height.
 - **18 colour palettes**: neon, colour-blind safe, high contrast, pastel, Nord, Dracula, Catppuccin, retro, vintage and more, readable on light and dark themes, several with their own dark and light variants (see [Colour palettes](#colour-palettes)).
@@ -93,6 +93,7 @@ days_to_show: 90
 | `show_current` | boolean | `true` | Mark the live reading of the two sensors: the matching segment slowly breathes in its own colour (a small dot where that segment would start when no day fell into that state yet), and a "Now" line below the compass or at the top of the legend names the state and the values. In very small tiles only the marker is shown. Without animation when the device asks for reduced motion (iOS/iPadOS: Settings → Accessibility → Motion → Reduce Motion; macOS: System Settings → Accessibility → Display → Reduce motion; Windows: Settings → Accessibility → Visual effects → Animation effects; Android: Settings → Accessibility → Remove animations). |
 | `show_current_legend` | boolean | `true` | Show the "Now" line with the state and the values (below the compass, or at the top of the legend). Set to `false` to keep only the breathing marker; the values then show in the tooltip of the breathing segment. Needs `show_current`. |
 | `palette` | string | `default` | Colour palette, see [Colour palettes](#colour-palettes). |
+| `breathing` | number | `55` | How strongly the live segment breathes, in % from 10 (barely) to 90 (fades almost to the card background). To switch the marker off, use `show_current: false`. The green disc fades less so its text stays readable. Needs `show_current`. |
 | `scale` | `fit` \| `fixed` | `fit` | `fit` zooms to this compass so it fills the card. `fixed` keeps the dashed 100 % circle the same size in every card, so several rooms can be compared by area. See [Comparing rooms](#comparing-rooms). |
 
 Invalid values (an unknown `scale`, a `comfort_zone` without a `[min, max]` pair for temperature or humidity, `days_to_show` below 1, a pressure or altitude outside the ranges above) give a clear error message instead of a wrong compass. Longer periods than 3650 days are cut to 3650.

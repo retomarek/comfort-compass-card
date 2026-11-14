@@ -61,6 +61,8 @@ const CASES = [
     { name: 'palette-neon-dark-legend', theme: 'dark', lang: 'en', width: 560, layout: 'grid', config: { show_legend: true, palette: 'neon' },
         states: { 'sensor.t': '22', 'sensor.h': '80' } },
     { name: 'palette-pastel-light-de', theme: 'light', lang: 'de', width: 330, layout: 'grid', config: { palette: 'pastel' } },
+    { name: 'breathing-strong-light', theme: 'light', lang: 'en', width: 330, layout: 'grid', config: { breathing: 90 },
+        states: { 'sensor.t': '27.4', 'sensor.h': '45' } },
     { name: 'loading', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'pending', ready: '.placeholder' },
     { name: 'loading-fixed-4rows', theme: 'dark', lang: 'en', width: 330, layout: 'grid', rows: 4, data: 'pending', ready: '.placeholder' },
 ];
