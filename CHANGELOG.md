@@ -4,6 +4,8 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.0.0-rc.6] - 2026-11-14
+
 ### Added
 
 - `breathing`: strength of the breathing "now" marker in %, 10 (barely) to 90 (fades almost out); default 55, the look so far. Editor slider under Display, shown while the marker is on.
@@ -124,7 +126,8 @@ First test version. The comfort compass was part of the [Mollier hx Card](https:
 - Fahrenheit sensors supported (statistics requested in °C); hourly refresh, retry after a failed load; only completed days are counted.
 - Claude Code setup for contributors: `card-reviewer` agent, `visual-check` and `release` skills (`npm run visual-check`).
 
-[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.5...HEAD
+[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.6...HEAD
+[1.0.0-rc.6]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.5...v1.0.0-rc.6
 [1.0.0-rc.5]: https://github.com/retomarek/comfort-compass-card/compare/v1.0.0-rc.4...v1.0.0-rc.5
 [1.0.0-rc.4]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.4
 [1.0.0-rc.3]: https://github.com/retomarek/comfort-compass-card/releases/tag/v1.0.0-rc.3
