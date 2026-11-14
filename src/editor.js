@@ -187,12 +187,15 @@ function buildSchema(d, t) {
                 schema: [
                     { name: 'show_labels', selector: { boolean: {} } },
                     { name: 'show_legend', selector: { boolean: {} } },
-                    { name: 'show_current', selector: { boolean: {} } },
-                    ...(d.show_current ? [{ name: 'show_current_legend', selector: { boolean: {} } }] : []),
-                    ...(d.show_current ? [{ name: 'breathing', selector: { number: { min: BREATHING_RANGE[0], max: BREATHING_RANGE[1], step: 5, mode: 'slider', unit_of_measurement: '%' } } }] : []),
                     { name: 'fixed_scale', selector: { boolean: {} } },
                 ],
-            }],
+            },
+            // The "now" marker with its options right below the switch, full width.
+            { name: 'show_current', selector: { boolean: {} } },
+            ...(d.show_current ? [
+                { name: 'breathing', selector: { number: { min: BREATHING_RANGE[0], max: BREATHING_RANGE[1], step: 5, mode: 'slider', unit_of_measurement: '%' } } },
+                { name: 'show_current_legend', selector: { boolean: {} } },
+            ] : [])],
         },
         {
             type: 'expandable',
