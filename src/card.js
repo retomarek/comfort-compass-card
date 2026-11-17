@@ -5,7 +5,7 @@ import { classifyRecord, compassDistribution, renderCompass, hideTips } from './
 import { localize } from './localize/localize.js';
 import {
     daysFromConfig, fetchDailyMeans, missingEntities, pressureFromConfig, REFRESH_MS, RETRY_MS,
-    stateCelsius, stateHumidity,
+    SLOW_MS, stateCelsius, stateHumidity,
 } from './statistics.js';
 import styles from './card.styles.js';
 import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
@@ -75,6 +75,7 @@ export class ComfortCompassCard extends LitElement {
             _days: { state: true },
             _error: { state: true },
             _loading: { state: true },
+            _slow: { state: true },
             _compact: { state: true },
             _box: { state: true },
             _current: { state: true },
@@ -94,6 +95,8 @@ export class ComfortCompassCard extends LitElement {
         this._days = [];
         this._error = undefined;
         this._loading = false;
+        this._slow = false;
+        this._slowTimer = undefined;
         this._compact = false;
         this._box = null;
         this._current = null;
@@ -136,6 +139,7 @@ export class ComfortCompassCard extends LitElement {
         clearInterval(this._refreshTimer);
         this._refreshTimer = undefined;
         this._clearRetry();
+        this._clearSlow();
         hideTips(this.renderRoot);
         this._resizeObserver?.disconnect();
         this._observed = undefined;
@@ -144,6 +148,12 @@ export class ComfortCompassCard extends LitElement {
     _clearRetry() {
         clearTimeout(this._retryTimer);
         this._retryTimer = undefined;
+    }
+
+    _clearSlow() {
+        clearTimeout(this._slowTimer);
+        this._slowTimer = undefined;
+        this._slow = false;
     }
 
     _measure() {
@@ -308,6 +318,9 @@ export class ComfortCompassCard extends LitElement {
         }
 
         if (!this._days.length) this._loading = true;
+        // A first load that takes long says so, instead of an empty card.
+        this._clearSlow();
+        this._slowTimer = setTimeout(() => { this._slow = true; }, SLOW_MS);
         try {
             const days = await fetchDailyMeans(this._hass, c.temperature_entity, c.humidity_entity, this._period);
             if (seq !== this._fetchSeq) return;
@@ -316,15 +329,20 @@ export class ComfortCompassCard extends LitElement {
             this._retryIndex = 0;
         } catch (err) {
             if (seq !== this._fetchSeq) return;
-            if (!this._days.length) {
-                this._error = { key: 'card.fetch_failed', vars: { error: (err && err.message) || err } };
-            }
             const delay = RETRY_MS[Math.min(this._retryIndex, RETRY_MS.length - 1)];
+            if (!this._days.length) {
+                const error = err?.code === 'timeout' ? this._t('card.fetch_timeout')
+                    : String((err && err.message) || err).replace(/[.\s]+$/, '');
+                this._error = { key: 'card.fetch_failed', vars: { error, s: Math.round(delay / 1000) } };
+            }
             this._retryIndex += 1;
             if (this.isConnected) this._retryTimer = setTimeout(() => this._maybeFetch(true), delay);
             else this._retryDue = true;
         } finally {
-            if (seq === this._fetchSeq) this._loading = false;
+            if (seq === this._fetchSeq) {
+                this._loading = false;
+                this._clearSlow();
+            }
         }
     }
 
@@ -341,8 +359,10 @@ export class ComfortCompassCard extends LitElement {
             const hint = this._error.key === 'card.no_statistics';
             body = html`<p class="message ${hint ? '' : 'error'}">${this._t(this._error.key, this._error.vars)}</p>`;
         } else if (this._loading || !this._days.length) {
-            // First load: an empty body of about the compass's size, no text.
-            body = html`<div class="placeholder"></div>`;
+            // First load: a box of about the compass's size; a load that takes
+            // long (busy Home Assistant) says so.
+            body = html`<div class="placeholder">${this._slow
+                ? html`<p class="message">${this._t('card.loading_slow')}</p>` : nothing}</div>`;
         } else {
             const dist = compassDistribution(this._days, this._comfort, this._bands, this._pressure, this._mollier);
             body = renderCompass(dist, (key, vars) => this._t(key, vars), {

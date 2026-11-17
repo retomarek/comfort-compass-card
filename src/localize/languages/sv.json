@@ -1,9 +1,11 @@
 {
   "card": {
     "no_statistics": "Ingen daglig statistik tillgänglig. Kontrollera att båda sensorerna har state_class: measurement.",
-    "fetch_failed": "Kunde inte läsa in historiken: {error}",
+    "fetch_failed": "Kunde inte läsa in historiken: {error}. Försöker igen om {s} s.",
     "entity_not_found": "Entiteten hittades inte: {entities}",
-    "fahrenheit_hint": "Komfortzonen ser ut att vara i °F. Ange temperaturerna i °C."
+    "fahrenheit_hint": "Komfortzonen ser ut att vara i °F. Ange temperaturerna i °C.",
+    "fetch_timeout": "Home Assistant svarade inte i tid (upptagen, t.ex. direkt efter en omstart)",
+    "loading_slow": "Läser in historiken … Home Assistant svarar långsamt."
   },
   "compass": {
     "title": "Komfortkompass",

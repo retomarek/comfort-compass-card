@@ -1,9 +1,11 @@
 {
   "card": {
     "no_statistics": "Aucune statistique journalière disponible. Vérifiez que les deux capteurs ont state_class: measurement.",
-    "fetch_failed": "Impossible de charger l'historique : {error}",
+    "fetch_failed": "Impossible de charger l'historique : {error}. Nouvel essai dans {s} s.",
     "entity_not_found": "Entité introuvable : {entities}",
-    "fahrenheit_hint": "La zone de confort semble être en °F. Saisissez les températures en °C."
+    "fahrenheit_hint": "La zone de confort semble être en °F. Saisissez les températures en °C.",
+    "fetch_timeout": "Home Assistant n'a pas répondu à temps (occupé, p. ex. juste après un redémarrage)",
+    "loading_slow": "Chargement de l'historique … Home Assistant répond lentement."
   },
   "compass": {
     "title": "Boussole de confort",

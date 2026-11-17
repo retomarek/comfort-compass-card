@@ -1,9 +1,11 @@
 {
   "card": {
     "no_statistics": "Nessuna statistica giornaliera disponibile. Verifica che entrambi i sensori abbiano state_class: measurement.",
-    "fetch_failed": "Impossibile caricare la cronologia: {error}",
+    "fetch_failed": "Impossibile caricare la cronologia: {error}. Nuovo tentativo tra {s} s.",
     "entity_not_found": "Entità non trovata: {entities}",
-    "fahrenheit_hint": "La zona di comfort sembra in °F. Inserisci le temperature in °C."
+    "fahrenheit_hint": "La zona di comfort sembra in °F. Inserisci le temperature in °C.",
+    "fetch_timeout": "Home Assistant non ha risposto in tempo (occupato, ad es. subito dopo un riavvio)",
+    "loading_slow": "Caricamento della cronologia … Home Assistant risponde lentamente."
   },
   "compass": {
     "title": "Bussola del comfort",
