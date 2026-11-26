@@ -16,7 +16,7 @@ First public version. The earlier 1.0.0 betas and release candidates were withdr
 - Optional legend (`show_legend`), direction labels (`show_labels`), hover / tap tooltips.
 - `scale: fit | fixed`, so several rooms can be compared by area.
 - 18 colour palettes (`palette`), with dark / light variants and labels at WCAG AA contrast.
-- `days_to_show` (1 to 3650), `altitude` or `pressure` for the absolute humidity.
+- `days_to_show` (1 to 3650). The air pressure for the absolute humidity comes from the elevation set in Home Assistant; `altitude` or `pressure` override it.
 - Sizing for masonry, sections (auto height or fixed rows) and panel views.
 - Visual editor that writes only non-default values and keeps other keys (`grid_options`, YAML-only band keys).
 - 14 languages (English and German by the author, the others machine-translated).

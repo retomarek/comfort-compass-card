@@ -68,7 +68,9 @@
     },
     "options": {
       "pressure": "Pressão (Pa)",
-      "altitude": "Altitude (m)"
+      "altitude": "Altitude (m)",
+      "home": "Home Assistant ({m} m)",
+      "home_unset": "Home Assistant (não definido: nível do mar)"
     },
     "sections": {
       "comfort": "Zona de conforto",

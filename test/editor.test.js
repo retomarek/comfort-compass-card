@@ -50,4 +50,23 @@ describe('editor mapping', () => {
         expect(out.altitude).toBe(600);
         expect(out).not.toHaveProperty('pressure');
     });
+
+    it('without altitude and pressure: Home Assistant, nothing written', () => {
+        const hass = { config: { elevation: 1500 } };
+        const data = configToData(BASE, hass);
+        expect(data.air_mode).toBe('home');
+        expect(data.altitude).toBe(1500); // suggestion when switching to an own altitude
+        expect(dataToConfig(data, BASE)).toEqual(BASE);
+    });
+
+    it('switching to Home Assistant removes altitude or pressure', () => {
+        for (const c of [
+            { ...BASE, altitude: 450 },
+            { ...BASE, pressure: 96000 },
+        ]) {
+            const out = dataToConfig({ ...configToData(c), air_mode: 'home' }, c);
+            expect(out).not.toHaveProperty('altitude');
+            expect(out).not.toHaveProperty('pressure');
+        }
+    });
 });

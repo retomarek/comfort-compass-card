@@ -68,7 +68,9 @@
     },
     "options": {
       "pressure": "Давление (Pa)",
-      "altitude": "Высота (m)"
+      "altitude": "Высота (m)",
+      "home": "Home Assistant ({m} м)",
+      "home_unset": "Home Assistant (не задано: уровень моря)"
     },
     "sections": {
       "comfort": "Зона комфорта",

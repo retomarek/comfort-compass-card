@@ -121,3 +121,29 @@ describe('cardSizeForHeight', () => {
         expect(rowsFor(cardSizeForHeight(5 * 64 - 8))).toBe(5);
     });
 });
+
+describe('air pressure', () => {
+    const withHass = (config, elevation) => {
+        const c = card();
+        c.setConfig(config);
+        c.hass = { states: {}, config: { elevation }, callWS: async () => ({}) };
+        return c;
+    };
+    it('sea level without hass', () => {
+        const c = card();
+        c.setConfig(BASE);
+        expect(c._pressure).toBe(101325);
+    });
+    it('the elevation set in Home Assistant when the config has neither altitude nor pressure', () => {
+        expect(withHass(BASE, 1500)._pressure).toBeCloseTo(84556, 0);
+    });
+    it('altitude or pressure in the config win', () => {
+        expect(withHass({ ...BASE, altitude: 0 }, 1500)._pressure).toBeCloseTo(101325, 6);
+        expect(withHass({ ...BASE, pressure: 960 }, 1500)._pressure).toBe(96000);
+    });
+    it('follows a change of the elevation in Home Assistant', () => {
+        const c = withHass(BASE, 0);
+        c.hass = { ...c.hass, config: { elevation: 1500 } };
+        expect(c._pressure).toBeCloseTo(84556, 0);
+    });
+});

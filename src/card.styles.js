@@ -5,7 +5,8 @@ import { css } from 'lit';
 //   the card is as tall as its neighbours; where the parent has no height
 //   (masonry, stacks) that resolves to the content height.
 // - auto mode (masonry, stacks, sections with auto rows): the glyph is at most
-//   340 px wide, centred, and vertically centred when the card is stretched;
+//   340 px wide and centred; when the card is stretched it stays at the top,
+//   like HA's gauge and the Mollier hx Card;
 //   with the legend, glyph and legend sit side by side once the card is wide
 //   enough, otherwise stacked.
 // - fixed mode (:host([fixed-height]), set when the tile has a row count or in
@@ -40,11 +41,9 @@ export default css`
         flex: 1 1 auto;
         display: flex;
         flex-direction: column;
-        justify-content: center;
     }
     :host([fixed-height]) .card-content {
         min-height: 0;
-        justify-content: flex-start;
     }
     .message {
         margin: 8px 0;

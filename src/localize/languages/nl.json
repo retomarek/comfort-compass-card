@@ -68,7 +68,9 @@
     },
     "options": {
       "pressure": "Druk (Pa)",
-      "altitude": "Hoogte (m)"
+      "altitude": "Hoogte (m)",
+      "home": "Home Assistant ({m} m)",
+      "home_unset": "Home Assistant (niet ingesteld: zeeniveau)"
     },
     "sections": {
       "comfort": "Comfortzone",

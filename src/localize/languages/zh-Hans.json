@@ -68,7 +68,9 @@
     },
     "options": {
       "pressure": "气压 (Pa)",
-      "altitude": "海拔 (m)"
+      "altitude": "海拔 (m)",
+      "home": "Home Assistant（{m} 米）",
+      "home_unset": "Home Assistant（未设置：海平面）"
     },
     "sections": {
       "comfort": "舒适区",

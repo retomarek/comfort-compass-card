@@ -7,6 +7,7 @@ import {
     daysFromConfig,
     fetchDailyMeans,
     missingEntities,
+    airPressure,
     pressureFromConfig,
     REFRESH_MS,
     RETRY_MS,
@@ -18,7 +19,6 @@ import styles from './card.styles.js';
 import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
 const DEFAULT_DAYS = 30;
-const DEFAULT_PRESSURE = 101325;
 // pyedautils' usual indoor comfort zone: 20–26 °C, 30–65 % rH, at most 12 g/kg.
 export const DEFAULT_COMFORT_ZONE = { temperature: [20, 26], humidity: [30, 65], absolute_humidity: [0, 12] };
 // A comfort zone above this many °C is almost certainly entered in °F.
@@ -233,7 +233,8 @@ export class ComfortCompassCard extends LitElement {
             }
         }
         const period = daysFromConfig(config, DEFAULT_DAYS);
-        const pressure = pressureFromConfig(config, DEFAULT_PRESSURE);
+        // Validates altitude / pressure; neither set → the elevation set in Home Assistant.
+        pressureFromConfig(config, null);
         const comfort = parseComfortZone(config.comfort_zone);
         // false / null mean the defaults too: the compass always needs stages.
         const bands = parseWarningBands(config.warning_bands || true);
@@ -243,9 +244,9 @@ export class ComfortCompassCard extends LitElement {
         this._palette = palette;
         this._breathing = breathing;
         this._period = period;
-        this._pressure = pressure;
         this._comfort = comfort;
         this._bands = bands;
+        this._updateAir();
         this._fahrenheitHint = comfort.range_t[1] > FAHRENHEIT_HINT_ABOVE;
         this._mollier ??= createMollier('classical');
         this._updateSizingMode();
@@ -276,16 +277,25 @@ export class ComfortCompassCard extends LitElement {
         if (sig(prev) !== sig(next)) this._current = next;
     }
 
+    // Air pressure for the absolute humidity: altitude or pressure from the
+    // config, else the elevation set in Home Assistant, else sea level.
+    _updateAir() {
+        this._air = airPressure(this._config, this._hass);
+        this._pressure = this._air.pa;
+    }
+
     set hass(hass) {
         const first = !this._hass;
         const langChanged = this._hass?.locale?.language !== hass?.locale?.language;
         const darkChanged = this._hass?.themes?.darkMode !== hass?.themes?.darkMode;
+        const elevationChanged = this._hass?.config?.elevation !== hass?.config?.elevation;
         this._hass = hass;
+        if (elevationChanged && this._config) this._updateAir();
         this._updateCurrent();
         if (first && this._config) this._maybeFetch();
         // A sensor that was missing has appeared (renamed back, integration loaded).
         else if (this._error?.key === 'card.entity_not_found' && !this._missing().length) this._maybeFetch(true);
-        if (langChanged || darkChanged) this.requestUpdate();
+        if (langChanged || darkChanged || elevationChanged) this.requestUpdate();
     }
 
     get hass() {

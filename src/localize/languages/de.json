@@ -70,7 +70,9 @@
     },
     "options": {
       "pressure": "Druck (Pa)",
-      "altitude": "Höhe (m)"
+      "altitude": "Höhe (m)",
+      "home": "Home Assistant ({m} m ü. M.)",
+      "home_unset": "Home Assistant (nicht gesetzt: Meereshöhe)"
     },
     "sections": {
       "comfort": "Komfortzone",

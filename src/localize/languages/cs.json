@@ -68,7 +68,9 @@
     },
     "options": {
       "pressure": "Tlak (Pa)",
-      "altitude": "Nadmořská výška (m)"
+      "altitude": "Nadmořská výška (m)",
+      "home": "Home Assistant ({m} m)",
+      "home_unset": "Home Assistant (nenastaveno: hladina moře)"
     },
     "sections": {
       "comfort": "Komfortní zóna",

@@ -73,8 +73,8 @@ days_to_show: 90
 | `days_to_show` | number | `30` | Completed days to count, 1 to 3650 (daily statistics are kept indefinitely). |
 | `comfort_zone` | object | 20–26 °C, 30–65 %, 0–12 g/kg | See [below](#comfort-zone-and-warning-bands). Temperatures always in °C. |
 | `warning_bands` | `true` \| object | `true` (defaults) | Limits for mild and moderate, see [below](#comfort-zone-and-warning-bands). |
-| `altitude` | number | | Altitude in m above sea level (-500 to 9000), for the absolute humidity. Overrides `pressure`. |
-| `pressure` | number | `101325` | Air pressure in hPa (300–1100) or Pa (30000–110000). |
+| `altitude` | number | Home Assistant's elevation | Altitude in m above sea level (-500 to 9000), for the absolute humidity. Overrides `pressure`. See [Altitude and air pressure](#altitude-and-air-pressure). |
+| `pressure` | number | from the altitude | Air pressure in hPa (300–1100) or Pa (30000–110000), instead of an altitude. |
 | `show_legend` | boolean | `false` | List the directions with days and share. Beside the compass when the card is wide, below it otherwise. |
 | `show_labels` | boolean | `true` | Name the eight directions around the compass. |
 | `show_current` | boolean | `true` | Mark the live reading: the matching segment slowly breathes (a small dot when no day fell into that state yet). No animation with reduced motion. |
@@ -128,9 +128,13 @@ These are the defaults. The worse of temperature and humidity decides the stage.
 
 </details>
 
+### Altitude and air pressure
+
+The air pressure changes how much water the air holds at a given relative humidity: at 1500 m the same 21 °C and 60 % are about 11 g/kg instead of 9.3 g/kg at sea level. So the altitude decides whether a day is above the 12 g/kg limit of the comfort zone. By default the card takes the **elevation set in Home Assistant** (*Settings → System → General → Elevation*) and follows it when you change it. Set `altitude` (m) or `pressure` (hPa or Pa) to use another value, e.g. for a sensor in a holiday flat; in the visual editor: *Air pressure from*.
+
 ### Size in the dashboard
 
-In a sections dashboard the card takes half the width and sets its own height; next to a taller card in the same row it grows to match, with the compass centred. The compass is at most 340 px wide, also at full width. Set a row count under *Layout* to give it a fixed height; the compass then fits the tile. With `scale: fixed` the direction labels stay at the edges like on a compass rose, so every card has the same frame; in narrow cards a label beside a long arm gets smaller, and in very narrow ones the labels are left out (hover shows the direction).
+In a sections dashboard the card takes half the width and sets its own height; next to a taller card in the same row it grows to match. The compass is at most 340 px wide, also at full width. Set a row count under *Layout* to give it a fixed height; the compass then fits the tile. With `scale: fixed` the direction labels stay at the edges like on a compass rose, so every card has the same frame; in narrow cards a label beside a long arm gets smaller, and in very narrow ones the labels are left out (hover shows the direction).
 
 ## Reading the compass
 

@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit';
 import { localize } from './localize/localize.js';
 import { DEFAULT_BANDS } from './bands.js';
 import { BREATHING_RANGE, breathingStrength, DEFAULT_BREATHING, DEFAULT_COMFORT_ZONE } from './card.js';
-import { ALTITUDE_RANGE, MAX_DAYS, PRESSURE_PA_RANGE } from './statistics.js';
+import { ALTITUDE_RANGE, elevationOf, MAX_DAYS, PRESSURE_PA_RANGE } from './statistics.js';
 import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
 // Visual editor on Home Assistant's <ha-form>. The form data is flat, the
@@ -47,7 +47,7 @@ const firstNum = (...vals) => {
 };
 const pairAt = (p, i) => (Array.isArray(p) ? p[i] : undefined);
 
-export function configToData(c = {}) {
+export function configToData(c = {}, hass = undefined) {
     // No comfort_zone at all → the defaults; a given zone is shown as it is
     // (an absolute_humidity it does not have stays empty: no limit).
     const cz = c.comfort_zone && typeof c.comfort_zone === 'object' ? c.comfort_zone : DEFAULT_COMFORT_ZONE;
@@ -63,8 +63,10 @@ export function configToData(c = {}) {
         temperature_entity: c.temperature_entity ?? '',
         humidity_entity: c.humidity_entity ?? '',
         days_to_show: firstNum(c.days_to_show, DEFAULTS.days_to_show),
-        air_mode: given(c.altitude) ? 'altitude' : 'pressure',
-        altitude: firstNum(c.altitude, DEFAULTS.altitude),
+        // Neither altitude nor pressure: the elevation set in Home Assistant.
+        air_mode: given(c.altitude) ? 'altitude' : given(c.pressure) ? 'pressure' : 'home',
+        // Suggestion when switching to an own altitude: Home Assistant's.
+        altitude: firstNum(c.altitude, elevationOf(hass), DEFAULTS.altitude),
         pressure: firstNum(c.pressure, DEFAULTS.pressure),
         comfort_t_min: zone('temperature', 0),
         comfort_t_max: zone('temperature', 1),
@@ -99,13 +101,12 @@ export function dataToConfig(d, previous = {}) {
     if (given(d.title)) config.title = d.title;
     const days = firstNum(d.days_to_show, previous.days_to_show, DEFAULTS.days_to_show);
     if (days !== DEFAULTS.days_to_show) config.days_to_show = days;
-    // Persist either pressure or altitude, never both. Do not write the default
-    // pressure unless it was set before, so opening the editor changes nothing.
+    // Persist either pressure or altitude, never both; 'home' (the default)
+    // writes neither, so the card takes the elevation set in Home Assistant.
     if (d.air_mode === 'altitude') {
         config.altitude = firstNum(d.altitude, previous.altitude, DEFAULTS.altitude);
-    } else {
-        const p = firstNum(d.pressure, previous.pressure, DEFAULTS.pressure);
-        if (given(previous.pressure) || p !== DEFAULTS.pressure) config.pressure = p;
+    } else if (d.air_mode === 'pressure') {
+        config.pressure = firstNum(d.pressure, previous.pressure, DEFAULTS.pressure);
     }
 
     const prevCz = previous.comfort_zone && typeof previous.comfort_zone === 'object' ? previous.comfort_zone : {};
@@ -157,7 +158,8 @@ export function dataToConfig(d, previous = {}) {
 
 const num = (step, unit, min, max) => ({ number: { step, mode: 'box', unit_of_measurement: unit, min, max } });
 
-function buildSchema(d, t) {
+function buildSchema(d, t, hass) {
+    const elevation = elevationOf(hass);
     const pairRow = (a, b, sel) => ({
         type: 'grid',
         schema: [
@@ -196,15 +198,24 @@ function buildSchema(d, t) {
                         select: {
                             mode: 'dropdown',
                             options: [
+                                {
+                                    value: 'home',
+                                    label:
+                                        elevation === null
+                                            ? t('editor.options.home_unset')
+                                            : t('editor.options.home', { m: Math.round(elevation) }),
+                                },
                                 { value: 'altitude', label: t('editor.options.altitude') },
                                 { value: 'pressure', label: t('editor.options.pressure') },
                             ],
                         },
                     },
                 },
-                d.air_mode === 'pressure'
-                    ? { name: 'pressure', selector: num(1, 'Pa', ...PRESSURE_PA_RANGE) }
-                    : { name: 'altitude', selector: num(10, 'm', ...ALTITUDE_RANGE) },
+                ...(d.air_mode === 'pressure'
+                    ? [{ name: 'pressure', selector: num(1, 'Pa', ...PRESSURE_PA_RANGE) }]
+                    : d.air_mode === 'altitude'
+                      ? [{ name: 'altitude', selector: num(10, 'm', ...ALTITUDE_RANGE) }]
+                      : []),
             ],
         },
         {
@@ -281,13 +292,13 @@ export class ComfortCompassCardEditor extends LitElement {
 
     render() {
         if (!this._config) return html``;
-        const t = (key) => localize(this.hass, key);
-        const data = configToData(this._config);
+        const t = (key, vars) => localize(this.hass, key, vars);
+        const data = configToData(this._config, this.hass);
         return html`
             <ha-form
                 .hass=${this.hass}
                 .data=${data}
-                .schema=${buildSchema(data, t)}
+                .schema=${buildSchema(data, t, this.hass)}
                 .computeLabel=${(s) => t(`editor.fields.${s.name}`)}
                 @value-changed=${this._valueChanged}
             ></ha-form>

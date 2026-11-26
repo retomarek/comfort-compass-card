@@ -68,7 +68,9 @@
     },
     "options": {
       "pressure": "Tryk (Pa)",
-      "altitude": "Højde (m)"
+      "altitude": "Højde (m)",
+      "home": "Home Assistant ({m} m)",
+      "home_unset": "Home Assistant (ikke angivet: havniveau)"
     },
     "sections": {
       "comfort": "Komfortzone",
