@@ -233,8 +233,13 @@ export default css`
         animation-name: ccc-breathe-ok;
     }
     @keyframes ccc-breathe-ok {
-        0%, 100% { opacity: 1; }
-        50% { opacity: var(--ccc-breathe-ok-min); }
+        0%,
+        100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: var(--ccc-breathe-ok-min);
+        }
     }
     .glyph .now-dot {
         stroke: var(--ccc-gap-color);
@@ -242,8 +247,13 @@ export default css`
         cursor: pointer;
     }
     @keyframes ccc-breathe {
-        0%, 100% { opacity: 1; }
-        50% { opacity: var(--ccc-breathe-min); }
+        0%,
+        100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: var(--ccc-breathe-min);
+        }
     }
     .now-legend {
         animation: ccc-breathe 4s ease-in-out infinite;
@@ -280,7 +290,9 @@ export default css`
         .glyph .seg {
             transition: none;
         }
-        .glyph .seg.live, .glyph .now-dot, .now-legend {
+        .glyph .seg.live,
+        .glyph .now-dot,
+        .now-legend {
             animation: none;
         }
     }

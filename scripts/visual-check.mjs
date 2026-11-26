@@ -42,30 +42,145 @@ const CASES = [
     { name: 'full-width-1400', theme: 'dark', lang: 'en', width: 1400, layout: 'grid', config: { show_legend: true } },
     { name: 'fixed-6rows-500', theme: 'dark', lang: 'en', width: 500, layout: 'grid', rows: 6 },
     { name: 'fixed-3rows-260', theme: 'light', lang: 'de', width: 260, layout: 'grid', rows: 3 },
-    { name: 'fixed-4rows-1400-legend', theme: 'dark', lang: 'en', width: 1400, layout: 'grid', rows: 4, config: { show_legend: true } },
-    { name: 'panel-1200x700', theme: 'dark', lang: 'en', width: 1200, height: 700, layout: 'panel', config: { show_legend: true } },
-    { name: 'fixed-scale-no-labels', theme: 'light', lang: 'en', width: 330, layout: 'grid', config: { scale: 'fixed', show_labels: false } },
+    {
+        name: 'fixed-4rows-1400-legend',
+        theme: 'dark',
+        lang: 'en',
+        width: 1400,
+        layout: 'grid',
+        rows: 4,
+        config: { show_legend: true },
+    },
+    {
+        name: 'panel-1200x700',
+        theme: 'dark',
+        lang: 'en',
+        width: 1200,
+        height: 700,
+        layout: 'panel',
+        config: { show_legend: true },
+    },
+    {
+        name: 'fixed-scale-no-labels',
+        theme: 'light',
+        lang: 'en',
+        width: 330,
+        layout: 'grid',
+        config: { scale: 'fixed', show_labels: false },
+    },
     { name: 'no-statistics', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'empty' },
     { name: 'fetch-error-de', theme: 'dark', lang: 'de', width: 330, layout: 'grid', data: 'error' },
-    { name: 'entity-missing', theme: 'light', lang: 'en', width: 330, layout: 'grid', config: { humidity_entity: 'sensor.h_old' } },
-    { name: 'zone-without-abs', theme: 'dark', lang: 'en', width: 560, layout: 'grid',
-        config: { show_legend: true, comfort_zone: { temperature: [20, 26], humidity: [30, 65] } } },
-    { name: 'fahrenheit-hint-de', theme: 'light', lang: 'de', width: 330, layout: 'grid',
-        config: { comfort_zone: { temperature: [68, 79], humidity: [30, 65] } } },
-    { name: 'now-warm-legend-de', theme: 'light', lang: 'de', width: 560, layout: 'grid', config: { show_legend: true },
-        states: { 'sensor.t': '27.4', 'sensor.h': '45' } },
-    { name: 'now-humid-dark', theme: 'dark', lang: 'en', width: 330, layout: 'grid', states: { 'sensor.t': '22', 'sensor.h': '80' } },
-    { name: 'now-no-legend-line', theme: 'light', lang: 'de', width: 560, layout: 'grid', config: { show_legend: true, show_current_legend: false } },
-    { name: 'now-no-caption', theme: 'dark', lang: 'en', width: 330, layout: 'grid', config: { show_current_legend: false } },
-    { name: 'now-text-only', theme: 'dark', lang: 'en', width: 330, layout: 'grid', config: { show_current: false }, states: { 'sensor.t': '27.4', 'sensor.h': '45' } },
-    { name: 'now-off', theme: 'dark', lang: 'en', width: 330, layout: 'grid', config: { show_current: false, show_current_legend: false } },
-    { name: 'palette-neon-dark-legend', theme: 'dark', lang: 'en', width: 560, layout: 'grid', config: { show_legend: true, palette: 'neon' },
-        states: { 'sensor.t': '22', 'sensor.h': '80' } },
-    { name: 'palette-pastel-light-de', theme: 'light', lang: 'de', width: 330, layout: 'grid', config: { palette: 'pastel' } },
-    { name: 'breathing-strong-light', theme: 'light', lang: 'en', width: 330, layout: 'grid', config: { breathing: 90 },
-        states: { 'sensor.t': '27.4', 'sensor.h': '45' } },
+    {
+        name: 'entity-missing',
+        theme: 'light',
+        lang: 'en',
+        width: 330,
+        layout: 'grid',
+        config: { humidity_entity: 'sensor.h_old' },
+    },
+    {
+        name: 'zone-without-abs',
+        theme: 'dark',
+        lang: 'en',
+        width: 560,
+        layout: 'grid',
+        config: { show_legend: true, comfort_zone: { temperature: [20, 26], humidity: [30, 65] } },
+    },
+    {
+        name: 'fahrenheit-hint-de',
+        theme: 'light',
+        lang: 'de',
+        width: 330,
+        layout: 'grid',
+        config: { comfort_zone: { temperature: [68, 79], humidity: [30, 65] } },
+    },
+    {
+        name: 'now-warm-legend-de',
+        theme: 'light',
+        lang: 'de',
+        width: 560,
+        layout: 'grid',
+        config: { show_legend: true },
+        states: { 'sensor.t': '27.4', 'sensor.h': '45' },
+    },
+    {
+        name: 'now-humid-dark',
+        theme: 'dark',
+        lang: 'en',
+        width: 330,
+        layout: 'grid',
+        states: { 'sensor.t': '22', 'sensor.h': '80' },
+    },
+    {
+        name: 'now-no-legend-line',
+        theme: 'light',
+        lang: 'de',
+        width: 560,
+        layout: 'grid',
+        config: { show_legend: true, show_current_legend: false },
+    },
+    {
+        name: 'now-no-caption',
+        theme: 'dark',
+        lang: 'en',
+        width: 330,
+        layout: 'grid',
+        config: { show_current_legend: false },
+    },
+    {
+        name: 'now-text-only',
+        theme: 'dark',
+        lang: 'en',
+        width: 330,
+        layout: 'grid',
+        config: { show_current: false },
+        states: { 'sensor.t': '27.4', 'sensor.h': '45' },
+    },
+    {
+        name: 'now-off',
+        theme: 'dark',
+        lang: 'en',
+        width: 330,
+        layout: 'grid',
+        config: { show_current: false, show_current_legend: false },
+    },
+    {
+        name: 'palette-neon-dark-legend',
+        theme: 'dark',
+        lang: 'en',
+        width: 560,
+        layout: 'grid',
+        config: { show_legend: true, palette: 'neon' },
+        states: { 'sensor.t': '22', 'sensor.h': '80' },
+    },
+    {
+        name: 'palette-pastel-light-de',
+        theme: 'light',
+        lang: 'de',
+        width: 330,
+        layout: 'grid',
+        config: { palette: 'pastel' },
+    },
+    {
+        name: 'breathing-strong-light',
+        theme: 'light',
+        lang: 'en',
+        width: 330,
+        layout: 'grid',
+        config: { breathing: 90 },
+        states: { 'sensor.t': '27.4', 'sensor.h': '45' },
+    },
     { name: 'loading', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'pending', ready: '.placeholder' },
-    { name: 'loading-fixed-4rows', theme: 'dark', lang: 'en', width: 330, layout: 'grid', rows: 4, data: 'pending', ready: '.placeholder' },
+    {
+        name: 'loading-fixed-4rows',
+        theme: 'dark',
+        lang: 'en',
+        width: 330,
+        layout: 'grid',
+        rows: 4,
+        data: 'pending',
+        ready: '.placeholder',
+    },
 ];
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -78,7 +193,9 @@ function findChrome() {
         try {
             const p = execSync(`command -v ${name}`, { encoding: 'utf8' }).trim();
             if (p && existsSync(p)) return p;
-        } catch { /* not found */ }
+        } catch {
+            /* not found */
+        }
     }
     throw new Error('No Chrome/Chromium found. Set CHROME_PATH.');
 }
@@ -141,27 +258,45 @@ const cases = only.length ? CASES.filter((c) => only.includes(c.name)) : CASES;
 rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
 
-const browser = await puppeteer.launch({ executablePath: findChrome(), headless: true, args: ['--no-sandbox', '--disable-gpu', '--hide-scrollbars'] });
+const browser = await puppeteer.launch({
+    executablePath: findChrome(),
+    headless: true,
+    args: ['--no-sandbox', '--disable-gpu', '--hide-scrollbars'],
+});
 let failures = 0;
 try {
     for (const c of cases) {
         const tab = await browser.newPage();
         const errors = [];
         tab.on('pageerror', (e) => errors.push(e.message));
-        tab.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+        tab.on('console', (m) => {
+            if (m.type() === 'error') errors.push(m.text());
+        });
         await tab.setViewport({ width: c.width + 24, height: 900, deviceScaleFactor: 1 });
         await tab.setContent(html(c), { waitUntil: 'load' });
         let ready = true;
         try {
-            await tab.waitForFunction((tag, sel) => document.querySelector(tag)?.shadowRoot?.querySelector(sel), { timeout: 8000 }, TAG, c.ready || READY);
-        } catch { ready = false; }
+            await tab.waitForFunction(
+                (tag, sel) => document.querySelector(tag)?.shadowRoot?.querySelector(sel),
+                { timeout: 8000 },
+                TAG,
+                c.ready || READY,
+            );
+        } catch {
+            ready = false;
+        }
         await new Promise((r) => setTimeout(r, 300));
-        const size = await tab.evaluate(() => { const r = document.getElementById('card').getBoundingClientRect(); return `${Math.round(r.width)}x${Math.round(r.height)}`; });
+        const size = await tab.evaluate(() => {
+            const r = document.getElementById('card').getBoundingClientRect();
+            return `${Math.round(r.width)}x${Math.round(r.height)}`;
+        });
         const file = resolve(outDir, `${c.name}.png`);
         await (await tab.$('#slot')).screenshot({ path: file });
         const problems = [...(ready ? [] : ['never became ready']), ...errors];
         if (problems.length) failures++;
-        console.log(`${problems.length ? 'PROBLEM' : 'ok     '} ${c.name.padEnd(20)} card ${size.padEnd(10)} tmp/visual/${c.name}.png${problems.length ? '  ' + problems.join(' | ') : ''}`);
+        console.log(
+            `${problems.length ? 'PROBLEM' : 'ok     '} ${c.name.padEnd(20)} card ${size.padEnd(10)} tmp/visual/${c.name}.png${problems.length ? '  ' + problems.join(' | ') : ''}`,
+        );
         await tab.close();
     }
 } finally {

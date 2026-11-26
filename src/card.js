@@ -4,8 +4,15 @@ import { parseWarningBands } from './bands.js';
 import { classifyRecord, compassDistribution, renderCompass, hideTips } from './compass.js';
 import { localize } from './localize/localize.js';
 import {
-    daysFromConfig, fetchDailyMeans, missingEntities, pressureFromConfig, REFRESH_MS, RETRY_MS,
-    SLOW_MS, stateCelsius, stateHumidity,
+    daysFromConfig,
+    fetchDailyMeans,
+    missingEntities,
+    pressureFromConfig,
+    REFRESH_MS,
+    RETRY_MS,
+    SLOW_MS,
+    stateCelsius,
+    stateHumidity,
 } from './statistics.js';
 import styles from './card.styles.js';
 import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
@@ -35,8 +42,10 @@ const given = (v) => v !== undefined && v !== null;
 
 function parsePair(cz, key, unit) {
     const v = cz[key];
-    const ok = Array.isArray(v) && v.length === 2
-        && v.every((n) => n !== null && n !== '' && typeof n !== 'boolean' && Number.isFinite(Number(n)));
+    const ok =
+        Array.isArray(v) &&
+        v.length === 2 &&
+        v.every((n) => n !== null && n !== '' && typeof n !== 'boolean' && Number.isFinite(Number(n)));
     if (!ok) {
         throw new Error(`comfort_zone.${key} must be a pair [min, max] in ${unit} (got ${JSON.stringify(v)})`);
     }
@@ -168,7 +177,8 @@ export class ComfortCompassCard extends LitElement {
         const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
         const legend = this.renderRoot.querySelector('.legend');
         const glyph = this.renderRoot.querySelector('.glyph-box');
-        const stacked = legend && glyph && legend.getBoundingClientRect().top >= glyph.getBoundingClientRect().bottom - 1;
+        const stacked =
+            legend && glyph && legend.getBoundingClientRect().top >= glyph.getBoundingClientRect().bottom - 1;
         const legendH = stacked ? legend.getBoundingClientRect().height + 8 : 0;
         const legendW = legend && !stacked ? legend.getBoundingClientRect().width + 20 : 0;
         const w = r.width - padX - legendW;
@@ -198,11 +208,15 @@ export class ComfortCompassCard extends LitElement {
         }
         const palette = given(config.palette) ? config.palette : DEFAULT_PALETTE;
         if (!PALETTE_NAMES.includes(palette)) {
-            throw new Error(`palette must be one of ${PALETTE_NAMES.join(', ')} (got ${JSON.stringify(config.palette)})`);
+            throw new Error(
+                `palette must be one of ${PALETTE_NAMES.join(', ')} (got ${JSON.stringify(config.palette)})`,
+            );
         }
         const breathing = breathingStrength(config.breathing);
         if (breathing === null) {
-            throw new Error(`breathing must be a number from ${BREATHING_RANGE[0]} to ${BREATHING_RANGE[1]} (got ${JSON.stringify(config.breathing)})`);
+            throw new Error(
+                `breathing must be a number from ${BREATHING_RANGE[0]} to ${BREATHING_RANGE[1]} (got ${JSON.stringify(config.breathing)})`,
+            );
         }
         for (const key of ['show_current', 'show_current_legend']) {
             if (given(config[key]) && typeof config[key] !== 'boolean') {
@@ -248,7 +262,8 @@ export class ComfortCompassCard extends LitElement {
             }
         }
         const prev = this._current;
-        const sig = (p) => (p ? `${p.key}|${p.t.toFixed(1)}|${(p.phi * 100).toFixed(0)}|${(p.x * 1000).toFixed(1)}` : '');
+        const sig = (p) =>
+            p ? `${p.key}|${p.t.toFixed(1)}|${(p.phi * 100).toFixed(0)}|${(p.x * 1000).toFixed(1)}` : '';
         if (sig(prev) !== sig(next)) this._current = next;
     }
 
@@ -320,7 +335,9 @@ export class ComfortCompassCard extends LitElement {
         if (!this._days.length) this._loading = true;
         // A first load that takes long says so, instead of an empty card.
         this._clearSlow();
-        this._slowTimer = setTimeout(() => { this._slow = true; }, SLOW_MS);
+        this._slowTimer = setTimeout(() => {
+            this._slow = true;
+        }, SLOW_MS);
         try {
             const days = await fetchDailyMeans(this._hass, c.temperature_entity, c.humidity_entity, this._period);
             if (seq !== this._fetchSeq) return;
@@ -331,8 +348,10 @@ export class ComfortCompassCard extends LitElement {
             if (seq !== this._fetchSeq) return;
             const delay = RETRY_MS[Math.min(this._retryIndex, RETRY_MS.length - 1)];
             if (!this._days.length) {
-                const error = err?.code === 'timeout' ? this._t('card.fetch_timeout')
-                    : String((err && err.message) || err).replace(/[.\s]+$/, '');
+                const error =
+                    err?.code === 'timeout'
+                        ? this._t('card.fetch_timeout')
+                        : String((err && err.message) || err).replace(/[.\s]+$/, '');
                 this._error = { key: 'card.fetch_failed', vars: { error, s: Math.round(delay / 1000) } };
             }
             this._retryIndex += 1;
@@ -348,7 +367,8 @@ export class ComfortCompassCard extends LitElement {
 
     // A tap anywhere on the card outside a segment closes an open tooltip.
     _onCardClick(ev) {
-        if (!ev.composedPath().some((el) => el.classList?.contains('seg') || el.classList?.contains('now-dot'))) hideTips(this.renderRoot);
+        if (!ev.composedPath().some((el) => el.classList?.contains('seg') || el.classList?.contains('now-dot')))
+            hideTips(this.renderRoot);
     }
 
     render() {
@@ -361,8 +381,9 @@ export class ComfortCompassCard extends LitElement {
         } else if (this._loading || !this._days.length) {
             // First load: a box of about the compass's size; a load that takes
             // long (busy Home Assistant) says so.
-            body = html`<div class="placeholder">${this._slow
-                ? html`<p class="message">${this._t('card.loading_slow')}</p>` : nothing}</div>`;
+            body = html`<div class="placeholder">
+                ${this._slow ? html`<p class="message">${this._t('card.loading_slow')}</p>` : nothing}
+            </div>`;
         } else {
             const dist = compassDistribution(this._days, this._comfort, this._bands, this._pressure, this._mollier);
             body = renderCompass(dist, (key, vars) => this._t(key, vars), {
@@ -384,8 +405,11 @@ export class ComfortCompassCard extends LitElement {
         const title = c.title;
         const b = this._breathing;
         return html`
-            <ha-card .header=${title ? String(title) : undefined} @click=${this._onCardClick}
-                style=${`--ccc-breathe-min:${(1 - b / 100).toFixed(3)};--ccc-breathe-ok-min:${(1 - (b / 100) * (5 / 11)).toFixed(3)}`}>
+            <ha-card
+                .header=${title ? String(title) : undefined}
+                @click=${this._onCardClick}
+                style=${`--ccc-breathe-min:${(1 - b / 100).toFixed(3)};--ccc-breathe-ok-min:${(1 - (b / 100) * (5 / 11)).toFixed(3)}`}
+            >
                 <div class="card-content">
                     ${this._fahrenheitHint ? html`<p class="message hint">${this._t('card.fahrenheit_hint')}</p>` : nothing}
                     ${body}
@@ -400,8 +424,9 @@ export class ComfortCompassCard extends LitElement {
 
     static getStubConfig(hass) {
         const states = Object.values(hass?.states || {});
-        const pick = (dc) => states.find((s) => s.attributes?.device_class === dc
-            && s.attributes?.state_class === 'measurement')?.entity_id;
+        const pick = (dc) =>
+            states.find((s) => s.attributes?.device_class === dc && s.attributes?.state_class === 'measurement')
+                ?.entity_id;
         return {
             temperature_entity: pick('temperature') || 'sensor.living_room_temperature',
             humidity_entity: pick('humidity') || 'sensor.living_room_humidity',

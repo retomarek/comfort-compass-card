@@ -11,15 +11,29 @@ import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
 const DEFAULTS = {
     days_to_show: 30,
-    altitude: 450,       // only a suggestion when the user switches to altitude
-    pressure: 101325,    // the card's default when neither pressure nor altitude is set
+    altitude: 450, // only a suggestion when the user switches to altitude
+    pressure: 101325, // the card's default when neither pressure nor altitude is set
 };
 
 // Keys this form owns. Everything else in the existing config (grid_options,
 // visibility, view_layout, card_mod, YAML-only options) is kept as it is.
 const OWNED_KEYS = [
-    'type', 'temperature_entity', 'humidity_entity', 'title', 'days_to_show',
-    'altitude', 'pressure', 'comfort_zone', 'warning_bands', 'show_labels', 'show_legend', 'show_current', 'show_current_legend', 'scale', 'palette', 'breathing',
+    'type',
+    'temperature_entity',
+    'humidity_entity',
+    'title',
+    'days_to_show',
+    'altitude',
+    'pressure',
+    'comfort_zone',
+    'warning_bands',
+    'show_labels',
+    'show_legend',
+    'show_current',
+    'show_current_legend',
+    'scale',
+    'palette',
+    'breathing',
 ];
 
 const given = (v) => v !== undefined && v !== null && v !== '';
@@ -37,8 +51,11 @@ function configToData(c = {}) {
     const cz = c.comfort_zone && typeof c.comfort_zone === 'object' ? c.comfort_zone : DEFAULT_COMFORT_ZONE;
     const wb = typeof c.warning_bands === 'object' && c.warning_bands ? c.warning_bands : {};
     const band = (k, f, d) => firstNum(wb[k]?.[f], DEFAULT_BANDS[k][d]);
-    const zone = (key, i) => firstNum(pairAt(cz[key], i), cz === DEFAULT_COMFORT_ZONE || key !== 'absolute_humidity'
-        ? DEFAULT_COMFORT_ZONE[key][i] : undefined);
+    const zone = (key, i) =>
+        firstNum(
+            pairAt(cz[key], i),
+            cz === DEFAULT_COMFORT_ZONE || key !== 'absolute_humidity' ? DEFAULT_COMFORT_ZONE[key][i] : undefined,
+        );
     return {
         title: c.title ?? '',
         temperature_entity: c.temperature_entity ?? '',
@@ -97,7 +114,10 @@ function dataToConfig(d, previous = {}) {
     };
     // absolute_humidity is optional: both fields empty = no absolute limit.
     if (isNum(d.comfort_x_min) || isNum(d.comfort_x_max)) {
-        cz.absolute_humidity = [field(d.comfort_x_min, 'absolute_humidity', 0), field(d.comfort_x_max, 'absolute_humidity', 1)];
+        cz.absolute_humidity = [
+            field(d.comfort_x_min, 'absolute_humidity', 0),
+            field(d.comfort_x_max, 'absolute_humidity', 1),
+        ];
     }
     if (JSON.stringify(cz) !== JSON.stringify(DEFAULT_COMFORT_ZONE)) config.comfort_zone = cz;
 
@@ -106,7 +126,11 @@ function dataToConfig(d, previous = {}) {
     const bands = {};
     for (const k of ['orange', 'red']) {
         const b = { ...(prev[k] || {}) };
-        const defs = { temperature: DEFAULT_BANDS[k].dt, humidity: DEFAULT_BANDS[k].dphi, absolute_humidity: DEFAULT_BANDS[k].dx };
+        const defs = {
+            temperature: DEFAULT_BANDS[k].dt,
+            humidity: DEFAULT_BANDS[k].dphi,
+            absolute_humidity: DEFAULT_BANDS[k].dx,
+        };
         const vals = { temperature: d[`${k}_dt`], humidity: d[`${k}_dphi`], absolute_humidity: d[`${k}_dx`] };
         for (const f of Object.keys(vals)) {
             const v = firstNum(vals[f], b[f], defs[f]);
@@ -132,7 +156,13 @@ function dataToConfig(d, previous = {}) {
 const num = (step, unit, min, max) => ({ number: { step, mode: 'box', unit_of_measurement: unit, min, max } });
 
 function buildSchema(d, t) {
-    const pairRow = (a, b, sel) => ({ type: 'grid', schema: [{ name: a, selector: sel }, { name: b, selector: sel }] });
+    const pairRow = (a, b, sel) => ({
+        type: 'grid',
+        schema: [
+            { name: a, selector: sel },
+            { name: b, selector: sel },
+        ],
+    });
     const bandRow = (k) => ({
         type: 'grid',
         schema: [
@@ -146,7 +176,11 @@ function buildSchema(d, t) {
         {
             type: 'grid',
             schema: [
-                { name: 'temperature_entity', required: true, selector: { statistic: { device_class: 'temperature' } } },
+                {
+                    name: 'temperature_entity',
+                    required: true,
+                    selector: { statistic: { device_class: 'temperature' } },
+                },
                 { name: 'humidity_entity', required: true, selector: { statistic: { device_class: 'humidity' } } },
             ],
         },
@@ -174,29 +208,45 @@ function buildSchema(d, t) {
         {
             type: 'expandable',
             title: t('editor.sections.display'),
-            schema: [{
-                name: 'palette',
-                selector: {
-                    select: {
-                        mode: 'dropdown',
-                        options: PALETTE_NAMES.map((p) => ({ value: p, label: t(`editor.palettes.${p}`) })),
+            schema: [
+                {
+                    name: 'palette',
+                    selector: {
+                        select: {
+                            mode: 'dropdown',
+                            options: PALETTE_NAMES.map((p) => ({ value: p, label: t(`editor.palettes.${p}`) })),
+                        },
                     },
                 },
-            }, {
-                type: 'grid',
-                schema: [
-                    { name: 'show_labels', selector: { boolean: {} } },
-                    { name: 'show_legend', selector: { boolean: {} } },
-                    { name: 'fixed_scale', selector: { boolean: {} } },
-                ],
-            },
-            // The "now" marker with its options right below the switch, full width.
-            { name: 'show_current', selector: { boolean: {} } },
-            ...(d.show_current ? [
-                { name: 'breathing', selector: { number: { min: BREATHING_RANGE[0], max: BREATHING_RANGE[1], step: 5, mode: 'slider', unit_of_measurement: '%' } } },
-            ] : []),
-            // Independent of the marker: the "Now" line can show on its own.
-            { name: 'show_current_legend', selector: { boolean: {} } }],
+                {
+                    type: 'grid',
+                    schema: [
+                        { name: 'show_labels', selector: { boolean: {} } },
+                        { name: 'show_legend', selector: { boolean: {} } },
+                        { name: 'fixed_scale', selector: { boolean: {} } },
+                    ],
+                },
+                // The "now" marker with its options right below the switch, full width.
+                { name: 'show_current', selector: { boolean: {} } },
+                ...(d.show_current
+                    ? [
+                          {
+                              name: 'breathing',
+                              selector: {
+                                  number: {
+                                      min: BREATHING_RANGE[0],
+                                      max: BREATHING_RANGE[1],
+                                      step: 5,
+                                      mode: 'slider',
+                                      unit_of_measurement: '%',
+                                  },
+                              },
+                          },
+                      ]
+                    : []),
+                // Independent of the marker: the "Now" line can show on its own.
+                { name: 'show_current_legend', selector: { boolean: {} } },
+            ],
         },
         {
             type: 'expandable',

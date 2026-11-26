@@ -24,7 +24,9 @@ function findChrome() {
         try {
             const p = execSync(`command -v ${name}`, { encoding: 'utf8' }).trim();
             if (p && existsSync(p)) return p;
-        } catch { /* not found */ }
+        } catch {
+            /* not found */
+        }
     }
     throw new Error('No Chrome/Chromium found. Set CHROME_PATH.');
 }
@@ -37,7 +39,14 @@ const THEMES = {
 
 const SHOTS = [
     { file: 'screenshot.png', theme: 'dark', lang: 'en', title: 'Living room', width: 340, extra: {} },
-    { file: 'screenshot-light-de.png', theme: 'light', lang: 'de', title: 'Wohnzimmer', width: 560, extra: { show_legend: true } },
+    {
+        file: 'screenshot-light-de.png',
+        theme: 'light',
+        lang: 'de',
+        title: 'Wohnzimmer',
+        width: 560,
+        extra: { show_legend: true },
+    },
 ];
 
 const CONFIG = {
@@ -112,13 +121,16 @@ const GALLERY_COLS = 3;
 const GALLERY_CARD = 250;
 
 function galleryPage() {
-    const tiles = PALETTE_NAMES.map((p) => `
+    const tiles = PALETTE_NAMES.map(
+        (p) => `
   <figure class="tile"><figcaption><b>${EN.editor.palettes[p]}</b><code>palette: ${p}</code></figcaption>
     <div class="pair">
       <div class="th dark"><comfort-compass-card data-palette="${p}" data-dark="1"></comfort-compass-card></div>
       <div class="th light"><comfort-compass-card data-palette="${p}" data-dark=""></comfort-compass-card></div>
-    </div></figure>`).join('');
-    const d = THEMES.dark, l = THEMES.light;
+    </div></figure>`,
+    ).join('');
+    const d = THEMES.dark,
+        l = THEMES.light;
     return `<!doctype html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 <style>
@@ -197,10 +209,13 @@ try {
         await tab.setContent(page(shot), { waitUntil: 'networkidle0' });
         await tab.evaluate(() => document.fonts.ready);
         // Wait until the card has drawn the compass.
-        await tab.waitForFunction(() => {
-            const root = document.querySelector('comfort-compass-card')?.shadowRoot;
-            return root?.querySelector('.glyph .seg');
-        }, { timeout: 15000 });
+        await tab.waitForFunction(
+            () => {
+                const root = document.querySelector('comfort-compass-card')?.shadowRoot;
+                return root?.querySelector('.glyph .seg');
+            },
+            { timeout: 15000 },
+        );
         const el = await tab.$('#wrap');
         await el.screenshot({ path: resolve(outDir, shot.file) });
         console.log(`docs/${shot.file}`);
@@ -210,10 +225,14 @@ try {
     await tab.setViewport({ width: 1800, height: 1200, deviceScaleFactor: 2 });
     await tab.setContent(galleryPage(), { waitUntil: 'networkidle0' });
     await tab.evaluate(() => document.fonts.ready);
-    await tab.waitForFunction((n) => {
-        const cards = [...document.querySelectorAll('comfort-compass-card')];
-        return cards.length === n && cards.every((c) => c.shadowRoot?.querySelector('.glyph .seg'));
-    }, { timeout: 30000 }, PALETTE_NAMES.length * 2);
+    await tab.waitForFunction(
+        (n) => {
+            const cards = [...document.querySelectorAll('comfort-compass-card')];
+            return cards.length === n && cards.every((c) => c.shadowRoot?.querySelector('.glyph .seg'));
+        },
+        { timeout: 30000 },
+        PALETTE_NAMES.length * 2,
+    );
     // Let the cards size their labels to the measured glyph box.
     await new Promise((r) => setTimeout(r, 400));
     await (await tab.$('#wrap')).screenshot({ path: resolve(outDir, 'palettes.png') });
