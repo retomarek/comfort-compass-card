@@ -35,5 +35,5 @@ Missing keys fall back to English, so a partial translation is fine.
 
 ## Shared code
 
-- `src/vendor/mollierFunctions.js` is copied verbatim from [pyedautils](https://github.com/retomarek/pyedautils) (`pyedautils/data/d3_mollierhx/mollierFunctions.js`, plus ES exports). Change it there and re-copy.
+- `src/vendor/mollierFunctions.js` is copied verbatim from [pyedautils](https://github.com/retomarek/pyedautils) (`pyedautils/data/d3_mollierhx/mollierFunctions.js` @ 42672ff, v0.0.34, plus ES exports; byte-identical to the Mollier hx Card copy). Change it there and re-copy.
 - `src/bands.js` is shared with the [Mollier hx Card](https://github.com/retomarek/mollier-hx-card). Keep both copies in sync.

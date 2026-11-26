@@ -3,18 +3,22 @@ const version = '1.0.0-rc.7';
 import { ComfortCompassCard } from './card.js';
 import { ComfortCompassCardEditor } from './editor.js';
 
-customElements.define('comfort-compass-card', ComfortCompassCard);
-customElements.define('comfort-compass-card-editor', ComfortCompassCardEditor);
+// A second copy of the bundle (e.g. loaded both from the Marketplace and by hand)
+// must not throw: the first registration wins.
+if (!customElements.get('comfort-compass-card')) customElements.define('comfort-compass-card', ComfortCompassCard);
+if (!customElements.get('comfort-compass-card-editor'))
+    customElements.define('comfort-compass-card-editor', ComfortCompassCardEditor);
 
 window.customCards = window.customCards || [];
-window.customCards.push({
-    type: 'comfort-compass-card',
-    name: 'Comfort compass card',
-    description:
-        'Shows how the days split into in range, too warm, too humid, too dry or too cold, from a temperature and a humidity sensor.',
-    preview: true,
-    documentationURL: 'https://github.com/retomarek/comfort-compass-card',
-});
+if (!window.customCards.some((c) => c.type === 'comfort-compass-card'))
+    window.customCards.push({
+        type: 'comfort-compass-card',
+        name: 'Comfort compass card',
+        description:
+            'Shows how the days split into in range, too warm, too humid, too dry or too cold, from a temperature and a humidity sensor.',
+        preview: true,
+        documentationURL: 'https://github.com/retomarek/comfort-compass-card',
+    });
 
 console.info(
     `%c COMFORT-COMPASS-CARD %c v${version} `,

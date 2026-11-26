@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit';
 import { localize } from './localize/localize.js';
 import { DEFAULT_BANDS } from './bands.js';
 import { BREATHING_RANGE, breathingStrength, DEFAULT_BREATHING, DEFAULT_COMFORT_ZONE } from './card.js';
-import { MAX_DAYS } from './statistics.js';
+import { ALTITUDE_RANGE, MAX_DAYS, PRESSURE_PA_RANGE } from './statistics.js';
 import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
 // Visual editor on Home Assistant's <ha-form>. The form data is flat, the
@@ -60,7 +60,7 @@ function configToData(c = {}) {
         title: c.title ?? '',
         temperature_entity: c.temperature_entity ?? '',
         humidity_entity: c.humidity_entity ?? '',
-        days_to_show: firstNum(c.days_to_show, c.days, DEFAULTS.days_to_show),
+        days_to_show: firstNum(c.days_to_show, DEFAULTS.days_to_show),
         air_mode: given(c.altitude) ? 'altitude' : 'pressure',
         altitude: firstNum(c.altitude, DEFAULTS.altitude),
         pressure: firstNum(c.pressure, DEFAULTS.pressure),
@@ -95,7 +95,7 @@ function dataToConfig(d, previous = {}) {
     if (given(d.temperature_entity)) config.temperature_entity = d.temperature_entity;
     if (given(d.humidity_entity)) config.humidity_entity = d.humidity_entity;
     if (given(d.title)) config.title = d.title;
-    const days = firstNum(d.days_to_show, previous.days_to_show, previous.days, DEFAULTS.days_to_show);
+    const days = firstNum(d.days_to_show, previous.days_to_show, DEFAULTS.days_to_show);
     if (days !== DEFAULTS.days_to_show) config.days_to_show = days;
     // Persist either pressure or altitude, never both. Do not write the default
     // pressure unless it was set before, so opening the editor changes nothing.
@@ -201,8 +201,8 @@ function buildSchema(d, t) {
                     },
                 },
                 d.air_mode === 'pressure'
-                    ? { name: 'pressure', selector: num(1, 'Pa', 50000, 110000) }
-                    : { name: 'altitude', selector: num(10, 'm', 0, 5000) },
+                    ? { name: 'pressure', selector: num(1, 'Pa', ...PRESSURE_PA_RANGE) }
+                    : { name: 'altitude', selector: num(10, 'm', ...ALTITUDE_RANGE) },
             ],
         },
         {
