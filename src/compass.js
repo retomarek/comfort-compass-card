@@ -483,6 +483,7 @@ export function renderCompass(dist, t, opts = {}) {
     const curName = !cur ? '' : cur.key === 'ok' ? name('ok') : `${name(curDir)} · ${stage(curStage)}`;
     // Numbers in the user's locale (27,4 in German); the card works in °C.
     const nf = (v, d) => {
+        if (opts.formatNumber) return opts.formatNumber(v, d);
         try {
             return new Intl.NumberFormat(opts.locale || undefined, {
                 minimumFractionDigits: d,

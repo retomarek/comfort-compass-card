@@ -2,7 +2,7 @@ import { html, LitElement, nothing } from 'lit';
 import { createMollier } from './vendor/mollierFunctions.js';
 import { parseWarningBands } from './bands.js';
 import { classifyRecord, compassDistribution, renderCompass, hideTips } from './compass.js';
-import { localize } from './localize/localize.js';
+import { formatNumber, localize } from './localize/localize.js';
 import {
     daysFromConfig,
     fetchDailyMeans,
@@ -418,6 +418,7 @@ export class ComfortCompassCard extends LitElement {
                 currentMarker: c.show_current !== false,
                 currentLegend: c.show_current_legend !== false,
                 locale: this._hass?.locale?.language,
+                formatNumber: (v, d) => formatNumber(this._hass, v, d),
                 // Small tile: only the breathing marker, no "now" line, so the glyph keeps its room.
                 compact: this._compact,
             });

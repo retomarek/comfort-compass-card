@@ -69,4 +69,10 @@ describe('editor mapping', () => {
             expect(out).not.toHaveProperty('pressure');
         }
     });
+
+    it('switching from Home Assistant to a pressure starts from the pressure at its elevation', () => {
+        const data = configToData(BASE, { config: { elevation: 1500 } });
+        const out = dataToConfig({ ...data, air_mode: 'pressure' }, BASE);
+        expect(out.pressure).toBe(84556);
+    });
 });

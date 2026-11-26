@@ -1,8 +1,8 @@
 import { html, LitElement } from 'lit';
-import { localize } from './localize/localize.js';
+import { formatNumber, localize } from './localize/localize.js';
 import { DEFAULT_BANDS } from './bands.js';
 import { BREATHING_RANGE, breathingStrength, DEFAULT_BREATHING, DEFAULT_COMFORT_ZONE } from './card.js';
-import { ALTITUDE_RANGE, elevationOf, MAX_DAYS, PRESSURE_PA_RANGE } from './statistics.js';
+import { ALTITUDE_RANGE, elevationOf, MAX_DAYS, pressureAtAltitude, PRESSURE_PA_RANGE } from './statistics.js';
 import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
 // Visual editor on Home Assistant's <ha-form>. The form data is flat, the
@@ -12,7 +12,7 @@ import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 const DEFAULTS = {
     days_to_show: 30,
     altitude: 450, // only a suggestion when the user switches to altitude
-    pressure: 101325, // the card's default when neither pressure nor altitude is set
+    pressure: 101325, // only a suggestion when the user switches to pressure (sea level)
 };
 
 // Keys this form owns. Everything else in the existing config (grid_options,
@@ -47,6 +47,11 @@ const firstNum = (...vals) => {
 };
 const pairAt = (p, i) => (Array.isArray(p) ? p[i] : undefined);
 
+const homePressure = (hass) => {
+    const e = elevationOf(hass);
+    return e === null ? undefined : Math.round(pressureAtAltitude(e));
+};
+
 export function configToData(c = {}, hass = undefined) {
     // No comfort_zone at all → the defaults; a given zone is shown as it is
     // (an absolute_humidity it does not have stays empty: no limit).
@@ -67,7 +72,8 @@ export function configToData(c = {}, hass = undefined) {
         air_mode: given(c.altitude) ? 'altitude' : given(c.pressure) ? 'pressure' : 'home',
         // Suggestion when switching to an own altitude: Home Assistant's.
         altitude: firstNum(c.altitude, elevationOf(hass), DEFAULTS.altitude),
-        pressure: firstNum(c.pressure, DEFAULTS.pressure),
+        // Suggestion when switching to a pressure: the one at Home Assistant's elevation.
+        pressure: firstNum(c.pressure, homePressure(hass), DEFAULTS.pressure),
         comfort_t_min: zone('temperature', 0),
         comfort_t_max: zone('temperature', 1),
         comfort_phi_min: zone('humidity', 0),
@@ -203,7 +209,7 @@ function buildSchema(d, t, hass) {
                                     label:
                                         elevation === null
                                             ? t('editor.options.home_unset')
-                                            : t('editor.options.home', { m: Math.round(elevation) }),
+                                            : t('editor.options.home', { m: formatNumber(hass, elevation) }),
                                 },
                                 { value: 'altitude', label: t('editor.options.altitude') },
                                 { value: 'pressure', label: t('editor.options.pressure') },
