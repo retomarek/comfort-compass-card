@@ -14,7 +14,10 @@ To try a build in Home Assistant, copy `dist/comfort-compass-card.js` to `<confi
 Before a pull request:
 
 ```bash
-npm run build          # commit dist/comfort-compass-card.js with your change
+npm test               # unit tests
+npm run lint           # ESLint
+npm run format         # Prettier
+npm run build          # dist/ is not committed
 npm run screenshots    # optional: re-renders docs/*.png (needs Chrome or Chromium)
 ```
 

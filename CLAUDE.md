@@ -8,12 +8,14 @@ A Home Assistant custom dashboard card (Lit + Parcel, no D3) distributed through
 
 ## Commands
 
-- `npm run build`: Parcel production build (no cache), `src/comfort-compass-card.js` → `dist/comfort-compass-card.js`. Commit `dist/` too.
+- `npm run build`: Parcel production build (no cache), `src/comfort-compass-card.js` → `dist/comfort-compass-card.js`. `dist/` is gitignored: the release workflow builds and attaches the bundle.
 - `npm run watch`: development build.
 - `npm run screenshots`: renders the built bundle with deterministic sample data in headless Chrome (`puppeteer-core`, browser from `$CHROME_PATH` or PATH) into `docs/screenshot*.png` and the palette overview `docs/palettes.png`. CI does the same on every push to `main` (`.github/workflows/screenshots.yaml`).
 - `npm run social-preview`: re-renders `docs/banner.png` (README header) and `docs/social-preview.png` from `scripts/banner.html` / `scripts/social-preview.html` (upload manually: repo Settings → General → Social preview).
-
-No tests, linter or typechecker.
+- `npm test`: unit tests (vitest + happy-dom, `test/*.test.js`). `npm run lint` (ESLint, flat config, `--max-warnings 0`), `npm run format` / `format:check` (Prettier: 4 spaces, single quotes, width 120; vendored code is ignored). CI (`.github/workflows/ci.yaml`) runs lint, format check, tests and build on every push.
+- `npm run check-shared` (`-- --local ../<sister>` for a local clone): compares the files shared with the sister card (`bands.js`, `statistics.js`, `localize/localize.js`, `mollierFunctions.js`, the shared tests, tooling config, `ci.yaml`) with its `main`; CI fails on a difference. Change shared files in both repos together.
+- Golden fixture: `test/fixtures/compass.json` holds pyedautils' classification of 942 days; regenerate with `PYTHONPATH=../pyedautils python scripts/gen-compass-fixture.py` when pyedautils changes.
+- Live demo of both cards: lives in the mollier-hx-card repo (`demo/`, `npm run demo` there), published to https://retomarek.github.io/mollier-hx-card/.
 
 ## Architecture
 
