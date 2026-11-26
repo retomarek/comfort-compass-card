@@ -45,7 +45,7 @@ const firstNum = (...vals) => {
 };
 const pairAt = (p, i) => (Array.isArray(p) ? p[i] : undefined);
 
-function configToData(c = {}) {
+export function configToData(c = {}) {
     // No comfort_zone at all → the defaults; a given zone is shown as it is
     // (an absolute_humidity it does not have stays empty: no limit).
     const cz = c.comfort_zone && typeof c.comfort_zone === 'object' ? c.comfort_zone : DEFAULT_COMFORT_ZONE;
@@ -88,7 +88,7 @@ function configToData(c = {}) {
 
 // A cleared number field (undefined / null / '') falls back to the previous
 // config value, else the default: no null or undefined is ever written.
-function dataToConfig(d, previous = {}) {
+export function dataToConfig(d, previous = {}) {
     const config = { ...previous };
     for (const k of OWNED_KEYS) delete config[k];
     config.type = 'custom:comfort-compass-card';
