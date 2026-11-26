@@ -5,7 +5,9 @@
     "entity_not_found": "Fant ikke entiteten: {entities}",
     "fahrenheit_hint": "Komfortsonen ser ut til å være i °F. Angi temperaturene i °C.",
     "fetch_timeout": "Home Assistant svarte ikke i tide (opptatt, f.eks. rett etter en omstart)",
-    "loading_slow": "Laster inn historikken … Home Assistant svarer tregt."
+    "loading_slow": "Laster inn historikken … Home Assistant svarer tregt.",
+    "celsius_hint": "Komfortsonen ser ut til å være i °C. Med imperiske enheter oppgir du temperaturer i °F.",
+    "invalid_config": "Ugyldig konfigurasjon: {error}"
   },
   "compass": {
     "title": "Komfortkompass",
@@ -64,13 +66,18 @@
       "show_current": "Marker nåværende tilstand (pulserende)",
       "show_current_legend": "Vis nåværende tilstand som tekst",
       "show_labels": "Vis retningsetiketter",
-      "fixed_scale": "Fast skala (sammenlign rom)"
+      "fixed_scale": "Fast skala (sammenlign rom)",
+      "units": "Enheter"
     },
     "options": {
       "pressure": "Trykk (Pa)",
       "altitude": "Høyde (m)",
       "home": "Home Assistant ({m} m)",
-      "home_unset": "Home Assistant (ikke angitt: havnivå)"
+      "home_unset": "Home Assistant (ikke angitt: havnivå)",
+      "units_auto": "Fra Home Assistant",
+      "units_metric": "Metriske (°C, g/kg)",
+      "units_imperial": "Imperiske (°F, gr/lb)",
+      "home_ip": "Home Assistant ({ft} ft)"
     },
     "sections": {
       "comfort": "Komfortsone",

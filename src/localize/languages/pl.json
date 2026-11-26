@@ -5,7 +5,9 @@
     "entity_not_found": "Nie znaleziono encji: {entities}",
     "fahrenheit_hint": "Strefa komfortu wygląda na podaną w °F. Wprowadź temperatury w °C.",
     "fetch_timeout": "Home Assistant nie odpowiedział na czas (zajęty, np. tuż po restarcie)",
-    "loading_slow": "Wczytywanie historii … Home Assistant odpowiada powoli."
+    "loading_slow": "Wczytywanie historii … Home Assistant odpowiada powoli.",
+    "celsius_hint": "Strefa komfortu wygląda na °C. Przy jednostkach imperialnych podaj temperatury w °F.",
+    "invalid_config": "Nieprawidłowa konfiguracja: {error}"
   },
   "compass": {
     "title": "Kompas komfortu",
@@ -64,13 +66,18 @@
       "show_current": "Zaznacz bieżący stan (pulsujący)",
       "show_current_legend": "Pokaż bieżący stan jako tekst",
       "show_labels": "Pokaż etykiety kierunków",
-      "fixed_scale": "Stała skala (porównanie pomieszczeń)"
+      "fixed_scale": "Stała skala (porównanie pomieszczeń)",
+      "units": "Jednostki"
     },
     "options": {
       "pressure": "Ciśnienie (Pa)",
       "altitude": "Wysokość (m)",
       "home": "Home Assistant ({m} m)",
-      "home_unset": "Home Assistant (nie ustawiono: poziom morza)"
+      "home_unset": "Home Assistant (nie ustawiono: poziom morza)",
+      "units_auto": "Z Home Assistant",
+      "units_metric": "Metryczne (°C, g/kg)",
+      "units_imperial": "Imperialne (°F, gr/lb)",
+      "home_ip": "Home Assistant ({ft} ft)"
     },
     "sections": {
       "comfort": "Strefa komfortu",

@@ -5,7 +5,9 @@
     "entity_not_found": "未找到实体：{entities}",
     "fahrenheit_hint": "舒适区看起来是 °F。请以 °C 输入温度。",
     "fetch_timeout": "Home Assistant 未及时响应（繁忙，例如刚重启后）",
-    "loading_slow": "正在加载历史记录 … Home Assistant 响应较慢。"
+    "loading_slow": "正在加载历史记录 … Home Assistant 响应较慢。",
+    "celsius_hint": "舒适区看起来是 °C。使用英制单位时，请以 °F 输入温度。",
+    "invalid_config": "配置无效：{error}"
   },
   "compass": {
     "title": "舒适度罗盘",
@@ -64,13 +66,18 @@
       "show_current": "标记当前状态（呼吸动画）",
       "show_current_legend": "以文字显示当前状态",
       "show_labels": "显示方向标签",
-      "fixed_scale": "固定刻度（比较房间）"
+      "fixed_scale": "固定刻度（比较房间）",
+      "units": "单位"
     },
     "options": {
       "pressure": "气压 (Pa)",
       "altitude": "海拔 (m)",
       "home": "Home Assistant（{m} 米）",
-      "home_unset": "Home Assistant（未设置：海平面）"
+      "home_unset": "Home Assistant（未设置：海平面）",
+      "units_auto": "来自 Home Assistant",
+      "units_metric": "公制（°C、g/kg）",
+      "units_imperial": "英制（°F、gr/lb）",
+      "home_ip": "Home Assistant（{ft} 英尺）"
     },
     "sections": {
       "comfort": "舒适区",

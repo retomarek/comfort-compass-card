@@ -5,7 +5,9 @@
     "entity_not_found": "Объект не найден: {entities}",
     "fahrenheit_hint": "Похоже, зона комфорта задана в °F. Укажите температуры в °C.",
     "fetch_timeout": "Home Assistant не ответил вовремя (занят, например сразу после перезапуска)",
-    "loading_slow": "Загрузка истории … Home Assistant отвечает медленно."
+    "loading_slow": "Загрузка истории … Home Assistant отвечает медленно.",
+    "celsius_hint": "Зона комфорта, похоже, указана в °C. С имперскими единицами указывайте температуру в °F.",
+    "invalid_config": "Неверная конфигурация: {error}"
   },
   "compass": {
     "title": "Компас комфорта",
@@ -64,13 +66,18 @@
       "show_current": "Отмечать текущее состояние (пульсация)",
       "show_current_legend": "Показывать текущее состояние текстом",
       "show_labels": "Подписи направлений",
-      "fixed_scale": "Фиксированная шкала (сравнение комнат)"
+      "fixed_scale": "Фиксированная шкала (сравнение комнат)",
+      "units": "Единицы"
     },
     "options": {
       "pressure": "Давление (Pa)",
       "altitude": "Высота (m)",
       "home": "Home Assistant ({m} м)",
-      "home_unset": "Home Assistant (не задано: уровень моря)"
+      "home_unset": "Home Assistant (не задано: уровень моря)",
+      "units_auto": "Из Home Assistant",
+      "units_metric": "Метрические (°C, g/kg)",
+      "units_imperial": "Имперские (°F, gr/lb)",
+      "home_ip": "Home Assistant ({ft} ft)"
     },
     "sections": {
       "comfort": "Зона комфорта",

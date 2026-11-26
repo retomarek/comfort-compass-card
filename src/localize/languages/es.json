@@ -5,7 +5,9 @@
     "entity_not_found": "Entidad no encontrada: {entities}",
     "fahrenheit_hint": "La zona de confort parece estar en °F. Introduce las temperaturas en °C.",
     "fetch_timeout": "Home Assistant no respondió a tiempo (ocupado, p. ej. justo después de un reinicio)",
-    "loading_slow": "Cargando el historial … Home Assistant responde lentamente."
+    "loading_slow": "Cargando el historial … Home Assistant responde lentamente.",
+    "celsius_hint": "La zona de confort parece estar en °C. Con unidades imperiales, introduce las temperaturas en °F.",
+    "invalid_config": "Configuración no válida: {error}"
   },
   "compass": {
     "title": "Brújula de confort",
@@ -64,13 +66,18 @@
       "show_current": "Marcar el estado actual (pulsante)",
       "show_current_legend": "Mostrar el estado actual como texto",
       "show_labels": "Mostrar direcciones",
-      "fixed_scale": "Escala fija (comparar habitaciones)"
+      "fixed_scale": "Escala fija (comparar habitaciones)",
+      "units": "Unidades"
     },
     "options": {
       "pressure": "Presión (Pa)",
       "altitude": "Altitud (m)",
       "home": "Home Assistant ({m} m)",
-      "home_unset": "Home Assistant (sin definir: nivel del mar)"
+      "home_unset": "Home Assistant (sin definir: nivel del mar)",
+      "units_auto": "De Home Assistant",
+      "units_metric": "Métrico (°C, g/kg)",
+      "units_imperial": "Imperial (°F, gr/lb)",
+      "home_ip": "Home Assistant ({ft} ft)"
     },
     "sections": {
       "comfort": "Zona de confort",

@@ -1,18 +1,40 @@
 import { html, LitElement } from 'lit';
 import { formatNumber, localize } from './localize/localize.js';
-import { DEFAULT_BANDS } from './bands.js';
-import { BREATHING_RANGE, breathingStrength, DEFAULT_BREATHING, DEFAULT_COMFORT_ZONE } from './card.js';
-import { ALTITUDE_RANGE, elevationOf, MAX_DAYS, pressureAtAltitude, PRESSURE_PA_RANGE } from './statistics.js';
+import { BREATHING_RANGE, breathingStrength, DEFAULT_BREATHING } from './card.js';
+import {
+    ALTITUDE_RANGE,
+    ALTITUDE_RANGE_FT,
+    elevationOf,
+    MAX_DAYS,
+    pressureAtAltitude,
+    PRESSURE_INHG_RANGE,
+    PRESSURE_PA_RANGE,
+} from './statistics.js';
+import {
+    convertConfigUnits,
+    DEFAULT_BAND_VALUES,
+    DEFAULT_ZONES,
+    mToFt,
+    paToInhg,
+    unitSystem,
+    UNITS,
+    UNITS_OPTIONS,
+} from './units.js';
 import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
 // Visual editor on Home Assistant's <ha-form>. The form data is flat, the
 // YAML config nested; configToData / dataToConfig translate between them.
 // Only values that differ from the defaults are written, to keep YAML short.
+// Values are in the units of the card's unit system (src/units.js): metric °C,
+// K, g/kg, m, Pa; imperial °F, °F, gr/lb, ft, inHg.
 
 const DEFAULTS = {
     days_to_show: 30,
-    altitude: 450, // only a suggestion when the user switches to altitude
-    pressure: 101325, // only a suggestion when the user switches to pressure (sea level)
+};
+// Only suggestions when the user switches to an own altitude or pressure.
+const AIR_DEFAULTS = {
+    metric: { altitude: 450, pressure: 101325 },
+    imperial: { altitude: 1500, pressure: 29.92 },
 };
 
 // Keys this form owns. Everything else in the existing config (grid_options,
@@ -36,6 +58,7 @@ const OWNED_KEYS = [
     'scale',
     'palette',
     'breathing',
+    'units',
 ];
 
 const given = (v) => v !== undefined && v !== null && v !== '';
@@ -47,23 +70,34 @@ const firstNum = (...vals) => {
 };
 const pairAt = (p, i) => (Array.isArray(p) ? p[i] : undefined);
 
-const homePressure = (hass) => {
+// Home Assistant's elevation and the pressure there, in the units of `system`.
+const homeAltitude = (hass, system) => {
     const e = elevationOf(hass);
-    return e === null ? undefined : Math.round(pressureAtAltitude(e));
+    return e === null ? undefined : system === 'imperial' ? Math.round(mToFt(e)) : e;
+};
+const homePressure = (hass, system) => {
+    const e = elevationOf(hass);
+    if (e === null) return undefined;
+    const pa = pressureAtAltitude(e);
+    return system === 'imperial' ? Math.round(paToInhg(pa) * 100) / 100 : Math.round(pa);
 };
 
 export function configToData(c = {}, hass = undefined) {
+    const system = unitSystem(c, hass);
+    const zoneDefaults = DEFAULT_ZONES[system];
+    const bandDefaults = DEFAULT_BAND_VALUES[system];
     // No comfort_zone at all → the defaults; a given zone is shown as it is
     // (an absolute_humidity it does not have stays empty: no limit).
-    const cz = c.comfort_zone && typeof c.comfort_zone === 'object' ? c.comfort_zone : DEFAULT_COMFORT_ZONE;
+    const cz = c.comfort_zone && typeof c.comfort_zone === 'object' ? c.comfort_zone : zoneDefaults;
     const wb = typeof c.warning_bands === 'object' && c.warning_bands ? c.warning_bands : {};
-    const band = (k, f, d) => firstNum(wb[k]?.[f], DEFAULT_BANDS[k][d]);
+    const band = (k, f) => firstNum(wb[k]?.[f], bandDefaults[k][f]);
     const zone = (key, i) =>
         firstNum(
             pairAt(cz[key], i),
-            cz === DEFAULT_COMFORT_ZONE || key !== 'absolute_humidity' ? DEFAULT_COMFORT_ZONE[key][i] : undefined,
+            cz === zoneDefaults || key !== 'absolute_humidity' ? zoneDefaults[key][i] : undefined,
         );
     return {
+        units: UNITS_OPTIONS.includes(c.units) ? c.units : 'auto',
         title: c.title ?? '',
         temperature_entity: c.temperature_entity ?? '',
         humidity_entity: c.humidity_entity ?? '',
@@ -71,21 +105,21 @@ export function configToData(c = {}, hass = undefined) {
         // Neither altitude nor pressure: the elevation set in Home Assistant.
         air_mode: given(c.altitude) ? 'altitude' : given(c.pressure) ? 'pressure' : 'home',
         // Suggestion when switching to an own altitude: Home Assistant's.
-        altitude: firstNum(c.altitude, elevationOf(hass), DEFAULTS.altitude),
+        altitude: firstNum(c.altitude, homeAltitude(hass, system), AIR_DEFAULTS[system].altitude),
         // Suggestion when switching to a pressure: the one at Home Assistant's elevation.
-        pressure: firstNum(c.pressure, homePressure(hass), DEFAULTS.pressure),
+        pressure: firstNum(c.pressure, homePressure(hass, system), AIR_DEFAULTS[system].pressure),
         comfort_t_min: zone('temperature', 0),
         comfort_t_max: zone('temperature', 1),
         comfort_phi_min: zone('humidity', 0),
         comfort_phi_max: zone('humidity', 1),
         comfort_x_min: zone('absolute_humidity', 0),
         comfort_x_max: zone('absolute_humidity', 1),
-        orange_dt: band('orange', 'temperature', 'dt'),
-        orange_dphi: band('orange', 'humidity', 'dphi'),
-        orange_dx: band('orange', 'absolute_humidity', 'dx'),
-        red_dt: band('red', 'temperature', 'dt'),
-        red_dphi: band('red', 'humidity', 'dphi'),
-        red_dx: band('red', 'absolute_humidity', 'dx'),
+        orange_dt: band('orange', 'temperature'),
+        orange_dphi: band('orange', 'humidity'),
+        orange_dx: band('orange', 'absolute_humidity'),
+        red_dt: band('red', 'temperature'),
+        red_dphi: band('red', 'humidity'),
+        red_dx: band('red', 'absolute_humidity'),
         show_labels: c.show_labels !== false,
         show_legend: c.show_legend === true,
         show_current: c.show_current !== false,
@@ -98,10 +132,15 @@ export function configToData(c = {}, hass = undefined) {
 
 // A cleared number field (undefined / null / '') falls back to the previous
 // config value, else the default: no null or undefined is ever written.
-export function dataToConfig(d, previous = {}) {
+export function dataToConfig(d, previous = {}, hass = undefined) {
+    const units = UNITS_OPTIONS.includes(d.units) ? d.units : previous.units;
+    const system = unitSystem({ units }, hass);
+    const zoneDefaults = DEFAULT_ZONES[system];
+    const bandDefaults = DEFAULT_BAND_VALUES[system];
     const config = { ...previous };
     for (const k of OWNED_KEYS) delete config[k];
     config.type = 'custom:comfort-compass-card';
+    if (units === 'metric' || units === 'imperial') config.units = units;
     if (given(d.temperature_entity)) config.temperature_entity = d.temperature_entity;
     if (given(d.humidity_entity)) config.humidity_entity = d.humidity_entity;
     if (given(d.title)) config.title = d.title;
@@ -110,13 +149,13 @@ export function dataToConfig(d, previous = {}) {
     // Persist either pressure or altitude, never both; 'home' (the default)
     // writes neither, so the card takes the elevation set in Home Assistant.
     if (d.air_mode === 'altitude') {
-        config.altitude = firstNum(d.altitude, previous.altitude, DEFAULTS.altitude);
+        config.altitude = firstNum(d.altitude, previous.altitude, AIR_DEFAULTS[system].altitude);
     } else if (d.air_mode === 'pressure') {
-        config.pressure = firstNum(d.pressure, previous.pressure, DEFAULTS.pressure);
+        config.pressure = firstNum(d.pressure, previous.pressure, AIR_DEFAULTS[system].pressure);
     }
 
     const prevCz = previous.comfort_zone && typeof previous.comfort_zone === 'object' ? previous.comfort_zone : {};
-    const field = (v, key, i) => firstNum(v, pairAt(prevCz[key], i), DEFAULT_COMFORT_ZONE[key][i]);
+    const field = (v, key, i) => firstNum(v, pairAt(prevCz[key], i), zoneDefaults[key][i]);
     const cz = {
         temperature: [field(d.comfort_t_min, 'temperature', 0), field(d.comfort_t_max, 'temperature', 1)],
         humidity: [field(d.comfort_phi_min, 'humidity', 0), field(d.comfort_phi_max, 'humidity', 1)],
@@ -128,18 +167,14 @@ export function dataToConfig(d, previous = {}) {
             field(d.comfort_x_max, 'absolute_humidity', 1),
         ];
     }
-    if (JSON.stringify(cz) !== JSON.stringify(DEFAULT_COMFORT_ZONE)) config.comfort_zone = cz;
+    if (JSON.stringify(cz) !== JSON.stringify(zoneDefaults)) config.comfort_zone = cz;
 
     // Keep YAML-only keys (label, color) the form does not edit.
     const prev = typeof previous.warning_bands === 'object' && previous.warning_bands ? previous.warning_bands : {};
     const bands = {};
     for (const k of ['orange', 'red']) {
         const b = { ...(prev[k] || {}) };
-        const defs = {
-            temperature: DEFAULT_BANDS[k].dt,
-            humidity: DEFAULT_BANDS[k].dphi,
-            absolute_humidity: DEFAULT_BANDS[k].dx,
-        };
+        const defs = bandDefaults[k];
         const vals = { temperature: d[`${k}_dt`], humidity: d[`${k}_dphi`], absolute_humidity: d[`${k}_dx`] };
         for (const f of Object.keys(vals)) {
             const v = firstNum(vals[f], b[f], defs[f]);
@@ -165,6 +200,9 @@ export function dataToConfig(d, previous = {}) {
 const num = (step, unit, min, max) => ({ number: { step, mode: 'box', unit_of_measurement: unit, min, max } });
 
 function buildSchema(d, t, hass) {
+    const system = unitSystem({ units: d.units }, hass);
+    const U = UNITS[system];
+    const imperial = system === 'imperial';
     const elevation = elevationOf(hass);
     const pairRow = (a, b, sel) => ({
         type: 'grid',
@@ -176,9 +214,9 @@ function buildSchema(d, t, hass) {
     const bandRow = (k) => ({
         type: 'grid',
         schema: [
-            { name: `${k}_dt`, selector: num(0.5, 'K', 0) },
+            { name: `${k}_dt`, selector: num(0.5, U.delta.unit, 0) },
             { name: `${k}_dphi`, selector: num(1, '%', 0, 100) },
-            { name: `${k}_dx`, selector: num(0.5, 'g/kg', 0) },
+            { name: `${k}_dx`, selector: num(0.5, U.absHumidity.unit, 0) },
         ],
     });
     return [
@@ -209,7 +247,11 @@ function buildSchema(d, t, hass) {
                                     label:
                                         elevation === null
                                             ? t('editor.options.home_unset')
-                                            : t('editor.options.home', { m: formatNumber(hass, elevation) }),
+                                            : imperial
+                                              ? t('editor.options.home_ip', {
+                                                    ft: formatNumber(hass, mToFt(elevation)),
+                                                })
+                                              : t('editor.options.home', { m: formatNumber(hass, elevation) }),
                                 },
                                 { value: 'altitude', label: t('editor.options.altitude') },
                                 { value: 'pressure', label: t('editor.options.pressure') },
@@ -218,9 +260,25 @@ function buildSchema(d, t, hass) {
                     },
                 },
                 ...(d.air_mode === 'pressure'
-                    ? [{ name: 'pressure', selector: num(1, 'Pa', ...PRESSURE_PA_RANGE) }]
+                    ? [
+                          {
+                              name: 'pressure',
+                              selector: imperial
+                                  ? num(0.01, 'inHg', ...PRESSURE_INHG_RANGE)
+                                  : num(1, 'Pa', ...PRESSURE_PA_RANGE),
+                          },
+                      ]
                     : d.air_mode === 'altitude'
-                      ? [{ name: 'altitude', selector: num(10, 'm', ...ALTITUDE_RANGE) }]
+                      ? [
+                            {
+                                name: 'altitude',
+                                selector: num(
+                                    U.altitude.step,
+                                    U.altitude.unit,
+                                    ...(imperial ? ALTITUDE_RANGE_FT : ALTITUDE_RANGE),
+                                ),
+                            },
+                        ]
                       : []),
             ],
         },
@@ -228,6 +286,16 @@ function buildSchema(d, t, hass) {
             type: 'expandable',
             title: t('editor.sections.display'),
             schema: [
+                {
+                    // auto: Home Assistant's unit system (°F = US customary → imperial).
+                    name: 'units',
+                    selector: {
+                        select: {
+                            mode: 'dropdown',
+                            options: UNITS_OPTIONS.map((u) => ({ value: u, label: t(`editor.options.units_${u}`) })),
+                        },
+                    },
+                },
                 {
                     name: 'palette',
                     selector: {
@@ -271,9 +339,9 @@ function buildSchema(d, t, hass) {
             type: 'expandable',
             title: t('editor.sections.comfort'),
             schema: [
-                pairRow('comfort_t_min', 'comfort_t_max', num(0.5, '°C')),
+                pairRow('comfort_t_min', 'comfort_t_max', num(U.temperature.step, U.temperature.unit)),
                 pairRow('comfort_phi_min', 'comfort_phi_max', num(1, '%', 0, 100)),
-                pairRow('comfort_x_min', 'comfort_x_max', num(0.5, 'g/kg', 0)),
+                pairRow('comfort_x_min', 'comfort_x_max', num(U.absHumidity.step, U.absHumidity.unit, 0)),
             ],
         },
         {
@@ -312,7 +380,19 @@ export class ComfortCompassCardEditor extends LitElement {
     }
 
     _valueChanged(ev) {
-        const config = dataToConfig(ev.detail.value, this._config);
+        const data = ev.detail.value;
+        const before = unitSystem(this._config, this.hass);
+        const after = unitSystem({ units: data.units }, this.hass);
+        let config;
+        if (before !== after) {
+            // Switched the unit system: convert the zone, the bands and the air
+            // pressure so they keep their meaning (68 °F stays 20 °C).
+            config = convertConfigUnits({ ...this._config }, before, after);
+            if (data.units === 'metric' || data.units === 'imperial') config.units = data.units;
+            else delete config.units;
+        } else {
+            config = dataToConfig(data, this._config, this.hass);
+        }
         this.dispatchEvent(new CustomEvent('config-changed', { detail: { config }, bubbles: true, composed: true }));
     }
 }

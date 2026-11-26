@@ -5,7 +5,9 @@
     "entity_not_found": "Entität nicht gefunden: {entities}",
     "fahrenheit_hint": "Die Komfortzone sieht nach °F aus. Bitte gib die Temperaturen in °C ein.",
     "fetch_timeout": "Home Assistant hat nicht rechtzeitig geantwortet (ausgelastet, z. B. kurz nach einem Neustart)",
-    "loading_slow": "Verlauf wird geladen … Home Assistant antwortet gerade langsam."
+    "loading_slow": "Verlauf wird geladen … Home Assistant antwortet gerade langsam.",
+    "celsius_hint": "Die Komfortzone sieht nach °C aus. Mit imperialen Einheiten Temperaturen in °F angeben.",
+    "invalid_config": "Ungültige Konfiguration: {error}"
   },
   "compass": {
     "title": "Komfort-Kompass",
@@ -66,13 +68,18 @@
       "breathing": "Stärke des Atmens",
       "show_labels": "Richtungen beschriften",
       "fixed_scale": "Feste Skala (Räume vergleichen)",
-      "palette": "Farbpalette"
+      "palette": "Farbpalette",
+      "units": "Einheiten"
     },
     "options": {
       "pressure": "Druck (Pa)",
       "altitude": "Höhe (m)",
       "home": "Home Assistant ({m} m ü. M.)",
-      "home_unset": "Home Assistant (nicht gesetzt: Meereshöhe)"
+      "home_unset": "Home Assistant (nicht gesetzt: Meereshöhe)",
+      "units_auto": "Aus Home Assistant",
+      "units_metric": "Metrisch (°C, g/kg)",
+      "units_imperial": "Imperial (°F, gr/lb)",
+      "home_ip": "Home Assistant ({ft} ft)"
     },
     "sections": {
       "comfort": "Komfortzone",

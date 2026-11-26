@@ -16,13 +16,16 @@ import {
     stateHumidity,
 } from './statistics.js';
 import styles from './card.styles.js';
+import { DEFAULT_ZONES, show, unitSystem, UNITS, UNITS_OPTIONS } from './units.js';
 import { DEFAULT_PALETTE, PALETTE_NAMES } from './palettes.js';
 
 const DEFAULT_DAYS = 30;
-// pyedautils' usual indoor comfort zone: 20–26 °C, 30–65 % rH, at most 12 g/kg.
-export const DEFAULT_COMFORT_ZONE = { temperature: [20, 26], humidity: [30, 65], absolute_humidity: [0, 12] };
-// A comfort zone above this many °C is almost certainly entered in °F.
-const FAHRENHEIT_HINT_ABOVE = 45;
+// pyedautils' usual indoor comfort zone: 20–26 °C, 30–65 % rH, at most 12 g/kg
+// (imperial: 68–79 °F, 84 gr/lb; src/units.js).
+export const DEFAULT_COMFORT_ZONE = DEFAULT_ZONES.metric;
+// A comfort zone above this many degrees is almost certainly entered in °F
+// (metric), one below it in °C (imperial).
+const UNIT_HINT_AT = 45;
 const SCALES = ['fit', 'fixed'];
 // Breathing strength of the "now" marker in %, 10 (barely) to 90 (almost
 // fades out; more would make the arm look like it blinks away). The green disc fades 5/11 as much (55 % → 0.75 as before), so
@@ -52,23 +55,38 @@ function parsePair(cz, key, unit) {
     return v.map(Number).sort((p, q) => p - q);
 }
 
-// User units (°C, %, g/kg) → internal units (°C, 0..1, kg/kg). No comfort_zone
-// at all → the default zone. A given zone needs temperature and humidity;
-// absolute_humidity is optional and, when missing, means no absolute criterion
-// (range_x null, like pyedautils' hum_abs_band=None).
-export function parseComfortZone(cz) {
-    if (!given(cz)) cz = DEFAULT_COMFORT_ZONE;
+// User units (metric: °C, %, g/kg; imperial: °F, %, gr/lb) → internal units
+// (°C, 0..1, kg/kg). No comfort_zone at all → the default zone of the unit
+// system. A given zone needs temperature and humidity; absolute_humidity is
+// optional and, when missing, means no absolute criterion (range_x null, like
+// pyedautils' hum_abs_band=None). `entered_max` is the upper temperature as
+// entered (for the °C / °F hint).
+export function parseComfortZone(cz, system = 'metric') {
+    const u = UNITS[system] || UNITS.metric;
+    if (!given(cz)) cz = DEFAULT_ZONES[system] || DEFAULT_ZONES.metric;
     if (typeof cz !== 'object' || Array.isArray(cz)) {
         throw new Error('comfort_zone must be an object with temperature: [min, max] and humidity: [min, max]');
     }
-    const [t0, t1] = parsePair(cz, 'temperature', '°C');
+    const [t0, t1] = parsePair(cz, 'temperature', u.temperature.unit);
     const [h0, h1] = parsePair(cz, 'humidity', '%');
-    const x = given(cz.absolute_humidity) ? parsePair(cz, 'absolute_humidity', 'g/kg') : null;
+    const x = given(cz.absolute_humidity) ? parsePair(cz, 'absolute_humidity', u.absHumidity.unit) : null;
     return {
-        range_t: [t0, t1],
+        range_t: [u.temperature.toC(t0), u.temperature.toC(t1)],
         range_phi: [h0 / 100, h1 / 100],
-        range_x: x ? [x[0] / 1000, x[1] / 1000] : null,
+        range_x: x ? [u.absHumidity.toGkg(x[0]) / 1000, u.absHumidity.toGkg(x[1]) / 1000] : null,
+        entered_max: t1,
     };
+}
+
+// Everything in the config that depends on the unit system, read in the
+// units of `system`. Throws on invalid values.
+function parseUnitValues(config, system) {
+    // Validates altitude / pressure; neither set → the elevation set in Home Assistant.
+    pressureFromConfig(config, null, system);
+    const comfort = parseComfortZone(config.comfort_zone, system);
+    // false / null mean the defaults too: the compass always needs stages.
+    const bands = parseWarningBands(config.warning_bands || true, system);
+    return { system, comfort, bands };
 }
 
 // getCardSize() for a card of h px: the smallest size n for which Home
@@ -232,22 +250,30 @@ export class ComfortCompassCard extends LitElement {
                 throw new Error(`${key} must be true or false (got ${JSON.stringify(config[key])})`);
             }
         }
+        if (given(config.units) && !UNITS_OPTIONS.includes(config.units)) {
+            throw new Error(`units must be one of ${UNITS_OPTIONS.join(', ')} (got ${JSON.stringify(config.units)})`);
+        }
         const period = daysFromConfig(config, DEFAULT_DAYS);
-        // Validates altitude / pressure; neither set → the elevation set in Home Assistant.
-        pressureFromConfig(config, null);
-        const comfort = parseComfortZone(config.comfort_zone);
-        // false / null mean the defaults too: the compass always needs stages.
-        const bands = parseWarningBands(config.warning_bands || true);
+        // The unit system decides how the zone, the bands and the air are read.
+        // With units: auto it comes from Home Assistant, which may not have
+        // arrived yet: then the values must be valid in one of the systems, and
+        // they are read again once hass tells which (_applyUnits).
+        const system = unitSystem(config, this._hass);
+        let parsed;
+        try {
+            parsed = parseUnitValues(config, system);
+        } catch (err) {
+            const auto = !given(config.units) || config.units === 'auto';
+            if (!auto || this._hass) throw err;
+            parsed = parseUnitValues(config, system === 'metric' ? 'imperial' : 'metric');
+        }
 
         this._config = config;
         this._scale = scale;
         this._palette = palette;
         this._breathing = breathing;
         this._period = period;
-        this._comfort = comfort;
-        this._bands = bands;
-        this._updateAir();
-        this._fahrenheitHint = comfort.range_t[1] > FAHRENHEIT_HINT_ABOVE;
+        this._setUnitValues(parsed);
         this._mollier ??= createMollier('classical');
         this._updateSizingMode();
         if (this._hass) {
@@ -277,10 +303,49 @@ export class ComfortCompassCard extends LitElement {
         if (sig(prev) !== sig(next)) this._current = next;
     }
 
+    _setUnitValues({ system, comfort, bands }) {
+        this._units = system;
+        this._comfort = comfort;
+        this._bands = bands;
+        this._configError = undefined;
+        this._updateAir();
+        // A zone that looks like the other unit: °F entered with metric units,
+        // or °C with imperial ones.
+        const max = comfort.entered_max;
+        this._unitHint =
+            system === 'imperial'
+                ? max < UNIT_HINT_AT
+                    ? 'card.celsius_hint'
+                    : null
+                : max > UNIT_HINT_AT
+                  ? 'card.fahrenheit_hint'
+                  : null;
+    }
+
+    // units: auto and Home Assistant's unit system arrived or changed: read the
+    // unit-dependent values again. hass cannot reject a config, so an invalid
+    // value shows as a message on the card.
+    _applyUnits() {
+        if (!this._config) return;
+        const system = unitSystem(this._config, this._hass);
+        if (system === this._units) return;
+        try {
+            this._setUnitValues(parseUnitValues(this._config, system));
+        } catch (err) {
+            this._units = system;
+            this._configError = err.message;
+        }
+        this.requestUpdate();
+    }
+
     // Air pressure for the absolute humidity: altitude or pressure from the
-    // config, else the elevation set in Home Assistant, else sea level.
+    // config (in the units of the unit system), else the elevation set in Home
+    // Assistant, else sea level.
     _updateAir() {
-        this._air = airPressure(this._config, this._hass);
+        // An air value that does not fit the unit system is already reported
+        // as _configError; keep the last pressure then.
+        if (this._configError) return;
+        this._air = airPressure(this._config, this._hass, this._units);
         this._pressure = this._air.pa;
     }
 
@@ -289,7 +354,9 @@ export class ComfortCompassCard extends LitElement {
         const langChanged = this._hass?.locale?.language !== hass?.locale?.language;
         const darkChanged = this._hass?.themes?.darkMode !== hass?.themes?.darkMode;
         const elevationChanged = this._hass?.config?.elevation !== hass?.config?.elevation;
+        const unitsChanged = this._hass?.config?.unit_system?.temperature !== hass?.config?.unit_system?.temperature;
         this._hass = hass;
+        if (unitsChanged) this._applyUnits();
         if (elevationChanged && this._config) this._updateAir();
         this._updateCurrent();
         if (first && this._config) this._maybeFetch();
@@ -394,7 +461,10 @@ export class ComfortCompassCard extends LitElement {
         if (!this._config) return nothing;
         const c = this._config;
         let body;
-        if (this._error) {
+        if (this._configError) {
+            // The config does not fit Home Assistant's unit system (units: auto).
+            body = html`<p class="message error">${this._t('card.invalid_config', { error: this._configError })}</p>`;
+        } else if (this._error) {
             const hint = this._error.key === 'card.no_statistics';
             body = html`<p class="message ${hint ? '' : 'error'}">${this._t(this._error.key, this._error.vars)}</p>`;
         } else if (this._loading || !this._days.length) {
@@ -419,6 +489,7 @@ export class ComfortCompassCard extends LitElement {
                 currentLegend: c.show_current_legend !== false,
                 locale: this._hass?.locale?.language,
                 formatNumber: (v, d) => formatNumber(this._hass, v, d),
+                show: show(this._hass, this._units),
                 // Small tile: only the breathing marker, no "now" line, so the glyph keeps its room.
                 compact: this._compact,
             });
@@ -432,8 +503,7 @@ export class ComfortCompassCard extends LitElement {
                 style=${`--ccc-breathe-min:${(1 - b / 100).toFixed(3)};--ccc-breathe-ok-min:${(1 - (b / 100) * (5 / 11)).toFixed(3)}`}
             >
                 <div class="card-content">
-                    ${this._fahrenheitHint ? html`<p class="message hint">${this._t('card.fahrenheit_hint')}</p>` : nothing}
-                    ${body}
+                    ${this._unitHint ? html`<p class="message hint">${this._t(this._unitHint)}</p>` : nothing} ${body}
                 </div>
             </ha-card>
         `;

@@ -5,7 +5,9 @@
     "entity_not_found": "Entité introuvable : {entities}",
     "fahrenheit_hint": "La zone de confort semble être en °F. Saisissez les températures en °C.",
     "fetch_timeout": "Home Assistant n'a pas répondu à temps (occupé, p. ex. juste après un redémarrage)",
-    "loading_slow": "Chargement de l'historique … Home Assistant répond lentement."
+    "loading_slow": "Chargement de l'historique … Home Assistant répond lentement.",
+    "celsius_hint": "La zone de confort semble être en °C. Avec les unités impériales, indiquez les températures en °F.",
+    "invalid_config": "Configuration invalide : {error}"
   },
   "compass": {
     "title": "Boussole de confort",
@@ -64,13 +66,18 @@
       "show_current": "Marquer l'état actuel (pulsation)",
       "show_current_legend": "Afficher l'état actuel en texte",
       "show_labels": "Afficher les directions",
-      "fixed_scale": "Échelle fixe (comparer les pièces)"
+      "fixed_scale": "Échelle fixe (comparer les pièces)",
+      "units": "Unités"
     },
     "options": {
       "pressure": "Pression (Pa)",
       "altitude": "Altitude (m)",
       "home": "Home Assistant ({m} m)",
-      "home_unset": "Home Assistant (non défini : niveau de la mer)"
+      "home_unset": "Home Assistant (non défini : niveau de la mer)",
+      "units_auto": "Depuis Home Assistant",
+      "units_metric": "Métrique (°C, g/kg)",
+      "units_imperial": "Impérial (°F, gr/lb)",
+      "home_ip": "Home Assistant ({ft} ft)"
     },
     "sections": {
       "comfort": "Zone de confort",

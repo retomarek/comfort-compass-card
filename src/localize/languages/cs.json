@@ -5,7 +5,9 @@
     "entity_not_found": "Entita nenalezena: {entities}",
     "fahrenheit_hint": "Zóna komfortu vypadá jako ve °F. Zadejte teploty ve °C.",
     "fetch_timeout": "Home Assistant neodpověděl včas (vytížený, např. hned po restartu)",
-    "loading_slow": "Načítání historie … Home Assistant odpovídá pomalu."
+    "loading_slow": "Načítání historie … Home Assistant odpovídá pomalu.",
+    "celsius_hint": "Zóna pohodlí vypadá jako ve °C. S imperiálními jednotkami zadejte teploty ve °F.",
+    "invalid_config": "Neplatná konfigurace: {error}"
   },
   "compass": {
     "title": "Kompas komfortu",
@@ -64,13 +66,18 @@
       "show_current": "Označit aktuální stav (pulzující)",
       "show_current_legend": "Zobrazit aktuální stav jako text",
       "show_labels": "Zobrazit popisky směrů",
-      "fixed_scale": "Pevné měřítko (porovnání místností)"
+      "fixed_scale": "Pevné měřítko (porovnání místností)",
+      "units": "Jednotky"
     },
     "options": {
       "pressure": "Tlak (Pa)",
       "altitude": "Nadmořská výška (m)",
       "home": "Home Assistant ({m} m)",
-      "home_unset": "Home Assistant (nenastaveno: hladina moře)"
+      "home_unset": "Home Assistant (nenastaveno: hladina moře)",
+      "units_auto": "Z Home Assistant",
+      "units_metric": "Metrické (°C, g/kg)",
+      "units_imperial": "Imperiální (°F, gr/lb)",
+      "home_ip": "Home Assistant ({ft} ft)"
     },
     "sections": {
       "comfort": "Komfortní zóna",

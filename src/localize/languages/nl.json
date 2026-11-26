@@ -5,7 +5,9 @@
     "entity_not_found": "Entiteit niet gevonden: {entities}",
     "fahrenheit_hint": "De comfortzone lijkt in °F te staan. Voer de temperaturen in °C in.",
     "fetch_timeout": "Home Assistant antwoordde niet op tijd (bezet, bijv. vlak na een herstart)",
-    "loading_slow": "Geschiedenis wordt geladen … Home Assistant reageert traag."
+    "loading_slow": "Geschiedenis wordt geladen … Home Assistant reageert traag.",
+    "celsius_hint": "De comfortzone lijkt in °C te staan. Geef met imperiale eenheden temperaturen op in °F.",
+    "invalid_config": "Ongeldige configuratie: {error}"
   },
   "compass": {
     "title": "Comfortkompas",
@@ -64,13 +66,18 @@
       "show_current": "Huidige toestand markeren (ademend)",
       "show_current_legend": "Huidige toestand als tekst tonen",
       "show_labels": "Richtingslabels tonen",
-      "fixed_scale": "Vaste schaal (ruimtes vergelijken)"
+      "fixed_scale": "Vaste schaal (ruimtes vergelijken)",
+      "units": "Eenheden"
     },
     "options": {
       "pressure": "Druk (Pa)",
       "altitude": "Hoogte (m)",
       "home": "Home Assistant ({m} m)",
-      "home_unset": "Home Assistant (niet ingesteld: zeeniveau)"
+      "home_unset": "Home Assistant (niet ingesteld: zeeniveau)",
+      "units_auto": "Uit Home Assistant",
+      "units_metric": "Metrisch (°C, g/kg)",
+      "units_imperial": "Imperiaal (°F, gr/lb)",
+      "home_ip": "Home Assistant ({ft} ft)"
     },
     "sections": {
       "comfort": "Comfortzone",

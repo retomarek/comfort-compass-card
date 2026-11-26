@@ -493,10 +493,14 @@ export function renderCompass(dist, t, opts = {}) {
             return v.toFixed(d);
         }
     };
+    // Live values in the card's unit system (opts.show from src/units.js).
     const curValues = !cur
         ? ''
-        : `${nf(cur.t, 1)} °C · ${nf(cur.phi * 100, 0)} %` +
-          (Number.isFinite(cur.x) ? ` · ${nf(cur.x * 1000, 1)} g/kg` : '');
+        : opts.show
+          ? `${opts.show.temperature(cur.t)} · ${nf(cur.phi * 100, 0)} %` +
+            (Number.isFinite(cur.x) ? ` · ${opts.show.absHumidity(cur.x)}` : '')
+          : `${nf(cur.t, 1)} °C · ${nf(cur.phi * 100, 0)} %` +
+            (Number.isFinite(cur.x) ? ` · ${nf(cur.x * 1000, 1)} g/kg` : '');
     const curTip = cur
         ? {
               bg: curColor,

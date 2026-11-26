@@ -119,6 +119,16 @@ const CASES = [
         rows: 6,
         config: { scale: 'fixed', show_legend: true },
     },
+    // US customary: the "Now" line in °F and gr/lb, the zone read in °F.
+    {
+        name: 'imperial-us-legend',
+        theme: 'light',
+        lang: 'en',
+        width: 560,
+        layout: 'grid',
+        imperial: true,
+        config: { show_legend: true },
+    },
     { name: 'no-statistics', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'empty' },
     { name: 'fetch-error-de', theme: 'dark', lang: 'de', width: 330, layout: 'grid', data: 'error' },
     {
@@ -294,6 +304,7 @@ function html(c) {
   card.setConfig(${JSON.stringify(config)});
   card.hass = {
     language: '${c.lang}', locale: { language: '${c.lang}' }, themes: { darkMode: ${c.theme === 'dark'} },
+    config: { unit_system: { temperature: '${c.imperial ? '°F' : '°C'}' } },
     states: Object.fromEntries(Object.entries(${JSON.stringify(states)}).map(([k, v]) => [k, { entity_id: k, state: v, attributes: {} }])),
     callWS: async () => {
       if (data === 'error') throw new Error('Connection lost');

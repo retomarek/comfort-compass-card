@@ -21,11 +21,22 @@ describe('registration', () => {
 
 describe('parseComfortZone', () => {
     it('defaults without a zone', () => {
-        expect(parseComfortZone(undefined)).toEqual({
+        expect(parseComfortZone(undefined)).toMatchObject({
             range_t: [20, 26],
             range_phi: [0.3, 0.65],
             range_x: [0, 0.012],
         });
+    });
+    it('imperial: °F and gr/lb, the same default zone', () => {
+        const cz = parseComfortZone(undefined, 'imperial');
+        expect(cz.range_t[0]).toBeCloseTo(20, 6);
+        expect(cz.range_t[1]).toBeCloseTo(26.11, 2);
+        expect(cz.range_x[1]).toBeCloseTo(0.012, 10);
+        expect(parseComfortZone({ temperature: [68, 77], humidity: [30, 60] }, 'imperial').range_t[1]).toBeCloseTo(
+            25,
+            6,
+        );
+        expect(() => parseComfortZone({ temperature: [68], humidity: [30, 60] }, 'imperial')).toThrow(/°F/);
     });
     it('converts units and sorts the pairs', () => {
         const cz = parseComfortZone({ temperature: [24, '21'], humidity: [60, 40], absolute_humidity: [10, 2] });
@@ -145,5 +156,47 @@ describe('air pressure', () => {
         const c = withHass(BASE, 0);
         c.hass = { ...c.hass, config: { elevation: 1500 } };
         expect(c._pressure).toBeCloseTo(84556, 0);
+    });
+});
+
+describe('units', () => {
+    const imperialHass = (extra = {}) => ({
+        states: {},
+        locale: { language: 'en' },
+        config: { unit_system: { temperature: '°F' }, elevation: 0 },
+        callWS: async () => ({}),
+        ...extra,
+    });
+    it('rejects an unknown units value', () => {
+        expect(() => card().setConfig({ ...BASE, units: 'kelvin' })).toThrow(/units must be one of/);
+    });
+    it("auto: reads the zone in °F once Home Assistant's unit system is US customary", () => {
+        const c = card();
+        c.setConfig({ ...BASE, comfort_zone: { temperature: [68, 77], humidity: [30, 60] } });
+        expect(c._units).toBe('metric');
+        c.hass = imperialHass();
+        expect(c._units).toBe('imperial');
+        expect(c._comfort.range_t[1]).toBeCloseTo(25, 6);
+        expect(c._unitHint).toBeNull();
+    });
+    it('auto before hass: an imperial-only value (pressure in inHg) is accepted', () => {
+        const c = card();
+        expect(() => c.setConfig({ ...BASE, pressure: 28.35 })).not.toThrow();
+        c.hass = imperialHass();
+        expect(c._pressure).toBeCloseTo(96004, 0);
+        expect(c._configError).toBeUndefined();
+    });
+    it('a value that does not fit the unit system shows as a message', () => {
+        const c = card();
+        c.setConfig({ ...BASE, pressure: 960 }); // hPa: valid metric, not imperial
+        c.hass = imperialHass();
+        expect(c._configError).toMatch(/inHg/);
+    });
+    it('hints when the zone looks like the other unit', () => {
+        const c = card();
+        c.setConfig({ ...BASE, units: 'imperial', comfort_zone: { temperature: [20, 26], humidity: [30, 65] } });
+        expect(c._unitHint).toBe('card.celsius_hint');
+        c.setConfig({ ...BASE, units: 'metric', comfort_zone: { temperature: [68, 79], humidity: [30, 65] } });
+        expect(c._unitHint).toBe('card.fahrenheit_hint');
     });
 });

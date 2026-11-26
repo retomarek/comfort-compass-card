@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import '../src/comfort-compass-card.js';
 import { configToData, dataToConfig } from '../src/editor.js';
 
 const BASE = { type: 'custom:comfort-compass-card', temperature_entity: 'sensor.t', humidity_entity: 'sensor.h' };
@@ -74,5 +75,34 @@ describe('editor mapping', () => {
         const data = configToData(BASE, { config: { elevation: 1500 } });
         const out = dataToConfig({ ...data, air_mode: 'pressure' }, BASE);
         expect(out.pressure).toBe(84556);
+    });
+
+    it('imperial: the form shows °F / gr/lb defaults and writes nothing extra', () => {
+        const hass = { config: { unit_system: { temperature: '°F' } } };
+        const data = configToData(BASE, hass);
+        expect(data.units).toBe('auto');
+        expect([data.comfort_t_min, data.comfort_t_max, data.comfort_x_max]).toEqual([68, 79, 84]);
+        expect([data.orange_dt, data.red_dt, data.red_dx]).toEqual([2, 4.5, 17.5]);
+        expect(dataToConfig(data, BASE, hass)).toEqual(BASE);
+        const own = { ...BASE, units: 'imperial', comfort_zone: { temperature: [70, 77], humidity: [30, 60] } };
+        expect(dataToConfig(configToData(own), own)).toEqual(own);
+    });
+
+    it('switching the unit system converts the zone, the bands and the air pressure', () => {
+        const ed = document.createElement('comfort-compass-card-editor');
+        const metric = {
+            ...BASE,
+            comfort_zone: { temperature: [20, 25], humidity: [30, 60] },
+            warning_bands: { red: { temperature: 2.5 } },
+            altitude: 450,
+        };
+        ed.setConfig(metric);
+        let out;
+        ed.addEventListener('config-changed', (e) => (out = e.detail.config));
+        ed._valueChanged({ detail: { value: { ...configToData(metric), units: 'imperial' } } });
+        expect(out.units).toBe('imperial');
+        expect(out.comfort_zone.temperature).toEqual([68, 77]);
+        expect(out.warning_bands.red.temperature).toBe(4.5);
+        expect(out.altitude).toBe(1476);
     });
 });
