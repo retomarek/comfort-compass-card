@@ -9,7 +9,7 @@ npm ci
 npm run watch        # rebuilds dist/comfort-compass-card.js on every change
 ```
 
-To try a build in Home Assistant, copy `dist/comfort-compass-card.js` to `<config>/www/` and add it as a dashboard resource (*Settings → Dashboards → Resources*, URL `/local/<file>.js`, type JavaScript module). Remove the Marketplace / HACS copy first so the card is not loaded twice.
+To try a build in Home Assistant, copy `dist/comfort-compass-card.js` to `<config>/www/` and add it as a dashboard resource (*Settings → Dashboards → Resources*, URL `/local/<file>.js`, type JavaScript module). Remove the Marketplace / HACS copy first: when the card is loaded twice, the copy loaded first wins (check the version in the browser console banner).
 
 Before a pull request:
 
@@ -39,4 +39,4 @@ Missing keys fall back to English, so a partial translation is fine.
 ## Shared code
 
 - `src/vendor/mollierFunctions.js` is copied verbatim from [pyedautils](https://github.com/retomarek/pyedautils) (`pyedautils/data/d3_mollierhx/mollierFunctions.js` @ 42672ff, v0.0.34, plus ES exports; byte-identical to the Mollier hx Card copy). Change it there and re-copy.
-- `src/bands.js` is shared with the [Mollier hx Card](https://github.com/retomarek/mollier-hx-card). Keep both copies in sync.
+- Some files are shared by the [Comfort Compass Card](https://github.com/retomarek/comfort-compass-card) and the [Mollier hx Card](https://github.com/retomarek/mollier-hx-card) and must stay identical: `src/bands.js`, `src/statistics.js`, `src/localize/localize.js`, the psychrometric functions (`mollierFunctions.js`), `test/statistics|bands|localize.test.js`, the ESLint / Prettier / vitest config and `.github/workflows/ci.yaml`. Change them in both repositories; `npm run check-shared -- --local ../<other card>` compares them, and CI checks them against the other card's `main`.

@@ -24,20 +24,24 @@ from pyedautils.comfort import comfort_compass_distribution
 OUT = Path(__file__).resolve().parent.parent / "test" / "fixtures" / "compass.json"
 
 
-def records(seed, n):
+def records(seed, n, kw):
+    """n random days plus every exact zone and band edge of this setup (and just beyond)."""
     rnd = random.Random(seed)
     out = []
     for _ in range(n):
-        # Spread over all directions and stages, plus exact zone and band edges.
-        t = round(rnd.uniform(14, 32), 2)
-        h = round(rnd.uniform(15, 90), 1)
-        out.append((t, h))
-    edges_t = [20, 26, 19, 27, 17.5, 28.5, 16, 30]
-    edges_h = [30, 65, 25, 70, 20, 75]
+        out.append((round(rnd.uniform(14, 32), 2), round(rnd.uniform(15, 90), 1)))
+    (t0, t1), (h0, h1) = kw["temp_band"], kw["hum_band"]
+    to, tr = kw["temp_stage_limits"]
+    ho, hr = kw["hum_stage_limits"]
+    t_mid, h_mid = (t0 + t1) / 2, (h0 + h1) / 2
+    edges_t = [t0, t1, t0 - to, t1 + to, t0 - tr, t1 + tr]
+    edges_h = [h0, h1, h0 - ho, h1 + ho, h0 - hr, h1 + hr]
     for t in edges_t:
-        out.append((float(t), 50.0))
+        for d in (0, 0.01):
+            out.append((round(t + (d if t > t_mid else -d), 4), round(h_mid, 4)))
     for h in edges_h:
-        out.append((23.0, float(h)))
+        for d in (0, 0.1):
+            out.append((round(t_mid, 4), round(h + (d if h > h_mid else -d), 4)))
     return out
 
 
@@ -98,7 +102,7 @@ def main():
             "hum_stage_limits": (o.get("humidity", 5.0), r.get("humidity", 10.0)),
             "hum_abs_stage_limits": (o.get("absolute_humidity", 1.0) / 1000, r.get("absolute_humidity", 2.5) / 1000),
         }
-        recs = records(c["seed"], 300)
+        recs = records(c["seed"], 300, kw)
         df = pd.DataFrame({"temperature": [t for t, _ in recs], "humidity": [h for _, h in recs]})
         cases.append({
             "name": c["name"],

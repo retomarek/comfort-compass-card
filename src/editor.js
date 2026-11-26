@@ -18,6 +18,8 @@ const DEFAULTS = {
 // Keys this form owns. Everything else in the existing config (grid_options,
 // visibility, view_layout, card_mod, YAML-only options) is kept as it is.
 const OWNED_KEYS = [
+    // `days` is the pre-release name of days_to_show: dropped on save.
+    'days',
     'type',
     'temperature_entity',
     'humidity_entity',

@@ -94,7 +94,7 @@ Invalid values (an unknown `scale`, a `comfort_zone` without a `[min, max]` pair
 
 ### Comfort zone and warning bands
 
-Defaults: 20–26 °C, 30–65 %, at most 12 g/kg; warning bands orange ±1 K / 5 % / 1 g/kg (mild), red ±2.5 K / 10 % / 2.5 g/kg (moderate), severe beyond. The Mollier hx Card takes the same keys.
+Defaults: 20–26 °C, 30–65 %, at most 12 g/kg. A `comfort_zone` of your own without `absolute_humidity` has no 12 g/kg limit: humidity is then judged by relative humidity only. Warning bands orange ±1 K / 5 % / 1 g/kg (mild), red ±2.5 K / 10 % / 2.5 g/kg (moderate), severe beyond. The Mollier hx Card takes the same keys.
 
 <details>
 <summary>YAML and details</summary>
@@ -186,8 +186,6 @@ Pick one under *Display → Colour palette*, or `palette: okabe_ito` in YAML. Ev
 <summary>All palettes</summary>
 
 Every palette keeps the meaning of the compass: warm is reddish at the top, cold bluish at the bottom, humid on the right, dry on the left, and the centre colour for *in range* stands out. Each direction gets one base colour; the card derives mild, moderate and severe from it (same hue, stepped lightness), so the severity always reads as a ramp. Palettes marked *dark / light* switch automatically with your Home Assistant theme: on dark themes they glow (mild dim, severe bright), on light themes they use deeper tones. Direction labels are darkened or lightened when needed so they stay readable (WCAG AA contrast against Home Assistant's default card backgrounds; very unusual theme colours can still lower it).
-
-
 
 The overview is rendered from the real card on every code push to `main` (`npm run screenshots`), so it always matches the current palettes.
 
