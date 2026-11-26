@@ -15,6 +15,7 @@ A Home Assistant custom dashboard card (Lit + Parcel, no D3) distributed through
 - `npm test`: unit tests (vitest + happy-dom, `test/*.test.js`). `npm run lint` (ESLint, flat config, `--max-warnings 0`), `npm run format` / `format:check` (Prettier: 4 spaces, single quotes, width 120; vendored code is ignored). CI (`.github/workflows/ci.yaml`) runs lint, format check, tests and build on every push.
 - `npm run check-shared` (`-- --local ../<sister>` for a local clone): compares the files shared with the sister card (`bands.js`, `statistics.js`, `localize/localize.js`, `mollierFunctions.js`, the shared tests, tooling config, `ci.yaml`) with its `main`; CI fails on a difference. Change shared files in both repos together.
 - Golden fixture: `test/fixtures/compass.json` holds pyedautils' classification of 942 days; regenerate with `PYTHONPATH=../pyedautils python scripts/gen-compass-fixture.py` when pyedautils changes.
+- End-to-end tests of both cards in a real Home Assistant (stable and beta, Docker) live in the mollier-hx-card repo: `npm run e2e` there (it builds `../comfort-compass-card`), workflow `e2e.yaml` on push and weekly; failures of the weekly run open an issue there (label `e2e-ha`).
 - Live demo of both cards: lives in the mollier-hx-card repo (`demo/`, `npm run demo` there), published to https://retomarek.github.io/mollier-hx-card/.
 
 ## Architecture

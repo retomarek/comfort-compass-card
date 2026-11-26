@@ -13,7 +13,7 @@ window.customCards = window.customCards || [];
 if (!window.customCards.some((c) => c.type === 'comfort-compass-card'))
     window.customCards.push({
         type: 'comfort-compass-card',
-        name: 'Comfort compass card',
+        name: 'Comfort Compass Card',
         description:
             'Shows how the days split into in range, too warm, too humid, too dry or too cold, from a temperature and a humidity sensor.',
         preview: true,
