@@ -192,6 +192,8 @@ function onTap(ev, tip) {
 // opts.fixedScale: frame to the worst case (pyedautils fixed_scale=True), so the
 //   dashed 100 % circle has the same size in every card and rooms are comparable.
 //   Default: zoom to this glyph so it fills the space.
+// opts.fixedHeight: the card fills a tile of fixed height (the glyph is fitted
+//   into width and height). Decides how tightly the viewBox is cropped.
 // opts.showLabels (default true), opts.showLegend (default false),
 // opts.dark: theme is dark → direction labels use the lightest shade, and
 //   palettes with a dark variant use it.
@@ -271,48 +273,105 @@ export function renderCompass(dist, t, opts = {}) {
         return `${d}L${f2(ix1)},${f2(iy1)}A${f2(R1)},${f2(R1)} 0 0 1 ${f2(ix0)},${f2(iy0)}Z`;
     };
 
+    // What is drawn: the dashed 100 % circle (it holds the green disc) and
+    // every arm that reaches beyond it, with the extremes of its outer arc.
+    const content = { x0: -R0 * K, x1: R0 * K, y0: -R0 * K, y1: R0 * K };
+    THETA.forEach((deg, i) => {
+        if (armR[i] <= R0 + 1e-9) return;
+        const a0 = deg - WID_DEG / 2,
+            a1 = deg + WID_DEG / 2;
+        const angles = [a0, a1, ...[0, 90, 180, 270].filter((a) => a > a0 && a < a1)];
+        for (const a of angles) {
+            const [x, y] = pt(armR[i], a);
+            content.x0 = Math.min(content.x0, x);
+            content.x1 = Math.max(content.x1, x);
+            content.y0 = Math.min(content.y0, y);
+            content.y1 = Math.max(content.y1, y);
+        }
+    });
+    // Frame before the labels:
+    // - fit: just the content, so no empty band above or below a lopsided glyph.
+    // - fixed, auto height: the width stays ±RMAX (it sets the scale, so equal
+    //   areas stay equal across cards of the same width); only the empty height
+    //   is cropped, which does not change the scale.
+    // - fixed in a fixed-height tile: the full ±RMAX square, because there the
+    //   height can set the scale too.
+    const frame = () => {
+        if (!opts.fixedScale) return { ...content };
+        const sq = RMAX * K;
+        return opts.fixedHeight
+            ? { x0: -sq, x1: sq, y0: -sq, y1: sq }
+            : { x0: -sq, x1: sq, y0: content.y0, y1: content.y1 };
+    };
+
     // Each label sits just beyond its own arm, anchored outward so it never
     // reaches back into the glyph. Returns the label specs and the bounding
     // box of glyph + labels (→ viewBox) for a given font size.
+    // Label i placed just beyond an arm of radius r: text spec and its box.
+    const placeLabel = (i, r, font, lh) => {
+        const deg = THETA[i];
+        const [x, y] = pt(r, deg);
+        const [ux, uy] = [Math.cos(rad(deg)), -Math.sin(rad(deg))];
+        const gap = font * 0.58;
+        const ax = x + ux * gap,
+            ay = y + uy * gap;
+        const lines = t(`compass.labels.${DIRS[i]}`).split('\n');
+        const pos = LABEL_POS[i];
+        const w = Math.max(...lines.map((l) => l.length)) * CHAR_W * font;
+        const h = lines.length * lh;
+        const top = pos.v === 'top' ? ay - h : pos.v === 'bottom' ? ay : ay - h / 2;
+        const left = pos.anchor === 'start' ? ax : pos.anchor === 'end' ? ax - w : ax - w / 2;
+        return { ax, top, left, w, h, lines, anchor: pos.anchor };
+    };
+    const grow = (box, l) => {
+        box.x0 = Math.min(box.x0, l.left);
+        box.x1 = Math.max(box.x1, l.left + l.w);
+        box.y0 = Math.min(box.y0, l.top);
+        box.y1 = Math.max(box.y1, l.top + l.h);
+    };
+
     const layout = (font) => {
         const lh = font * 1.08;
-        const box = opts.fixedScale
-            ? { x0: -RMAX * K, x1: RMAX * K, y0: -RMAX * K, y1: RMAX * K }
-            : { x0: -rMax * K, x1: rMax * K, y0: -rMax * K, y1: rMax * K };
+        const box = frame();
+        // Fixed scale: the frame (x always, y too in a fixed-height tile) must
+        // not depend on the data, or a long arm pushing its label outwards
+        // would zoom this card out and equal areas would no longer look equal.
+        // A label that would cross the frame is moved inside instead; that
+        // only happens for arms close to the longest possible one.
+        const fixedX = !!opts.fixedScale;
+        const fixedY = !!opts.fixedScale && !!opts.fixedHeight;
+        const fr = { ...box };
         const specs = !showLabels
             ? []
             : THETA.map((deg, i) => {
-                  const [x, y] = pt(armR[i], deg);
-                  const [ux, uy] = [Math.cos(rad(deg)), -Math.sin(rad(deg))];
-                  const gap = font * 0.58;
-                  const ax = x + ux * gap,
-                      ay = y + uy * gap;
-                  const lines = t(`compass.labels.${DIRS[i]}`).split('\n');
-                  const pos = LABEL_POS[i];
-                  const w = Math.max(...lines.map((l) => l.length)) * CHAR_W * font;
-                  const h = lines.length * lh;
-                  const top = pos.v === 'top' ? ay - h : pos.v === 'bottom' ? ay : ay - h / 2;
-                  const left = pos.anchor === 'start' ? ax : pos.anchor === 'end' ? ax - w : ax - w / 2;
-                  box.x0 = Math.min(box.x0, left);
-                  box.x1 = Math.max(box.x1, left + w);
-                  box.y0 = Math.min(box.y0, top);
-                  box.y1 = Math.max(box.y1, top + h);
+                  const l = placeLabel(i, armR[i], font, lh);
+                  if (fixedX) {
+                      const dx = Math.max(0, fr.x0 - l.left) - Math.max(0, l.left + l.w - fr.x1);
+                      l.left += dx;
+                      l.ax += dx;
+                  }
+                  if (fixedY) l.top += Math.max(0, fr.y0 - l.top) - Math.max(0, l.top + l.h - fr.y1);
+                  grow(box, l);
                   return {
-                      ax,
-                      baseline: top + font * 0.875,
-                      anchor: pos.anchor,
-                      lines,
+                      ax: l.ax,
+                      baseline: l.top + font * 0.875,
+                      anchor: l.anchor,
+                      lines: l.lines,
                       color: pal.labelColor(DIRS[i], !!opts.dark),
                   };
               });
         // Room for the "now" dot at an arm tip.
-        const pad = font / 3 + (opts.current && opts.currentMarker !== false ? font * 0.4 : 0);
-        return {
-            font,
-            lh,
-            specs,
-            vb: [box.x0 - pad, box.y0 - pad, box.x1 - box.x0 + 2 * pad, box.y1 - box.y0 + 2 * pad],
-        };
+        // Not tied to whether a live value is there right now, so the frame does
+        // not jump when the sensor becomes unavailable.
+        const pad = font / 3 + (opts.currentMarker !== false ? font * 0.4 : 0);
+        let [x, y, w, h] = [box.x0 - pad, box.y0 - pad, box.x1 - box.x0 + 2 * pad, box.y1 - box.y0 + 2 * pad];
+        // Auto height: never taller than wide, so the glyph stays within the
+        // card's width cap in both directions (a tall, narrow glyph gets side margins).
+        if (!opts.fixedHeight && h > w) {
+            x -= (h - w) / 2;
+            w = h;
+        }
+        return { font, lh, specs, vb: [x, y, w, h] };
     };
 
     // When the card knows how large the glyph box is on screen (opts.boxW /

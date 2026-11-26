@@ -32,7 +32,8 @@ const READY = '.glyph, p.message:not(.hint)';
 
 // width: tile width; rows: sections row count (fixed height = rows*64-8 px);
 // layout: what HA sets ('grid' in sections, 'panel', or null for masonry);
-// data: 'ok' | 'empty' (no statistics) | 'error' (fetch fails) | 'pending' (never answers).
+// data: 'ok' | 'cellar' (cool and humid: one long arm to the lower right) | 'empty' (no statistics)
+//   | 'error' (fetch fails) | 'pending' (never answers).
 // states: overrides the entity states (a missing entity: leave it out).
 const CASES = [
     { name: 'dark-en', theme: 'dark', lang: 'en', width: 330, layout: 'grid' },
@@ -67,6 +68,38 @@ const CASES = [
         width: 330,
         layout: 'grid',
         config: { scale: 'fixed', show_labels: false },
+    },
+    // Sections row with auto height next to a taller card: the tile is stretched
+    // (height without grid_options.rows); the card fills it like HA's own cards.
+    { name: 'stretched-auto-row', theme: 'dark', lang: 'en', width: 330, height: 480, layout: 'grid' },
+    // Lopsided glyphs: the frame must not keep an empty band above or below.
+    { name: 'lopsided-cellar', theme: 'light', lang: 'en', width: 330, layout: 'grid', data: 'cellar' },
+    // Fixed scale (area-true across cards): same width, so equal areas look equal.
+    {
+        name: 'fixed-scale-labels',
+        theme: 'dark',
+        lang: 'en',
+        width: 330,
+        layout: 'grid',
+        config: { scale: 'fixed' },
+    },
+    {
+        name: 'fixed-scale-cellar-de',
+        theme: 'light',
+        lang: 'de',
+        width: 330,
+        layout: 'grid',
+        data: 'cellar',
+        config: { scale: 'fixed' },
+    },
+    {
+        name: 'fixed-scale-6rows-500',
+        theme: 'dark',
+        lang: 'en',
+        width: 500,
+        layout: 'grid',
+        rows: 6,
+        config: { scale: 'fixed', show_legend: true },
     },
     { name: 'no-statistics', theme: 'dark', lang: 'en', width: 330, layout: 'grid', data: 'empty' },
     { name: 'fetch-error-de', theme: 'dark', lang: 'de', width: 330, layout: 'grid', data: 'error' },
@@ -234,6 +267,7 @@ function html(c) {
     const s = Math.cos((((d - new Date(Date.UTC(2026, 0, 1))) / 864e5 - 200) / 365) * 2 * Math.PI);
     let t = 22.4 + 4.4 * Math.max(s, -0.2) + (rnd() - 0.5) * 2.6; if (rnd() < 0.08) t += 2.6;
     let rh = 47 + 10 * s + (rnd() - 0.5) * 16; if (s < 0.1 && rnd() < 0.3) rh -= 11;
+    if (${JSON.stringify(c.data)} === 'cellar') { t = 16.5 + 2.5 * s + (rnd() - 0.5) * 2; rh = 72 + 6 * s + (rnd() - 0.5) * 10; }
     tR.push({ start: d.toISOString(), mean: +t.toFixed(2) }); hR.push({ start: d.toISOString(), mean: +Math.max(18, Math.min(80, rh)).toFixed(1) });
   }
   const data = ${JSON.stringify(c.data || 'ok')};

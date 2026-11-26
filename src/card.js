@@ -388,6 +388,7 @@ export class ComfortCompassCard extends LitElement {
             const dist = compassDistribution(this._days, this._comfort, this._bands, this._pressure, this._mollier);
             body = renderCompass(dist, (key, vars) => this._t(key, vars), {
                 fixedScale: this._scale === 'fixed',
+                fixedHeight: this._fixedHeight,
                 showLegend: c.show_legend === true,
                 showLabels: c.show_labels !== false && !this._compact,
                 dark: !!this._hass?.themes?.darkMode,
@@ -434,9 +435,15 @@ export class ComfortCompassCard extends LitElement {
         };
     }
 
-    // Masonry: 1 unit = 50 px; the auto-height glyph is about 260 px.
+    // Masonry: 1 unit = 50 px. Home Assistant also uses it as the first row
+    // count when the user switches auto height off in the layout editor, so it
+    // should match the real height: measured when the card is shown in auto
+    // mode, otherwise estimated from the options (title, glyph, Now line, legend).
     getCardSize() {
-        return 5;
+        const h = this._fixedHeight ? 0 : this.renderRoot?.querySelector('ha-card')?.offsetHeight;
+        if (h > 0) return Math.ceil(h / 50);
+        const c = this._config || {};
+        return (c.title ? 1 : 0) + 6 + (c.show_legend === true ? 4 : 0);
     }
 
     // Sections: half width by default, auto height; never narrower than 3

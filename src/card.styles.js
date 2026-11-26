@@ -1,9 +1,13 @@
 import { css } from 'lit';
 
-// Sizing:
+// Sizing (like Home Assistant's own gauge and graph cards):
+// - :host and ha-card are height: 100%, so in a sections row with auto height
+//   the card is as tall as its neighbours; where the parent has no height
+//   (masonry, stacks) that resolves to the content height.
 // - auto mode (masonry, stacks, sections with auto rows): the glyph is at most
-//   340 px wide and centred; with the legend, glyph and legend sit side by side
-//   once the card is wide enough, otherwise stacked.
+//   340 px wide, centred, and vertically centred when the card is stretched;
+//   with the legend, glyph and legend sit side by side once the card is wide
+//   enough, otherwise stacked.
 // - fixed mode (:host([fixed-height]), set when the tile has a row count or in
 //   panel view): the card fills the tile, the glyph fits the remaining space
 //   (preserveAspectRatio meet), capped at 380 px and centred.
@@ -11,6 +15,7 @@ import { css } from 'lit';
 export default css`
     :host {
         display: block;
+        height: 100%;
         --ccc-max: 340px;
         --ccc-gap-color: var(--ha-card-background, var(--card-background-color, #fff));
         /* Lowest opacity of the breathing "now" marker; the card sets both
@@ -19,6 +24,8 @@ export default css`
         --ccc-breathe-ok-min: 0.75;
     }
     ha-card {
+        height: 100%;
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -26,16 +33,14 @@ export default css`
     .card-content {
         container-type: inline-size;
         padding: 8px 16px 16px;
-    }
-    :host([fixed-height]),
-    :host([fixed-height]) ha-card {
-        height: 100%;
-    }
-    :host([fixed-height]) .card-content {
         flex: 1 1 auto;
-        min-height: 0;
         display: flex;
         flex-direction: column;
+        justify-content: center;
+    }
+    :host([fixed-height]) .card-content {
+        min-height: 0;
+        justify-content: flex-start;
     }
     .message {
         margin: 8px 0;
