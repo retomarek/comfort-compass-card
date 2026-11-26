@@ -71,6 +71,15 @@ export function parseComfortZone(cz) {
     };
 }
 
+// getCardSize() for a card of h px: the smallest size n for which Home
+// Assistant's row count (ceil((n * 50 + 8) / 64), used when auto height is
+// switched off) gives the rows the card needs (ceil((h + 8) / 64)), so the
+// tile neither shrinks nor grows by a row.
+export function cardSizeForHeight(h) {
+    const rows = Math.max(1, Math.ceil((h + 8) / 64));
+    return Math.max(1, Math.floor((64 * (rows - 1) - 8) / 50) + 1);
+}
+
 export class ComfortCompassCard extends LitElement {
     static styles = styles;
 
@@ -441,9 +450,9 @@ export class ComfortCompassCard extends LitElement {
     // mode, otherwise estimated from the options (title, glyph, Now line, legend).
     getCardSize() {
         const h = this._fixedHeight ? 0 : this.renderRoot?.querySelector('ha-card')?.offsetHeight;
-        if (h > 0) return Math.ceil(h / 50);
+        if (h > 0) return cardSizeForHeight(h);
         const c = this._config || {};
-        return (c.title ? 1 : 0) + 6 + (c.show_legend === true ? 4 : 0);
+        return (c.title ? 1 : 0) + 5 + (c.show_legend === true ? 3 : 0);
     }
 
     // Sections: half width by default, auto height; never narrower than 3

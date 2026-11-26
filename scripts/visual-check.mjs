@@ -92,6 +92,24 @@ const CASES = [
         data: 'cellar',
         config: { scale: 'fixed' },
     },
+    // Narrow 6-column tiles: labels must stay clear of circle and arms.
+    {
+        name: 'fixed-scale-250',
+        theme: 'light',
+        lang: 'en',
+        width: 250,
+        layout: 'grid',
+        config: { scale: 'fixed' },
+    },
+    {
+        name: 'fixed-scale-cellar-210-de',
+        theme: 'dark',
+        lang: 'de',
+        width: 210,
+        layout: 'grid',
+        data: 'cellar',
+        config: { scale: 'fixed' },
+    },
     {
         name: 'fixed-scale-6rows-500',
         theme: 'dark',

@@ -104,6 +104,7 @@ const GLYPH_PX = 90; // screen radius of the longest arm (fit) or of RMAX (fixed
 const BASE_FONT = 12; // label font size in viewBox units when the size is unknown
 const TARGET_PX = 12.5; // wanted on-screen label size when the card knows its size
 const CHAR_W = 0.58; // rough average glyph width per font size unit
+const MIN_LABEL_PX = 9; // fixed scale: smaller direction labels are left out
 
 const rad = (deg) => (deg * Math.PI) / 180;
 const f2 = (v) => v.toFixed(2);
@@ -330,36 +331,81 @@ export function renderCompass(dist, t, opts = {}) {
         box.y1 = Math.max(box.y1, l.top + l.h);
     };
 
-    const layout = (font) => {
-        const lh = font * 1.08;
+    // Fixed scale: the frame (x always, y too in a fixed-height tile) must not
+    // depend on the data, or a long arm pushing its label outwards would zoom
+    // this card out and equal areas would no longer look equal. So the labels
+    // do not follow the arms there: like a compass rose, side and diagonal
+    // labels sit at the left / right edge of the frame (top and bottom ones too
+    // in a fixed-height tile), the same in every card. Their font is capped so
+    // the widest of them fits between the dashed circle and the edge.
+    const fixedX = !!opts.fixedScale;
+    const fixedY = !!opts.fixedScale && !!opts.fixedHeight;
+    const sideChars = Math.max(
+        ...THETA.map((deg, i) =>
+            deg === 90 || deg === 270
+                ? 0
+                : Math.max(
+                      ...t(`compass.labels.${DIRS[i]}`)
+                          .split('\n')
+                          .map((l) => l.length),
+                  ),
+        ),
+    );
+    const fixedFontCap = ((RMAX - 1.08 * R0) * K) / (sideChars * CHAR_W + 0.58);
+
+    // minFont (viewBox units): with fixed scale, a side label whose arm leaves
+    // too little room to the edge is drawn smaller, down to minFont, and left
+    // out below that (the tooltip still names the arm).
+    const layout = (font, withLabels = showLabels, minFont = 0) => {
         const box = frame();
-        // Fixed scale: the frame (x always, y too in a fixed-height tile) must
-        // not depend on the data, or a long arm pushing its label outwards
-        // would zoom this card out and equal areas would no longer look equal.
-        // A label that would cross the frame is moved inside instead; that
-        // only happens for arms close to the longest possible one.
-        const fixedX = !!opts.fixedScale;
-        const fixedY = !!opts.fixedScale && !!opts.fixedHeight;
         const fr = { ...box };
-        const specs = !showLabels
-            ? []
-            : THETA.map((deg, i) => {
-                  const l = placeLabel(i, armR[i], font, lh);
-                  if (fixedX) {
-                      const dx = Math.max(0, fr.x0 - l.left) - Math.max(0, l.left + l.w - fr.x1);
-                      l.left += dx;
-                      l.ax += dx;
-                  }
-                  if (fixedY) l.top += Math.max(0, fr.y0 - l.top) - Math.max(0, l.top + l.h - fr.y1);
-                  grow(box, l);
-                  return {
-                      ax: l.ax,
-                      baseline: l.top + font * 0.875,
-                      anchor: l.anchor,
-                      lines: l.lines,
-                      color: pal.labelColor(DIRS[i], !!opts.dark),
-                  };
-              });
+        const specs = [];
+        if (withLabels) {
+            THETA.forEach((deg, i) => {
+                let f = font;
+                const side = fixedX && deg !== 90 && deg !== 270;
+                if (side) {
+                    // Horizontal reach of the arm (the outer arc spans ±WID_DEG / 2).
+                    const reach =
+                        armR[i] *
+                        K *
+                        Math.max(...[deg - WID_DEG / 2, deg + WID_DEG / 2].map((a) => Math.abs(Math.cos(rad(a)))));
+                    const chars = Math.max(
+                        ...t(`compass.labels.${DIRS[i]}`)
+                            .split('\n')
+                            .map((l) => l.length),
+                    );
+                    const room = fr.x1 - Math.max(reach, 1.08 * R0 * K);
+                    f = Math.min(font, room / (chars * CHAR_W + 0.58));
+                    if (f < minFont) return;
+                }
+                const lh = f * 1.08;
+                const l = placeLabel(i, armR[i], f, lh);
+                if (side) {
+                    const dx = l.anchor === 'start' ? fr.x1 - (l.left + l.w) : fr.x0 - l.left;
+                    l.left += dx;
+                    l.ax += dx;
+                }
+                // Top and bottom labels: inside the edge of a fixed-height tile;
+                // with auto height above / below everything drawn, so a long
+                // neighbouring arm never runs into them.
+                if (fixedY && l.anchor === 'middle') l.top = deg === 90 ? fr.y0 : fr.y1 - l.h;
+                else if (fixedX && l.anchor === 'middle') {
+                    const gap = f * 0.3;
+                    l.top = deg === 90 ? Math.min(l.top, fr.y0 - l.h - gap) : Math.max(l.top, fr.y1 + gap);
+                }
+                grow(box, l);
+                specs.push({
+                    ax: l.ax,
+                    baseline: l.top + f * 0.875,
+                    anchor: l.anchor,
+                    lines: l.lines,
+                    font: f,
+                    lh,
+                    color: pal.labelColor(DIRS[i], !!opts.dark),
+                });
+            });
+        }
         // Room for the "now" dot at an arm tip.
         // Not tied to whether a live value is there right now, so the frame does
         // not jump when the sensor becomes unavailable.
@@ -371,29 +417,36 @@ export function renderCompass(dist, t, opts = {}) {
             x -= (h - w) / 2;
             w = h;
         }
-        return { font, lh, specs, vb: [x, y, w, h] };
+        return { font, specs, vb: [x, y, w, h] };
     };
 
     // When the card knows how large the glyph box is on screen (opts.boxW /
     // opts.boxH in px; boxH only when the height is fixed), pick the font so the
     // labels render at about TARGET_PX. A few rounds, since the labels change
     // the viewBox and with it the scale.
-    let L = layout(BASE_FONT);
+    const screenScale = ([, , vw, vh]) => (opts.boxH > 0 ? Math.min(opts.boxW / vw, opts.boxH / vh) : opts.boxW / vw);
+    const capFont = (f) => (fixedX ? Math.min(f, fixedFontCap) : f);
+    let L = layout(capFont(BASE_FONT));
     // Also without direction labels: the text in the green disc uses the same size.
     if (opts.boxW > 0) {
         for (let round = 0; round < 3; round++) {
-            const [, , vw, vh] = L.vb;
-            const scale = opts.boxH > 0 ? Math.min(opts.boxW / vw, opts.boxH / vh) : opts.boxW / vw;
-            const font = Math.max(6, Math.min(40, TARGET_PX / scale));
+            const font = capFont(Math.max(6, Math.min(40, TARGET_PX / screenScale(L.vb))));
             if (Math.abs(font - L.font) < 0.2) break;
             L = layout(font);
         }
+        if (fixedX && showLabels) {
+            // The frame does not depend on the labels here, so the scale is known:
+            // labels below MIN_LABEL_PX on screen are left out, all of them when
+            // even the cap is too small (narrow card).
+            const minFont = MIN_LABEL_PX / screenScale(L.vb);
+            L = layout(L.font, L.font >= minFont - 1e-9, minFont);
+        }
     }
+    // A thin outline in the card colour keeps a label readable where an arm runs under it.
     const labels = L.specs.map(
-        (
-            p,
-        ) => svg`<text x=${f2(p.ax)} y=${f2(p.baseline)} text-anchor=${p.anchor} fill=${p.color} font-size=${f2(L.font)} font-weight="500">
-        ${p.lines.map((l, j) => svg`<tspan x=${f2(p.ax)} dy=${j === 0 ? 0 : f2(L.lh)}>${l}</tspan>`)}</text>`,
+        (p) =>
+            svg`<text class="label" x=${f2(p.ax)} y=${f2(p.baseline)} text-anchor=${p.anchor} fill=${p.color} stroke-width=${f2(p.font * 0.28)} font-size=${f2(p.font)} font-weight="500">
+        ${p.lines.map((l, j) => svg`<tspan x=${f2(p.ax)} dy=${j === 0 ? 0 : f2(p.lh)}>${l}</tspan>`)}</text>`,
     );
     const vb = L.vb.map(f2).join(' ');
 

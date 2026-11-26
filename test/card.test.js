@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import '../src/comfort-compass-card.js';
-import { BREATHING_RANGE, breathingStrength, DEFAULT_BREATHING, parseComfortZone } from '../src/card.js';
+import {
+    cardSizeForHeight,
+    BREATHING_RANGE,
+    breathingStrength,
+    DEFAULT_BREATHING,
+    parseComfortZone,
+} from '../src/card.js';
 
 const BASE = { type: 'custom:comfort-compass-card', temperature_entity: 'sensor.t', humidity_entity: 'sensor.h' };
 const card = () => document.createElement('comfort-compass-card');
@@ -99,5 +105,19 @@ describe('Home Assistant hooks', () => {
     });
     it('grid options: half width, auto height', () => {
         expect(card().getGridOptions()).toEqual({ columns: 6, min_columns: 3, min_rows: 3 });
+    });
+});
+
+describe('cardSizeForHeight', () => {
+    // Home Assistant's rows when auto height is switched off.
+    const rowsFor = (n) => Math.ceil((n * 50 + 8) / 64);
+    it('gives exactly the rows the card needs', () => {
+        for (let h = 40; h <= 900; h += 7) {
+            const need = Math.ceil((h + 8) / 64);
+            expect(rowsFor(cardSizeForHeight(h)), `${h} px`).toBe(need);
+        }
+    });
+    it('a card stretched to a 5-row neighbour stays at 5 rows', () => {
+        expect(rowsFor(cardSizeForHeight(5 * 64 - 8))).toBe(5);
     });
 });

@@ -130,7 +130,7 @@ These are the defaults. The worse of temperature and humidity decides the stage.
 
 ### Size in the dashboard
 
-In a sections dashboard the card takes half the width and sets its own height. The compass is at most 340 px wide and centred, also at full width. Set a row count under *Layout* to give it a fixed height; the compass then fits the tile.
+In a sections dashboard the card takes half the width and sets its own height; next to a taller card in the same row it grows to match, with the compass centred. The compass is at most 340 px wide, also at full width. Set a row count under *Layout* to give it a fixed height; the compass then fits the tile. With `scale: fixed` the direction labels stay at the edges like on a compass rose, so every card has the same frame; in narrow cards a label beside a long arm gets smaller, and in very narrow ones the labels are left out (hover shows the direction).
 
 ## Reading the compass
 

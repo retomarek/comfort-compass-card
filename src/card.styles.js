@@ -28,6 +28,10 @@ export default css`
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
+    }
+    /* Clip only in a tile of fixed height; in auto mode a host with fixed row
+       heights of its own (layout-card, custom grids) must not cut the legend. */
+    :host([fixed-height]) ha-card {
         overflow: hidden;
     }
     .card-content {
@@ -58,7 +62,7 @@ export default css`
     .placeholder {
         width: 100%;
         max-width: var(--ccc-max);
-        aspect-ratio: 1.15;
+        aspect-ratio: 1.35; /* typical cropped glyph with labels */
         margin: 0 auto;
     }
     :host([fixed-height]) .placeholder {
@@ -114,6 +118,12 @@ export default css`
         }
     }
 
+    .glyph .label {
+        paint-order: stroke;
+        stroke: var(--ccc-gap-color);
+        stroke-linejoin: round;
+        pointer-events: none;
+    }
     .glyph .ref {
         fill: none;
         /* A touch stronger than the divider colour, which is nearly
