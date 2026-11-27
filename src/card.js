@@ -334,6 +334,7 @@ export class ComfortCompassCard extends LitElement {
         } catch (err) {
             this._units = system;
             this._configError = err.message;
+            this._unitHint = null;
         }
         this.requestUpdate();
     }
@@ -356,7 +357,8 @@ export class ComfortCompassCard extends LitElement {
         const elevationChanged = this._hass?.config?.elevation !== hass?.config?.elevation;
         const unitsChanged = this._hass?.config?.unit_system?.temperature !== hass?.config?.unit_system?.temperature;
         this._hass = hass;
-        if (unitsChanged) this._applyUnits();
+        // Also on the first hass: a config read before it may have used the other system.
+        if (unitsChanged || first) this._applyUnits();
         if (elevationChanged && this._config) this._updateAir();
         this._updateCurrent();
         if (first && this._config) this._maybeFetch();

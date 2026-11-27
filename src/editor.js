@@ -253,8 +253,14 @@ function buildSchema(d, t, hass) {
                                                 })
                                               : t('editor.options.home', { m: formatNumber(hass, elevation) }),
                                 },
-                                { value: 'altitude', label: t('editor.options.altitude') },
-                                { value: 'pressure', label: t('editor.options.pressure') },
+                                {
+                                    value: 'altitude',
+                                    label: t(imperial ? 'editor.options.altitude_ip' : 'editor.options.altitude'),
+                                },
+                                {
+                                    value: 'pressure',
+                                    label: t(imperial ? 'editor.options.pressure_ip' : 'editor.options.pressure'),
+                                },
                             ],
                         },
                     },

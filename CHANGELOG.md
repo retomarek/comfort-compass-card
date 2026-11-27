@@ -8,6 +8,10 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 - Imperial units (US customary): `units: auto | metric | imperial`. `auto` follows Home Assistant's unit system. With imperial units the comfort zone, the warning bands, the altitude and the pressure are read in °F, gr/lb, ft and inHg, and the "Now" values are shown in them. Imperial defaults: comfort zone 68–79 °F, 30–65 %, ≤ 84 gr/lb; bands ±2 / ±4.5 °F, ±7 / ±17.5 gr/lb. The visual editor converts the values when the unit system is switched.
 
+### Changed
+
+- **US customary users with a metric config:** with `units: auto` (the default) a Home Assistant set to US customary now reads the config in imperial units, so a zone like `temperature: [20, 26]` would mean °F. Add `units: metric` to such a card, or switch *Units* in the visual editor, which converts the values. The card shows a hint when the zone looks like °C.
+
 ## [0.1.0] - 2026-11-26
 
 First public version. The earlier 1.0.0 betas and release candidates were withdrawn; nobody needs to migrate.

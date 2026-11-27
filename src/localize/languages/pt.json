@@ -6,7 +6,7 @@
     "fahrenheit_hint": "A zona de conforto parece estar em °F. Introduza as temperaturas em °C.",
     "fetch_timeout": "O Home Assistant não respondeu a tempo (ocupado, p. ex. logo após um reinício)",
     "loading_slow": "A carregar o histórico … o Home Assistant está a responder lentamente.",
-    "celsius_hint": "A zona de conforto parece estar em °C. Com unidades imperiais, indique as temperaturas em °F.",
+    "celsius_hint": "A zona de conforto parece estar em °C. Com unidades imperiais, indique as temperaturas em °F (units: metric).",
     "invalid_config": "Configuração inválida: {error}"
   },
   "compass": {
@@ -77,7 +77,9 @@
       "units_auto": "Do Home Assistant",
       "units_metric": "Métrico (°C, g/kg)",
       "units_imperial": "Imperial (°F, gr/lb)",
-      "home_ip": "Home Assistant ({ft} ft)"
+      "home_ip": "Home Assistant ({ft} ft)",
+      "altitude_ip": "Altitude (ft)",
+      "pressure_ip": "Pressão (inHg)"
     },
     "sections": {
       "comfort": "Zona de conforto",

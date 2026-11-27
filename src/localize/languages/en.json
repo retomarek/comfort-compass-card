@@ -6,7 +6,7 @@
     "fahrenheit_hint": "The comfort zone looks like °F. Please enter temperatures in °C.",
     "fetch_timeout": "Home Assistant did not answer in time (busy, e.g. right after a restart)",
     "loading_slow": "Loading the history … Home Assistant is answering slowly.",
-    "celsius_hint": "The comfort zone looks like °C. With imperial units, enter temperatures in °F.",
+    "celsius_hint": "The comfort zone looks like °C. With imperial units, enter temperatures in °F, or set units: metric.",
     "invalid_config": "Invalid configuration: {error}"
   },
   "compass": {
@@ -79,7 +79,9 @@
       "units_auto": "From Home Assistant",
       "units_metric": "Metric (°C, g/kg)",
       "units_imperial": "Imperial (°F, gr/lb)",
-      "home_ip": "Home Assistant ({ft} ft)"
+      "home_ip": "Home Assistant ({ft} ft)",
+      "altitude_ip": "Altitude (ft)",
+      "pressure_ip": "Pressure (inHg)"
     },
     "sections": {
       "comfort": "Comfort zone",

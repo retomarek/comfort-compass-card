@@ -71,7 +71,7 @@ days_to_show: 90
 | `humidity_entity` | string | | **Required.** Relative-humidity sensor in %. |
 | `title` | string | | Card title. |
 | `days_to_show` | number | `30` | Completed days to count, 1 to 3650 (daily statistics are kept indefinitely). |
-| `comfort_zone` | object | 20–26 °C, 30–65 %, 0–12 g/kg | See [below](#comfort-zone-and-warning-bands). Temperatures always in °C. |
+| `comfort_zone` | object | 20–26 °C, 30–65 %, 0–12 g/kg | See [below](#comfort-zone-and-warning-bands). In the units of the [unit system](#units-metric-or-imperial) (imperial: 68–79 °F, 0–84 gr/lb). |
 | `warning_bands` | `true` \| object | `true` (defaults) | Limits for mild and moderate, see [below](#comfort-zone-and-warning-bands). |
 | `units` | `auto` \| `metric` \| `imperial` | `auto` | Units of the config and of the values shown, see [Units](#units-metric-or-imperial). `auto` follows Home Assistant's unit system. |
 | `altitude` | number | Home Assistant's elevation | Altitude above sea level in m (-500 to 9000) or ft (imperial), for the absolute humidity. Overrides `pressure`. See [Altitude and air pressure](#altitude-and-air-pressure). |
@@ -111,7 +111,7 @@ comfort_zone:
 
 A day is *in range* when all three hold. A humid day is one above the relative **or** the absolute limit, so a warm day above 12 g/kg counts as warm and humid even if its relative humidity is fine.
 
-Temperatures are always in °C, also with Fahrenheit sensors (the statistics are converted to °C). A zone that looks like °F (upper limit above 45) shows a hint on the card.
+The values are in the units of the card's [unit system](#units-metric-or-imperial) (metric °C, K, g/kg; imperial °F, °F, gr/lb), whatever unit your sensors report. A zone that looks like the other unit (upper limit above 45 with metric, below 45 with imperial) shows a hint on the card.
 
 Without `comfort_zone` the defaults above apply. If you give a `comfort_zone`, `temperature` and `humidity` are required; `absolute_humidity` is optional, and without it there is no absolute limit: humidity is then judged by relative humidity only.
 
@@ -146,7 +146,7 @@ The numbers in the YAML are read in these units, so a `comfort_zone` written for
 
 ### Altitude and air pressure
 
-The air pressure changes how much water the air holds at a given relative humidity: at 1500 m the same 21 °C and 60 % are about 11 g/kg instead of 9.3 g/kg at sea level. So the altitude decides whether a day is above the 12 g/kg limit of the comfort zone. By default the card takes the **elevation set in Home Assistant** (*Settings → System → General → Elevation*) and follows it when you change it. Set `altitude` (m) or `pressure` (hPa or Pa) to use another value, e.g. for a sensor in a holiday flat; in the visual editor: *Air pressure from*.
+The air pressure changes how much water the air holds at a given relative humidity: at 1500 m the same 21 °C and 60 % are about 11 g/kg instead of 9.3 g/kg at sea level. So the altitude decides whether a day is above the 12 g/kg limit of the comfort zone. By default the card takes the **elevation set in Home Assistant** (*Settings → System → General → Elevation*) and follows it when you change it. Set `altitude` (m, imperial ft) or `pressure` (hPa or Pa, imperial inHg) to use another value, e.g. for a sensor in a holiday flat; in the visual editor: *Air pressure from*.
 
 ### Size in the dashboard
 
