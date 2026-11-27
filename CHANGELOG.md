@@ -4,6 +4,8 @@ All notable changes to this card. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-27
+
 ### Added
 
 - Imperial units (US customary): `units: auto | metric | imperial`. `auto` follows Home Assistant's unit system. With imperial units the comfort zone, the warning bands, the altitude and the pressure are read in °F, gr/lb, ft and inHg, and the "Now" values are shown in them. Imperial defaults: comfort zone 68–79 °F, 30–65 %, ≤ 84 gr/lb; bands ±2 / ±4.5 °F, ±7 / ±17.5 gr/lb. The visual editor converts the values when the unit system is switched.
@@ -35,5 +37,6 @@ First public version. The earlier 1.0.0 betas and release candidates were withdr
 
 - Unit tests (vitest), including a day-by-day comparison with `pyedautils.comfort.comfort_compass_distribution`; ESLint and Prettier; CI on every push; a check that the code shared with the Mollier hx Card is identical in both repositories.
 
-[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/retomarek/comfort-compass-card/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/retomarek/comfort-compass-card/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/retomarek/comfort-compass-card/releases/tag/v0.1.0
