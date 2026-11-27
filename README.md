@@ -73,8 +73,9 @@ days_to_show: 90
 | `days_to_show` | number | `30` | Completed days to count, 1 to 3650 (daily statistics are kept indefinitely). |
 | `comfort_zone` | object | 20–26 °C, 30–65 %, 0–12 g/kg | See [below](#comfort-zone-and-warning-bands). Temperatures always in °C. |
 | `warning_bands` | `true` \| object | `true` (defaults) | Limits for mild and moderate, see [below](#comfort-zone-and-warning-bands). |
-| `altitude` | number | Home Assistant's elevation | Altitude in m above sea level (-500 to 9000), for the absolute humidity. Overrides `pressure`. See [Altitude and air pressure](#altitude-and-air-pressure). |
-| `pressure` | number | from the altitude | Air pressure in hPa (300–1100) or Pa (30000–110000), instead of an altitude. |
+| `units` | `auto` \| `metric` \| `imperial` | `auto` | Units of the config and of the values shown, see [Units](#units-metric-or-imperial). `auto` follows Home Assistant's unit system. |
+| `altitude` | number | Home Assistant's elevation | Altitude above sea level in m (-500 to 9000) or ft (imperial), for the absolute humidity. Overrides `pressure`. See [Altitude and air pressure](#altitude-and-air-pressure). |
+| `pressure` | number | from the altitude | Air pressure in hPa (300–1100) or Pa (30000–110000); imperial in inHg. Instead of an altitude. |
 | `show_legend` | boolean | `false` | List the directions with days and share. Beside the compass when the card is wide, below it otherwise. |
 | `show_labels` | boolean | `true` | Name the eight directions around the compass. |
 | `show_current` | boolean | `true` | Mark the live reading: the matching segment slowly breathes (a small dot when no day fell into that state yet). No animation with reduced motion. |
@@ -127,6 +128,21 @@ warning_bands:
 These are the defaults. The worse of temperature and humidity decides the stage. `color` and `label` per band are accepted for compatibility with the Mollier hx Card but have no effect here. The [Mollier hx Card](https://github.com/retomarek/mollier-hx-card) takes the same `comfort_zone` and `warning_bands` and draws them as zone and dashed bands.
 
 </details>
+
+### Units: metric or imperial
+
+The card follows Home Assistant's unit system (*Settings → System → General → Unit system*): with **US customary** it works in imperial units, otherwise metric. `units: metric` or `units: imperial` sets it per card.
+
+| | metric | imperial |
+| --- | --- | --- |
+| Temperatures (`comfort_zone`) | °C | °F |
+| Band offsets (`warning_bands`) | K | °F |
+| Absolute humidity | g/kg | gr/lb (grains per pound, g/kg × 7) |
+| `altitude` / `pressure` | m / hPa or Pa | ft / inHg |
+| Default comfort zone | 20–26 °C, 30–65 %, ≤ 12 g/kg | 68–79 °F, 30–65 %, ≤ 84 gr/lb |
+| Default warning bands | ±1 / ±2.5 K, ±5 / ±10 %, ±1 / ±2.5 g/kg | ±2 / ±4.5 °F, ±5 / ±10 %, ±7 / ±17.5 gr/lb |
+
+The numbers in the YAML are read in these units, so a `comfort_zone` written for one system means something else in the other. In the visual editor, switching *Units* converts the values. A zone that looks like the other unit (above 45 with metric, below 45 with imperial) shows a hint on the card.
 
 ### Altitude and air pressure
 
